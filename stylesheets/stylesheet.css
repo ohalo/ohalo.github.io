@@ -250,3 +250,7 @@ a {
 	  text-decoration: none;
     color: #b5e853;
 }
+
+nav{
+	position: absolute;
+}
