@@ -245,3 +245,8 @@ a {
 .cf {
   zoom:1;
 }
+
+.container .btn-link{
+	  text-decoration: none;
+    color: #b5e853;
+}
