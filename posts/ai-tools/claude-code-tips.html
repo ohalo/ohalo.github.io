@@ -2,82 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" type="text/css" href="../../stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../stylesheets/github-dark.css" media="screen">
     <title>10个技巧，通关Claude Code - halo的技术博客</title>
-    <link rel="stylesheet" href="../../stylesheets/stylesheet.css">
-    <style>
-        body {
-            background: #0d1117;
-            color: #c9d1d9;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            background: #161b22;
-            padding: 30px 0;
-            border-bottom: 1px solid #30363d;
-        }
-        header h1 { color: #58a6ff; margin: 0; }
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-            display: flex;
-            gap: 20px;
-        }
-        nav a { color: #8b949e; text-decoration: none; }
-        nav a:hover { color: #58a6ff; }
-        #main_content {
-            background: #0d1117;
-            padding: 40px 0;
-        }
-        #main_content h1 { color: #f0f6fc; border-bottom: 1px solid #30363d; padding-bottom: 15px; }
-        #main_content h2 { color: #f0f6fc; margin-top: 40px; }
-        #main_content h3 { color: #f0f6fc; margin-top: 30px; }
-        #main_content p { margin: 15px 0; line-height: 1.8; }
-        #main_content a { color: #58a6ff; }
-        #main_content a:hover { color: #79c0ff; }
-        #main_content code {
-            background: #161b22;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        #main_content .inline-code { color: #ff7b72; }
-        #main_content pre {
-            background: #161b22;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-            border: 1px solid #30363d;
-        }
-        #main_content pre code { background: transparent; padding: 0; color: #c9d1d9; }
-        #main_content blockquote {
-            border-left: 4px solid #58a6ff;
-            padding-left: 15px;
-            margin: 20px 0;
-            color: #8b949e;
-        }
-        #main_content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        #main_content th, #main_content td {
-            border: 1px solid #30363d;
-            padding: 10px;
-            text-align: left;
-        }
-        #main_content th { background: #161b22; }
-        #main_content hr { border: none; border-top: 1px solid #30363d; margin: 30px 0; }
-        #main_content li { margin: 8px 0; }
-    </style>
 </head>
 <body>
 <header>
@@ -88,7 +16,7 @@
 <nav>
     <ul>
         <li><a href="../../">主页</a></li>
-        <li><a href="../../posts/">文章</a></li>
+        <li><a href="../">文章</a></li>
         <li><a href="./">返回分类</a></li>
     </ul>
 </nav>
@@ -117,7 +45,7 @@
 </p>
 
 <strong>实操技巧：</strong>
-<li>给工作树命名，设置 shell 别名（如 <code class="inline-code">za</code>、<code class="inline-code">zb</code>、<code class="inline-code">zc</code>），一键切换</li>
+<li>给工作树命名，设置 shell 别名（如 <code>za</code>、<code>zb</code>、<code>zc</code>），一键切换</li>
 <li>有一个专门的工作树叫"分析"，只用来读日志和跑 BigQuery</li>
 
 <strong>核心逻辑：</strong> 让不同的 Claude 实例并行处理不同任务，主会话保持干净，专注于当前最紧急的事。
@@ -162,7 +90,7 @@
 </p>
 
 <strong>几个真实的团队内部 tips：</strong>
-<li>创建一个 <code class="inline-code">/techdebt</code> 斜杠命令，会话结束时自动运行，查找并删除重复代码</li>
+<li>创建一个 <code>/techdebt</code> 斜杠命令，会话结束时自动运行，查找并删除重复代码</li>
 <li>设置一个斜杠命令，把 Slack、Google Drive、Asana、GitHub 上 7 天的数据同步到 Claude 的 context</li>
 <li>构建"分析工程师风格"的 agent，能写数据库策略模型、审查代码、测试开发环境变更</li>
 
@@ -206,7 +134,7 @@
 </p>
 
 <strong>提效配置：</strong>
-<li>用 <code class="inline-code">/statusline</code> 自定义状态栏，始终显示 context 用量和当前 Git 分支</li>
+<li>用 <code>/statusline</code> 自定义状态栏，始终显示 context 用量和当前 Git 分支</li>
 <li>终端标签页颜色编码和命名，或用 tmux——每个任务/工作树对应一个标签页</li>
 <li><strong>语音输入</strong>：你的语速是打字速度的 3 倍，语音生成的提示词更详细</li>
 
@@ -226,7 +154,7 @@
 
 <h2>9. 用 Claude 做数据分析</h2>
 
-<p>让 Claude Code 使用 <code class="inline-code">bq</code> 命令行工具实时提取和分析指标。团队已经集成 BigQuery skill，所有人都直接在 Claude Code 里做分析查询。
+<p>让 Claude Code 使用 <code>bq</code> 命令行工具实时提取和分析指标。团队已经集成 BigQuery skill，所有人都直接在 Claude Code 里做分析查询。
 </p>
 
 <strong>一个数据：</strong> 有人已经超过 6 个月没写过一行 SQL 代码了。
