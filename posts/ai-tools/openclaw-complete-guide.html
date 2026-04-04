@@ -48,14 +48,14 @@
 </p>
 
 
-<p>| 维度 | ChatGPT | OpenClaw |
-|------|---------|---------|
-| 角色定位 | 顾问（你问它答） | 员工（主动执行任务） |
-| 数据归属 | 存在 OpenAI 服务器 | 完全在你自己的服务器 |
-| 平台接入 | 只有 ChatGPT 界面 | 微信/QQ/Telegram/Discord 等 20+ 平台 |
-| 持久记忆 | 有限的会话记忆 | 四层记忆系统，长期学习你的习惯 |
-| 成本结构 | 订阅制 | 软件免费，自付 API 费用 |
-</p>
+<table>
+<tr><td>维度</td><td>ChatGPT</td><td>OpenClaw</td></tr>
+<tr><td>角色定位</td><td>顾问（你问它答）</td><td>员工（主动执行任务）</td></tr>
+<tr><td>数据归属</td><td>存在 OpenAI 服务器</td><td>完全在你自己的服务器</td></tr>
+<tr><td>平台接入</td><td>只有 ChatGPT 界面</td><td>微信/QQ/Telegram/Discord 等 20+ 平台</td></tr>
+<tr><td>持久记忆</td><td>有限的会话记忆</td><td>四层记忆系统，长期学习你的习惯</td></tr>
+<tr><td>成本结构</td><td>订阅制</td><td>软件免费，自付 API 费用</td></tr>
+</table>
 
 
 <strong>最核心的区别：</strong> ChatGPT 是你去找它，OpenClaw 是它一直在你身边。
@@ -98,9 +98,11 @@
 
 <h3>环境要求</h3>
 
+<ul>
 <li>Node.js >= 22（必须）</li>
 <li>内存 1GB+（建议 2GB）</li>
 <li>macOS / Linux / Windows 均支持</li>
+</ul>
 
 <h3>第一步：安装</h3>
 
@@ -117,10 +119,12 @@
 
 <p>这个命令会引导你：
 </p>
+<ul>
 <li>选择 AI 模型（支持 GPT-4、Claude、本地模型等）</li>
 <li>配置 API Key</li>
 <li>选择接入的消息平台</li>
 <li>安装守护进程（开机自启）</li>
+</ul>
 
 <h3>第三步：诊断检查</h3>
 
@@ -142,9 +146,11 @@
 <p>腾讯官方开放了 QQ Bot 能力给 OpenClaw，扫码 1 分钟完成绑定：
 </p>
 
+<ol>
 <li>手机 QQ 扫码完成开发者注册</li>
 <li>QQ 开放平台一键创建 Bot，获取 App ID 和 Token</li>
 <li>写入配置文件，重启 Gateway</li>
+</ol>
 
 <p>支持 Markdown、图片、语音、文件等多媒体消息。
 </p>
@@ -159,9 +165,11 @@
 <p>最简单的入门方式，不需要公网 IP：
 </p>
 
+<ol>
 <li>在 Telegram 搜索 @BotFather，发送 <code>/newbot</code></li>
 <li>设置 bot 名称，获取 Token</li>
 <li>写入配置文件，重启 Gateway</li>
+</ol>
 
 <hr>
 
@@ -182,12 +190,14 @@
 
 <p>你可以给 AI 装上各种能力：
 </p>
+<ul>
 <li>浏览器自动化（playwright-mcp）</li>
 <li>邮件管理</li>
 <li>日历操作</li>
 <li>代码执行</li>
 <li>数据分析</li>
 <li>……</li>
+</ul>
 
 <p>安装一个 Skill 只需要一条命令：
 </p>
@@ -225,10 +235,12 @@
 <p>OpenClaw 能在你的机器上执行真实命令，所以安全很重要：
 </p>
 
+<ol>
 <li><strong>定期检查 SOUL.md</strong>：恶意 Skill 可能篡改这个文件来"洗脑" AI</li>
 <li><strong>不要在主力机器上运行</strong>：建议用 VM 或专用服务器</li>
 <li><strong>配对模式默认开启</strong>：陌生人需要验证码才能使用你的 bot</li>
 <li><strong>只从官方渠道安装 Skill</strong>：不要安装来源不明的 Skill</li>
+</ol>
 
 <hr>
 
@@ -237,10 +249,12 @@
 <p>用了一段时间，最常用的场景：
 </p>
 
+<ul>
 <li><strong>早上起来</strong>：它已经帮我整理好了今天的日程和重要邮件</li>
 <li><strong>写文章</strong>：给它一个话题，它帮我搜索素材、整理框架</li>
 <li><strong>处理重复工作</strong>：定时任务、数据采集、报告生成</li>
 <li><strong>随时随地</strong>：在微信里说一句话，它就去执行</li>
+</ul>
 
 <p>最大的感受是：<strong>它让我从"使用 AI"变成了"拥有 AI"。</strong>
 </p>
@@ -254,15 +268,19 @@
 
 <p>✅ <strong>适合</strong>：
 </p>
+<ul>
 <li>想要 AI 真正融入日常工作流的人</li>
 <li>对数据隐私有要求的人</li>
 <li>有一定技术基础（会用命令行）的人</li>
 <li>想控制 AI 使用成本的人</li>
+</ul>
 
 <p>❌ <strong>不适合</strong>：
 </p>
+<ul>
 <li>完全不懂技术、不想折腾的人</li>
 <li>只需要偶尔问问题的人（直接用 ChatGPT 就够了）</li>
+</ul>
 
 <hr>
 

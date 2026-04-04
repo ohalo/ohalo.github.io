@@ -43,16 +43,20 @@
 <p>简单说：<strong>给 AI agent 装一双眼睛和一双手。</strong>
 </p>
 
+<ul>
 <li><strong>Playwright</strong>：微软开源的浏览器自动化框架，能控制 Chrome、Firefox、WebKit</li>
 <li><strong>MCP</strong>（Model Context Protocol）：Anthropic 推出的 AI 工具调用协议</li>
 <li><strong>playwright-mcp</strong>：把 Playwright 包装成 MCP 服务器，AI 可以直接调用</li>
+</ul>
 
 <p>装上之后，AI 能做的事：
 </p>
+<ul>
 <li>打开网页、点击按钮、填写表单</li>
 <li>提取页面内容、抓取数据</li>
 <li>截图、生成 PDF</li>
 <li>自动化重复操作（抢票、签到、数据采集）</li>
+</ul>
 
 <hr>
 
@@ -116,13 +120,13 @@
 <p>直接用自然语言告诉 AI 就行：
 </p>
 
-<p>| 你说的话 | AI 实际做的事 |
-|----------|-------------|
-| "打开知乎搜索今日热榜" | 启动浏览器 → 导航到知乎 → 搜索 → 提取结果 |
-| "帮我把这个网页截图" | 打开页面 → 截图 → 返回图片 |
-| "登录这个网站，填一下表单" | 打开登录页 → 填账号密码 → 点击登录 |
-| "抓取这个表格的数据" | 打开页面 → 定位表格 → 提取数据 → 返回 JSON |
-</p>
+<table>
+<tr><td>你说的话</td><td>AI 实际做的事</td></tr>
+<tr><td>"打开知乎搜索今日热榜"</td><td>启动浏览器 → 导航到知乎 → 搜索 → 提取结果</td></tr>
+<tr><td>"帮我把这个网页截图"</td><td>打开页面 → 截图 → 返回图片</td></tr>
+<tr><td>"登录这个网站，填一下表单"</td><td>打开登录页 → 填账号密码 → 点击登录</td></tr>
+<tr><td>"抓取这个表格的数据"</td><td>打开页面 → 定位表格 → 提取数据 → 返回 JSON</td></tr>
+</table>
 
 <p>不需要写代码，不需要配置，<strong>用嘴就行</strong>。
 </p>
@@ -212,8 +216,10 @@
 
 <p>这意味着：
 </p>
+<ul>
 <li><strong>playwright-mcp</strong> 不只能用在 OpenClaw，也能用在 Claude Desktop、Cursor 等任何支持 MCP 的平台</li>
 <li>以后会有越来越多 MCP 工具（数据库、文件系统、API 调用），即插即用</li>
+</ul>
 
 <hr>
 

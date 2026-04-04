@@ -45,8 +45,10 @@
 </p>
 
 <strong>实操技巧：</strong>
+<ul>
 <li>给工作树命名，设置 shell 别名（如 <code>za</code>、<code>zb</code>、<code>zc</code>），一键切换</li>
 <li>有一个专门的工作树叫"分析"，只用来读日志和跑 BigQuery</li>
+</ul>
 
 <strong>核心逻辑：</strong> 让不同的 Claude 实例并行处理不同任务，主会话保持干净，专注于当前最紧急的事。
 
@@ -77,8 +79,10 @@
 
 <p>进阶做法：
 </p>
+<ul>
 <li>让 Claude 为每个项目维护一个笔记目录，每次提交 PR 后更新</li>
 <li>把这个笔记目录的路径加到 CLAUDE.md 里，Claude 就能随时调用</li>
+</ul>
 
 <strong>本质：</strong> 把"踩过的坑"变成"永久记忆"，而不是每次都重新踩。
 
@@ -90,9 +94,11 @@
 </p>
 
 <strong>几个真实的团队内部 tips：</strong>
+<ul>
 <li>创建一个 <code>/techdebt</code> 斜杠命令，会话结束时自动运行，查找并删除重复代码</li>
 <li>设置一个斜杠命令，把 Slack、Google Drive、Asana、GitHub 上 7 天的数据同步到 Claude 的 context</li>
 <li>构建"分析工程师风格"的 agent，能写数据库策略模型、审查代码、测试开发环境变更</li>
+</ul>
 
 <strong>本质：</strong> 用一次工程时间，省掉未来一百次重复操作。
 
@@ -102,8 +108,10 @@
 
 <p>遇到 bug，不要事无巨细地指导具体操作。直接说：
 </p>
+<ul>
 <li>"修复"</li>
 <li>"去修那个失败的 CI 测试"</li>
+</ul>
 
 <strong>不要给上下文，让 Claude 自己看日志排查。</strong> 它在看 docker 日志、排查分布式系统故障方面，出乎意料地强大。
 
@@ -117,14 +125,20 @@
 <h2>6. 让你的提示词更上一层楼</h2>
 
 <strong>a. 向 Claude 发起挑战：</strong>
+<ul>
 <li>"在我通过你的测试之前别提交 PR"——让它当你的代码审查员</li>
 <li>"证明给我看，这行得通"——让它对比主分支和特性分支的差异</li>
+</ul>
 
 <strong>b. 遇到烂方案时：</strong>
+<ul>
 <li>"鉴于你现在掌握的所有信息，放弃这个方案，实施更优雅的解决方案"</li>
+</ul>
 
 <strong>c. 交接工作之前：</strong>
+<ul>
 <li>编写详细的规范，减少歧义。越具体，输出越好。</li>
+</ul>
 
 <hr>
 
@@ -134,9 +148,11 @@
 </p>
 
 <strong>提效配置：</strong>
+<ul>
 <li>用 <code>/statusline</code> 自定义状态栏，始终显示 context 用量和当前 Git 分支</li>
 <li>终端标签页颜色编码和命名，或用 tmux——每个任务/工作树对应一个标签页</li>
 <li><strong>语音输入</strong>：你的语速是打字速度的 3 倍，语音生成的提示词更详细</li>
+</ul>
 
 <hr>
 
@@ -146,9 +162,11 @@
 </p>
 
 <strong>正确的用法：</strong>
+<ul>
 <li>把单个大任务分解为多个子任务，分给 subagents</li>
 <li>主 agent 保持上下文窗口干净，专注于特定任务</li>
 <li>通过钩子把权限请求路由到 Opus 4.5，让它扫描攻击并自动批准安全请求</li>
+</ul>
 
 <hr>
 
@@ -180,9 +198,11 @@
 <p>这 10 条技巧，核心就三句话：
 </p>
 
+<ol>
 <li><strong>让 AI 干它擅长的，你干你擅长的</strong></li>
 <li><strong>把经验固化，不要每次都重新积累</strong></li>
 <li><strong>不要手把手教，让它自己看、自己修</strong></li>
+</ol>
 
 <p>Claude Code 不是一个写代码的工具，它是一个<strong>能帮你思考、分析、学习的 AI 搭档</strong>。用对它，你会发现自己的效率提升不是一点点。
 </p>
