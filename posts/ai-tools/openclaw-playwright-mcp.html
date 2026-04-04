@@ -2,9 +2,82 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>我给 OpenClaw 装了个浏览器，现在它能自己上网了 - halo的技术博客</title>
-    <link rel="stylesheet" href="../stylesheets/stylesheet.css">
-    <link rel="stylesheet" href="../stylesheets/github-dark.css">
+    <link rel="stylesheet" href="../../stylesheets/stylesheet.css">
+    <style>
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: #161b22;
+            padding: 30px 0;
+            border-bottom: 1px solid #30363d;
+        }
+        header h1 { color: #58a6ff; margin: 0; }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            display: flex;
+            gap: 20px;
+        }
+        nav a { color: #8b949e; text-decoration: none; }
+        nav a:hover { color: #58a6ff; }
+        #main_content {
+            background: #0d1117;
+            padding: 40px 0;
+        }
+        #main_content h1 { color: #f0f6fc; border-bottom: 1px solid #30363d; padding-bottom: 15px; }
+        #main_content h2 { color: #f0f6fc; margin-top: 40px; }
+        #main_content h3 { color: #f0f6fc; margin-top: 30px; }
+        #main_content p { margin: 15px 0; line-height: 1.8; }
+        #main_content a { color: #58a6ff; }
+        #main_content a:hover { color: #79c0ff; }
+        #main_content code {
+            background: #161b22;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        #main_content .inline-code { color: #ff7b72; }
+        #main_content pre {
+            background: #161b22;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid #30363d;
+        }
+        #main_content pre code { background: transparent; padding: 0; color: #c9d1d9; }
+        #main_content blockquote {
+            border-left: 4px solid #58a6ff;
+            padding-left: 15px;
+            margin: 20px 0;
+            color: #8b949e;
+        }
+        #main_content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        #main_content th, #main_content td {
+            border: 1px solid #30363d;
+            padding: 10px;
+            text-align: left;
+        }
+        #main_content th { background: #161b22; }
+        #main_content hr { border: none; border-top: 1px solid #30363d; margin: 30px 0; }
+        #main_content li { margin: 8px 0; }
+    </style>
 </head>
 <body>
 <header>
@@ -14,8 +87,8 @@
 </header>
 <nav>
     <ul>
-        <li><a href="../">主页</a></li>
-        <li><a href="../posts/">文章</a></li>
+        <li><a href="../../">主页</a></li>
+        <li><a href="../../posts/">文章</a></li>
         <li><a href="./">返回分类</a></li>
     </ul>
 </nav>
@@ -59,25 +132,25 @@
 
 <h3>第一步：安装 npm 包</h3>
 
-<pre><code class="bash">npm install -g @playwright/mcp
+<pre><code class="language-bash">npm install -g @playwright/mcp
 </code></pre>
 
-<blockquote>⚠️ 如果报 <code>command not found: npm</code>，先装 Node.js。</blockquote>
+<blockquote>⚠️ 如果报 <code class="inline-code">command not found: npm</code>，先装 Node.js。</blockquote>
 
 <p>装完后验证：
 </p>
-<pre><code class="bash">playwright-mcp --version
+<pre><code class="language-bash">playwright-mcp --version
 </code></pre>
 
 <h3>第二步：安装浏览器内核</h3>
 
-<pre><code class="bash">npx playwright install chromium
+<pre><code class="language-bash">npx playwright install chromium
 </code></pre>
 
 <p>这步会下载 Chromium 浏览器，大概 150MB。如果你网络不好，可以设镜像：
 </p>
 
-<pre><code class="bash">PLAYWRIGHT_DOWNLOAD_HOST=https://npmmirror.com/mirrors/playwright npx playwright install chromium
+<pre><code class="language-bash">PLAYWRIGHT_DOWNLOAD_HOST=https://npmmirror.com/mirrors/playwright npx playwright install chromium
 </code></pre>
 
 <h3>第三步：在 OpenClaw 中启用</h3>
@@ -85,7 +158,7 @@
 <p>如果你已经用 skillhub 安装过 playwright-mcp 技能，只需要在配置中启用：
 </p>
 
-<pre><code class="json">{
+<pre><code class="language-json">{
 <p>  "skills": {
     "entries": {
       "playwright-mcp": {
@@ -100,7 +173,7 @@
 <p>如果还没安装，一条命令搞定：
 </p>
 
-<pre><code class="bash">skillhub install playwright-mcp
+<pre><code class="language-bash">skillhub install playwright-mcp
 </code></pre>
 
 <h3>第四步：重启 Gateway</h3>
@@ -132,27 +205,27 @@
 
 <h3>坑1：安装后还是不能用</h3>
 
-<strong>原因</strong>：技能安装了但没有在配置中 <code>enabled: true</code>。
+<strong>原因</strong>：技能安装了但没有在配置中 <code class="inline-code">enabled: true</code>。
 
-<strong>解决</strong>：检查 <code>openclaw.json</code>，确保 <code>skills.entries.playwright-mcp.enabled</code> 为 <code>true</code>。
+<strong>解决</strong>：检查 <code class="inline-code">openclaw.json</code>，确保 <code class="inline-code">skills.entries.playwright-mcp.enabled</code> 为 <code class="inline-code">true</code>。
 
 <h3>坑2：浏览器打不开页面</h3>
 
 <strong>原因</strong>：Chromium 没装或者版本不对。
 
-<strong>解决</strong>：重新运行 <code>npx playwright install chromium</code>。
+<strong>解决</strong>：重新运行 <code class="inline-code">npx playwright install chromium</code>。
 
 <h3>坑3：打开知乎/微信等网站被拦截</h3>
 
 <strong>原因</strong>：OpenClaw 有 SSRF 安全策略，默认不允许访问内网地址。
 
-<strong>解决</strong>：大部分公网网站不受影响。如果需要访问特定站点，可以在 <code>browser.ssrfPolicy</code> 中配置白名单。
+<strong>解决</strong>：大部分公网网站不受影响。如果需要访问特定站点，可以在 <code class="inline-code">browser.ssrfPolicy</code> 中配置白名单。
 
 <h3>坑4：中文网页乱码</h3>
 
 <strong>原因</strong>：Playwright 默认系统编码不是 UTF-8。
 
-<strong>解决</strong>：启动时加 <code>--lang zh-CN</code> 参数。
+<strong>解决</strong>：启动时加 <code class="inline-code">--lang zh-CN</code> 参数。
 
 <hr>
 
@@ -163,7 +236,7 @@
 <p>让 AI 每天定时打开某个网页，抓取数据保存到本地：
 </p>
 
-<pre><code class="">每天早上 9 点，打开 XX 网站的热榜页面，
+<pre><code class="language-">每天早上 9 点，打开 XX 网站的热榜页面，
 <p>提取前 20 条数据，保存到 CSV 文件。
 </p>
 </code></pre>
@@ -173,7 +246,7 @@
 <p>重复性的表单操作，教 AI 一次，以后自动执行：
 </p>
 
-<pre><code class="">帮我登录 XX 网站，进入设置页面，
+<pre><code class="language-">帮我登录 XX 网站，进入设置页面，
 <p>把以下信息填进去：...
 </p>
 </code></pre>
@@ -183,7 +256,7 @@
 <p>监控网页变化：
 </p>
 
-<pre><code class="">打开 XX 页面截图，和昨天的截图对比，
+<pre><code class="language-">打开 XX 页面截图，和昨天的截图对比，
 <p>看看有什么不同。
 </p>
 </code></pre>
@@ -193,7 +266,7 @@
 <p>Playwright 有无障碍快照功能，AI 能"看到"页面的结构化信息：
 </p>
 
-<pre><code class="">打开 XX 页面，用无障碍快照分析页面结构，
+<pre><code class="language-">打开 XX 页面，用无障碍快照分析页面结构，
 <p>告诉我这个页面的布局是否合理。
 </p>
 </code></pre>
