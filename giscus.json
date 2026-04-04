@@ -1,0 +1,15 @@
+{
+  "origin": "https://giscus.app",
+  "repo": "ohalo/ohalo.github.io",
+  "repoId": "",
+  "category": "General",
+  "categoryId": "",
+  "mapping": "pathname",
+  "strict": "0",
+  "reactionsEnabled": "1",
+  "emitMetadata": "0",
+  "inputPosition": "top",
+  "theme": "preferred_color_scheme",
+  "lang": "zh-CN",
+  "loading": "lazy"
+}
