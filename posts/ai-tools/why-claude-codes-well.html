@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/github-dark.css" media="screen">
+    <title>Claude 代码强的秘密：不是模型更强，而是产品思维领先一代</title>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>Claude 代码强的秘密：不是模型更强，而是产品思维领先一代</h1>
+        <p class="date">2026-04-05 | 分类: AI工具</p>
+    </div>
+</header>
+<nav>
+    <ul>
+        <li><a href="https://blog.halo26812.eu.org/">主页</a></li>
+        <li><a href="https://blog.halo26812.eu.org/posts/">文章</a></li>
+        <li><a href="./">AI工具</a></li>
+        <li><a href="https://blog.halo26812.eu.org/about/">关于</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <section id="main_content">
+        <article>
+            <h2>先说结论</h2>
+            <p>Claude 代码能力强，不是因为 Anthropic 训出了什么神级模型，而是因为<strong>他们用做产品的思维在做 AI 编程工具</strong>。</p>
+            <p>模型是基础，但产品设计才是拉开差距的关键。</p>
+
+            <h2>被忽视的真相：模型不是全部</h2>
+            <p>OpenAI 有模型，Google 有模型，Meta 也有模型。为什么就 Claude 在编程这件事上跑出来了？</p>
+            <p>因为 <strong>Anthropic 是唯一一个把「程序员体验」放在第一位的公司</strong>。</p>
+
+            <h2>产品思维 vs 技术思维</h2>
+            <p>什么叫技术思维？</p>
+            <p>就是堆参数、刷榜单、暴力出奇迹。模型强了一切都强，工具嘛，不就是套个壳？</p>
+            <p>什么叫产品思维？</p>
+            <p><strong>先问用户真正需要什么，然后再决定用什么技术去实现。</strong></p>
+
+            <h3>1. 渐进式授权：让 AI 变成「可信赖的实习生」</h3>
+            <p>当它提出要执行命令或修改时，不只有"是"和"否"，还有一个极其关键的选项——"是，并且下次执行此类操作时不再询问"。</p>
+            <p>这是<strong>产品思维的极致体现</strong>。大部分 AI 编程工具的设计逻辑是：AI 干活用户看着，每次都要确认。</p>
+            <p>Claude Code 的逻辑是：<strong>让 AI 证明自己值得信任，然后逐步放权</strong>。</p>
+
+            <h3>2. 单主循环架构：小模型干大活</h3>
+            <p>Claude Code 超过 50% 的 LLM 调用是发给 claude-3-5-haiku（小模型）的。</p>
+            <p>这不是省钱——<strong>这是产品设计</strong>。用小模型处理简单任务的好处是：响应快、成本低、大模型只处理真正需要它的复杂问题。</p>
+
+            <h3>3. 放弃 RAG：让 AI 像人一样搜索</h3>
+            <p>Claude Code 抛弃了 RAG。它搜索代码库的方式和你自己一样，使用非常复杂的 ripgrep、jq 和 find 命令。</p>
+            <p>RAG 听起来高大上，但它有几个致命问题：向量化需要时间、切片方式影响搜索质量、增加故障点。</p>
+
+            <h3>4. 待办事项列表：解决长时运行的核心痛点</h3>
+            <p>上下文退化是长时运行的 LLM 智能体中的一个常见问题。</p>
+            <p>Claude Code 让模型自己维护一个 todo list：任务分解、进度追踪、动态调整。</p>
+
+            <h3>5. MCP 协议：不是炫技，是解决实际问题</h3>
+            <p>MCP（Model Context Protocol）的本质很简单：<strong>让 AI 自己去找最新的规范，而不是把所有东西都塞进上下文窗口</strong>。</p>
+
+            <h2>国内开发者怎么用？</h2>
+            <h3>方案一：官方订阅</h3>
+            <p>最简单，但需要魔法上网。Claude Code 本身免费，Claude API 按量计费。</p>
+
+            <h3>方案二：国内模型平替</h3>
+            <p>现在 DeepSeek V3、Qwen2.5、Kimi K2 都支持 Claude Code 风格的调用。但实话实说，<strong>产品设计的差距，不是换个模型就能填平的</strong>。</p>
+
+            <h3>方案三：QClaw（推荐）</h3>
+            <p>如果你在国内，QClaw 已经接入了 Claude Code 的核心体验：渐进式授权、子代理并行、待办事项管理。关键是：<strong>不需要翻墙，开箱即用</strong>。</p>
+
+            <h2>写在最后</h2>
+            <p>看完 Claude Code 的设计，我发现一个规律：</p>
+            <p><strong>优秀的 AI 产品，不是让模型做更多的事，而是让模型做它擅长的事，然后把不擅长的交给合适的工具。</strong></p>
+            <p>模型会越来越强，这是确定的。但产品思维的差距，才是真正的护城河。</p>
+        </article>
+        
+        <hr>
+        <p><em>本文为 AI 工具类文章，版权所有，转载需注明出处。</em></p>
+        
+        <script src="https://giscus.app/client.js"
+                data-repo="ohalo/ohalo.github.io"
+                data-repo-id="R_kgDOHzqEKg"
+                data-category="Announcements"
+                data-category-id="DIC_kwDOHzqEKs4CR-F8"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="dark"
+                data-lang="zh-CN"
+                crossorigin="anonymous"
+                async>
+        </script>
+    </section>
+</div>
+</body>
+</html>
