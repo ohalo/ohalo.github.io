@@ -1,0 +1,263 @@
+---
+layout: post
+title: "飞牛NAS安装Bitmagnet教程：手把手教你搭建私有磁力搜索引擎"
+date: 2026-04-07
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [飞牛NAS, Bitmagnet, Docker, 教程]
+---
+
+<p>
+想在飞牛NAS上搭建自己的磁力搜索引擎？这篇教程手把手教你，从零到完成不超过15分钟。
+</p>
+
+<h2>一、Bitmagnet是什么？</h2>
+
+<p>简单说：<strong>一个能自动爬取全球种子资源的搜索引擎。</strong></p>
+
+<p>它通过DHT网络24/7不间断爬取，你不需要去各种种子网站找资源——资源会自动"送上门"。</p>
+
+<p>核心功能：</p>
+<ul>
+<li>✅ <strong>DHT爬虫</strong>：主动爬取全网种子信息</li>
+<li>✅ <strong>智能分类</strong>：自动识别电影、电视剧、音乐、软件</li>
+<li>✅ <strong>Web界面</strong>：浏览器直接搜索</li>
+<li>✅ <strong>套件集成</strong>：支持Sonarr、Radarr等媒体库</li>
+</ul>
+
+<h2>二、前置条件</h2>
+
+<table>
+<tr><th>项目</th><th>要求</th></tr>
+<tr><td>飞牛NAS系统</td><td>fnOS 1.0+</td></tr>
+<tr><td>Docker</td><td>已启用</td></tr>
+<tr><td>存储空间</td><td>至少50GB（数据会持续增长）</td></tr>
+<tr><td>网络</td><td>稳定连接（DHT爬虫需要）</td></tr>
+</table>
+
+<h2>三、部署步骤</h2>
+
+<h3>Step 1：创建文件夹</h3>
+
+<p>在飞牛NAS的<strong>文件管理</strong>中，进入 <code>/docker</code> 目录，创建 <code>bitmagnet</code> 文件夹。</p>
+
+<p>路径：<code>/vol1/docker/bitmagnet</code>（根据你的实际卷号调整）</p>
+
+<h3>Step 2：打开Docker Compose</h3>
+
+<p>飞牛NAS已内置Docker Compose功能：</p>
+
+<ol>
+<li>打开<strong>应用中心</strong> → <strong>Docker</strong></li>
+<li>点击<strong>Compose</strong> → <strong>新建项目</strong></li>
+<li>项目名称填写：<code>bitmagnet</code></li>
+</ol>
+
+<h3>Step 3：粘贴配置文件</h3>
+
+<p>将以下配置粘贴到编辑框中：</p>
+
+<pre><code>version: '3.8'
+
+services:
+  bitmagnet:
+    image: ghcr.io/bitmagnet-io/bitmagnet:latest
+    container_name: bitmagnet
+    ports:
+      - "3333:3333"
+      - "3334:3334/tcp"
+      - "3334:3334/udp"
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    command:
+      - worker
+      - run
+      - --keys=http_server
+      - --keys=queue_server
+      - --keys=dht_crawler
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: bitmagnet-postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bitmagnet
+      POSTGRES_USER: postgres
+    shm_size: 1g
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+</code></pre>
+
+<p><strong>配置说明：</strong></p>
+<ul>
+<li><code>3333端口</code>：Web界面和API</li>
+<li><code>3334端口</code>：BitTorrent协议通信</li>
+<li><code>dht_crawler</code>：DHT爬虫（核心功能，不要删除）</li>
+</ul>
+
+<h3>Step 4：启动容器</h3>
+
+<p>点击<strong>创建</strong>，等待镜像下载和容器启动。</p>
+
+<p>首次启动需要拉取两个镜像：</p>
+<ul>
+<li><code>bitmagnet</code>：主程序</li>
+<li><code>postgres:16-alpine</code>：数据库</li>
+</ul>
+
+<p>下载时间取决于网络速度，通常3-5分钟。</p>
+
+<h3>Step 5：验证运行状态</h3>
+
+<p>容器启动后，在Docker容器列表中检查：</p>
+
+<ul>
+<li><code>bitmagnet</code> 状态应为 <strong>运行中</strong></li>
+<li><code>bitmagnet-postgres</code> 状态应为 <strong>运行中</strong></li>
+</ul>
+
+<p>打开浏览器访问：<code>http://你的NAS_IP:3333</code></p>
+
+<p>如果看到Bitmagnet的搜索界面，说明部署成功！</p>
+
+<h2>四、首次运行注意事项</h2>
+
+<h3>1. 数据库初始化</h3>
+
+<p>首次启动时，PostgreSQL需要初始化数据库，大约需要20-30秒。</p>
+
+<p>如果bitmagnet容器反复重启，检查postgres容器是否正常运行。</p>
+
+<h3>2. DHT爬虫启动</h3>
+
+<p>进入Web界面后，点击右上角的<strong>三角形图标</strong>查看服务状态：</p>
+
+<ul>
+<li>✅ <code>http_server</code>：Web服务</li>
+<li>✅ <code>queue_server</code>：任务队列</li>
+<li>✅ <code>dht_crawler</code>：DHT爬虫</li>
+</ul>
+
+<p>如果<code>dht_crawler</code>显示关闭状态，重启一下容器即可。</p>
+
+<h3>3. 数据开始爬取</h3>
+
+<p>DHT爬虫启动后，大约<strong>1-2分钟</strong>就能看到第一批种子出现在数据库中。</p>
+
+<p>建议保持容器<strong>长期运行</strong>，运行时间越长，积累的种子越多。</p>
+
+<h2>五、常见问题</h2>
+
+<h3>Q1：容器启动后Web界面打不开？</h3>
+
+<p><strong>可能原因：</strong></p>
+<ul>
+<li>端口被占用：检查3333端口是否被其他服务使用</li>
+<li>防火墙：确保飞牛NAS防火墙放行了3333端口</li>
+</ul>
+
+<h3>Q2：PostgreSQL健康检查失败？</h3>
+
+<p><strong>解决方案：</strong></p>
+<ul>
+<li>检查<code>./data</code>目录是否有写入权限</li>
+<li>尝试删除<code>./data</code>目录后重新创建容器</li>
+</ul>
+
+<h3>Q3：搜索结果为空？</h3>
+
+<p><strong>原因：</strong>DHT爬虫刚启动，需要时间积累数据。</p>
+
+<p><strong>解决：</strong>耐心等待，通常运行24小时后就能搜到大量资源。</p>
+
+<h3>Q4：如何备份数据？</h3>
+
+<p>只需备份<code>./data</code>目录即可，这是PostgreSQL的数据目录。</p>
+
+<h2>六、与媒体库集成</h2>
+
+<p>Bitmagnet支持<strong>Torznab协议</strong>，可以与Prowlarr、Sonarr、Radarr等套件集成。</p>
+
+<h3>添加到Prowlarr</h3>
+
+<ol>
+<li>打开Prowlarr → <strong>Indexers</strong> → <strong>Add Indexer</strong></li>
+<li>搜索 <code>generic torznab</code></li>
+<li>URL填写：<code>http://NAS_IP:3333/torznab</code></li>
+<li>点击<strong>Test</strong>测试连接</li>
+<li>显示绿色✓后，点击<strong>Save</strong></li>
+</ol>
+
+<p>完成后，Sonarr/Radarr就能自动从Bitmagnet搜索资源了。</p>
+
+<h2>七、进阶配置（可选）</h2>
+
+<h3>1. TMDB刮削</h3>
+
+<p>如果想让Bitmagnet自动识别电影/电视剧信息，可以配置TMDB API Key：</p>
+
+<ol>
+<li>注册 <a href="https://www.themoviedb.org/">The Movie Database</a> 账号</li>
+<li>在设置中获取API Key</li>
+<li>在docker-compose中添加：<code>TMDB_API_KEY: 你的key</code></li>
+</ol>
+
+<h3>2. 性能优化</h3>
+
+<ul>
+<li>使用SSD存储数据库，查询更快</li>
+<li>调整<code>shm_size</code>值（默认1g，可增加到2g）</li>
+<li>定期清理无用的种子记录</li>
+</ul>
+
+<h2>八、安全提醒</h2>
+
+<ul>
+<li>⚠️ Bitmagnet会主动参与DHT网络，建议配置防火墙规则</li>
+<li>⚠️ 考虑使用VPN增加匿名性</li>
+<li>⚠️ 请遵守版权法规，合理使用</li>
+</ul>
+
+<hr>
+
+<h2>一句话总结</h2>
+
+<blockquote>
+<strong>飞牛NAS + Bitmagnet = 15分钟搭建私有磁力搜索引擎，资源自动送上门。</strong>
+</blockquote>
+
+<p>有问题评论区聊 👇</p>
+
+<hr>
+
+<p><em>数据来源：飞牛NAS论坛、Bitmagnet官方文档、GitHub</em></p>
+
+<!-- giscus 评论 -->
+<script src="https://giscus.app/client.js"
+        data-repo="ohalo/ohalo.github.io"
+        data-repo-id="R_kgDOM9tYvQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
