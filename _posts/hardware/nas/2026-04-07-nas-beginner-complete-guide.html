@@ -1,0 +1,358 @@
+---
+layout: post
+title: NAS新手入门完整指南：从选购到使用的保姆级教程
+date: 2026-04-07
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 新手入门, 选购指南, 使用教程, 完整攻略]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS新手入门完整指南：从选购到使用的保姆级教程 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS新手入门完整指南：从选购到使用的保姆级教程</h1>
+    <div class="meta">2026-04-07 · 数码硬件/NAS存储 · 🔖 NAS, 新手入门, 选购指南, 使用教程, 完整攻略</div>
+
+    <p>想买NAS但不知道从哪开始？看这篇就够了。</p>
+
+    <p>从选购到使用，从避坑到进阶，一站式解决所有疑问。</p>
+
+    <h2>一、NAS是什么？</h2>
+
+    <p><strong>NAS（Network Attached Storage）</strong>：网络附属存储，就是一台24小时开机的"小电脑"，专门用来存数据。</p>
+
+    <p><strong>能干什么</strong>：</p>
+    <ul>
+        <li>存储照片、视频、文档</li>
+        <li>自动备份手机、电脑</li>
+        <li>搭建影音中心（看电影）</li>
+        <li>远程访问（在外地看家里文件）</li>
+        <li>下载资源（PT/BT挂机）</li>
+        <li>Docker容器（各种高级玩法）</li>
+    </ul>
+
+    <h2>二、第一步：选购NAS</h2>
+
+    <h3>1. 确定需求</h3>
+
+    <p>问自己三个问题：</p>
+    <ul>
+        <li><strong>存多少？</strong> → 决定盘位数量</li>
+        <li><strong>干什么？</strong> → 决定性能要求</li>
+        <li><strong>预算多少？</strong> → 决定品牌型号</li>
+    </ul>
+
+    <h3>2. 盘位选择</h3>
+
+    <table>
+        <tr>
+            <th>盘位</th>
+            <th>容量</th>
+            <th>适合人群</th>
+        </tr>
+        <tr>
+            <td>2盘位</td>
+            <td>最大32TB</td>
+            <td>入门用户、空间有限</td>
+        </tr>
+        <tr>
+            <td>4盘位</td>
+            <td>最大64TB</td>
+            <td>家庭首选、可组RAID5</td>
+        </tr>
+        <tr>
+            <td>6盘位+</td>
+            <td>96TB+</td>
+            <td>专业用户、工作室</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>💡 建议</strong>：家庭用户首选4盘位，既能组RAID保护数据，又有足够扩展空间。
+    </div>
+
+    <h3>3. 处理器架构</h3>
+
+    <table>
+        <tr>
+            <th>架构</th>
+            <th>特点</th>
+            <th>适合场景</th>
+        </tr>
+        <tr>
+            <td>ARM</td>
+            <td>低功耗、价格低</td>
+            <td>简单存储、备份</td>
+        </tr>
+        <tr>
+            <td>x86（Intel N100等）</td>
+            <td>性能强、可扩展</td>
+            <td>Docker、虚拟机、影音</td>
+        </tr>
+    </table>
+
+    <h3>4. 品牌选择</h3>
+
+    <table>
+        <tr>
+            <th>品牌</th>
+            <th>特点</th>
+            <th>适合人群</th>
+        </tr>
+        <tr>
+            <td>群晖</td>
+            <td>系统稳定、生态强</td>
+            <td>预算充足、追求稳定</td>
+        </tr>
+        <tr>
+            <td>威联通</td>
+            <td>性价比高、硬件强</td>
+            <td>喜欢折腾、技术用户</td>
+        </tr>
+        <tr>
+            <td>绿联</td>
+            <td>便宜、易用</td>
+            <td>新手入门、预算有限</td>
+        </tr>
+        <tr>
+            <td>极空间</td>
+            <td>零配置、简单</td>
+            <td>小白用户、怕麻烦</td>
+        </tr>
+    </table>
+
+    <h3>5. 推荐型号</h3>
+
+    <table>
+        <tr>
+            <th>预算</th>
+            <th>推荐型号</th>
+        </tr>
+        <tr>
+            <td>1500元以下</td>
+            <td>绿联DH2100+、极空间Z2Pro</td>
+        </tr>
+        <tr>
+            <td>1500-3000元</td>
+            <td>绿联DXP4800、威联通TS-464C</td>
+        </tr>
+        <tr>
+            <td>3000-5000元</td>
+            <td>群晖DS923+</td>
+        </tr>
+    </table>
+
+    <h2>三、第二步：购买配件</h2>
+
+    <h3>1. 硬盘</h3>
+
+    <ul>
+        <li><strong>推荐</strong>：希捷酷狼、西数红盘（CMR垂直式）</li>
+        <li><strong>避坑</strong>：SMR叠瓦盘、普通台式机硬盘</li>
+        <li><strong>容量</strong>：按需选择，建议4TB起步</li>
+    </ul>
+
+    <h3>2. 网线</h3>
+
+    <ul>
+        <li><strong>推荐</strong>：Cat6六类网线</li>
+        <li><strong>长度</strong>：根据实际距离，不要太长</li>
+    </ul>
+
+    <h3>3. UPS（推荐）</h3>
+
+    <ul>
+        <li><strong>作用</strong>：断电保护，自动关机</li>
+        <li><strong>推荐</strong>：APC BK650M2-CH（约500元）</li>
+    </ul>
+
+    <h2>四、第三步：安装设置</h2>
+
+    <h3>步骤1：硬件安装</h3>
+
+    <ol>
+        <li>安装硬盘到NAS</li>
+        <li>连接网线到路由器</li>
+        <li>连接电源，开机</li>
+        <li>等待启动（约3-5分钟）</li>
+    </ol>
+
+    <h3>步骤2：初始化系统</h3>
+
+    <ol>
+        <li>电脑浏览器访问NAS IP地址</li>
+        <li>按提示安装系统</li>
+        <li>设置管理员账号密码</li>
+        <li>创建存储池和RAID</li>
+    </ol>
+
+    <h3>步骤3：基础配置</h3>
+
+    <ol>
+        <li>创建共享文件夹（照片、视频、文档）</li>
+        <li>创建用户账号（家人分开）</li>
+        <li>设置权限（谁能访问什么）</li>
+        <li>开启远程访问</li>
+    </ol>
+
+    <h2>五、第四步：常用功能设置</h2>
+
+    <h3>1. 手机照片自动备份</h3>
+
+    <ul>
+        <li>群晖：Synology Photos</li>
+        <li>威联通：QuMagie</li>
+        <li>绿联：绿联云App</li>
+        <li>通用：Immich、MT-Photos</li>
+    </ul>
+
+    <h3>2. 影音中心搭建</h3>
+
+    <ul>
+        <li>免费：Jellyfin</li>
+        <li>付费：Plex、Emby</li>
+    </ul>
+
+    <h3>3. 下载工具</h3>
+
+    <ul>
+        <li>PT抢种：qBittorrent</li>
+        <li>保种：Transmission</li>
+    </ul>
+
+    <h3>4. 远程访问</h3>
+
+    <ul>
+        <li>简单：品牌自带服务（群晖QuickConnect、绿联云）</li>
+        <li>进阶：DDNS + 端口转发</li>
+        <li>安全：Tailscale、ZeroTier</li>
+    </ul>
+
+    <h2>六、新手常见误区</h2>
+
+    <h3>❌ 误区1：RAID是备份</h3>
+    <p>正确：RAID是容错，不是备份。重要数据要异地备份。</p>
+
+    <h3>❌ 误区2：不配UPS</h3>
+    <p>正确：UPS是必备配件，一次断电可能损失所有数据。</p>
+
+    <h3>❌ 误区3：买最便宜的硬盘</h3>
+    <p>正确：硬盘是数据载体，省钱就是拿数据冒险。</p>
+
+    <h3>❌ 误区4：忽视散热</h3>
+    <p>正确：硬盘怕热，温度超过50°C会缩短寿命。</p>
+
+    <h3>❌ 误区5：不更新系统</h3>
+    <p>正确：系统更新修复安全漏洞，保持更新。</p>
+
+    <h2>七、进阶玩法</h2>
+
+    <p>玩熟了可以尝试：</p>
+
+    <ul>
+        <li><strong>Docker容器</strong>：安装各种应用（HomeAssistant、Bitwarden等）</li>
+        <li><strong>虚拟机</strong>：在NAS上跑Windows、Linux</li>
+        <li><strong>自动化</strong>：配合nastool自动追剧</li>
+        <li><strong>智能家居</strong>：Home Assistant中控</li>
+    </ul>
+
+    <h2>八、维护建议</h2>
+
+    <ul>
+        <li><strong>每月</strong>：检查硬盘健康状态</li>
+        <li><strong>每季度</strong>：测试UPS断电保护</li>
+        <li><strong>每年</strong>：检查RAID状态、清理灰尘</li>
+        <li><strong>定期</strong>：更新系统和应用</li>
+        <li><strong>重要</strong>：重要数据异地备份</li>
+    </ul>
+
+    <h2>九、总结清单</h2>
+
+    <table>
+        <tr>
+            <th>阶段</th>
+            <th>任务</th>
+        </tr>
+        <tr>
+            <td>选购</td>
+            <td>确定需求→选品牌→选型号</td>
+        </tr>
+        <tr>
+            <td>配件</td>
+            <td>硬盘+网线+UPS</td>
+        </tr>
+        <tr>
+            <td>安装</td>
+            <td>装硬盘→连网络→初始化系统</td>
+        </tr>
+        <tr>
+            <td>配置</td>
+            <td>创建文件夹→设置权限→开启远程</td>
+        </tr>
+        <tr>
+            <td>使用</td>
+            <td>照片备份→影音中心→下载</td>
+        </tr>
+        <tr>
+            <td>维护</td>
+            <td>检查硬盘→测试UPS→更新系统</td>
+        </tr>
+    </table>
+
+    <blockquote>
+        NAS入门不难，关键是先明确需求，再按需选择。不要追求一步到位，先用起来，慢慢探索。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：什么值得买、腾讯网、CNPP、知乎专栏</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
