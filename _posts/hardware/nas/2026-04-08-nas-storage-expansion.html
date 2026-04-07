@@ -1,0 +1,451 @@
+---
+layout: post
+title: NAS扩容指南：加硬盘、换大硬盘、扩展柜怎么选？
+date: 2026-04-08
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 扩容, 硬盘, RAID, 存储池]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS扩容指南：加硬盘、换大硬盘、扩展柜怎么选？ - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS扩容指南：加硬盘、换大硬盘、扩展柜怎么选？</h1>
+    <div class="meta">2026-04-08 · 数码硬件/NAS存储 · 🔖 NAS, 扩容, 硬盘, RAID, 存储池</div>
+
+    <p>NAS用着用着，空间不够了怎么办？</p>
+
+    <p>这是每个NAS用户都会遇到的问题。本文详细讲解三种扩容方案，帮你选择最适合的方式。</p>
+
+    <h2>一、扩容前的准备</h2>
+
+    <h3>1. 确认当前状态</h3>
+
+    <p>扩容前，先搞清楚：</p>
+    <ul>
+        <li>NAS型号和盘位数量</li>
+        <li>当前硬盘数量和容量</li>
+        <li>RAID类型（RAID 1/5/6/SHR等）</li>
+        <li>存储池状态（是否健康）</li>
+        <li>是否还有空余盘位</li>
+    </ul>
+
+    <h3>2. 确认扩容方案</h3>
+
+    <table>
+        <tr>
+            <th>情况</th>
+            <th>推荐方案</th>
+        </tr>
+        <tr>
+            <td>有空余盘位</td>
+            <td>添加硬盘扩容</td>
+        </tr>
+        <tr>
+            <td>盘位已满</td>
+            <td>更换更大容量硬盘</td>
+        </tr>
+        <tr>
+            <td>NAS支持扩展柜</td>
+            <td>添加扩展柜</td>
+        </tr>
+        <tr>
+            <td>单盘位NAS</td>
+            <td>更换大硬盘（需备份）</td>
+        </tr>
+    </table>
+
+    <div class="warning">
+        <strong>⚠️ 重要</strong>：扩容前务必备份重要数据！虽然扩容通常安全，但意外总是可能发生。
+    </div>
+
+    <h2>二、方案一：添加硬盘扩容</h2>
+
+    <h3>适用条件</h3>
+
+    <ul>
+        <li>NAS有空余硬盘位</li>
+        <li>存储池RAID类型支持扩容</li>
+    </ul>
+
+    <h3>支持的RAID类型</h3>
+
+    <table>
+        <tr>
+            <th>RAID类型</th>
+            <th>是否支持添加硬盘扩容</th>
+        </tr>
+        <tr>
+            <td>JBOD</td>
+            <td>✅ 支持</td>
+        </tr>
+        <tr>
+            <td>RAID 5</td>
+            <td>✅ 支持</td>
+        </tr>
+        <tr>
+            <td>RAID 6</td>
+            <td>✅ 支持</td>
+        </tr>
+        <tr>
+            <td>SHR（群晖）</td>
+            <td>✅ 支持</td>
+        </tr>
+        <tr>
+            <td>RAID 1</td>
+            <td>⚠️ 只能增加镜像，不增加容量</td>
+        </tr>
+        <tr>
+            <td>RAID 0</td>
+            <td>❌ 不支持</td>
+        </tr>
+    </table>
+
+    <h3>硬盘要求</h3>
+
+    <ul>
+        <li><strong>硬盘状态</strong>：必须是"良好"状态的新硬盘或已擦除的硬盘</li>
+        <li><strong>硬盘类型</strong>：与现有硬盘类型相同（都是HDD或都是SSD）</li>
+        <li><strong>硬盘容量</strong>：建议≥存储池中最大硬盘容量</li>
+    </ul>
+
+    <h3>操作步骤（群晖DSM）</h3>
+
+    <ol>
+        <li>关闭NAS（不支持热插拔的型号）或直接插入硬盘（支持热插拔）</li>
+        <li>进入【存储管理器】→【存储池】</li>
+        <li>点击要扩容的存储池右上角"..."→【添加硬盘】</li>
+        <li>选择新硬盘，按向导完成操作</li>
+        <li>等待数据一致性检查完成（可能需要数小时到数天）</li>
+    </ol>
+
+    <h3>操作步骤（威联通QTS）</h3>
+
+    <ol>
+        <li>插入新硬盘</li>
+        <li>进入【存储与快照总管】→【存储/快照】</li>
+        <li>点击【管理】→【扩充存储池】</li>
+        <li>选择"创建并加入新的RAID组"或"加入现有RAID组"</li>
+        <li>按向导完成操作</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 提示</strong>：扩容过程中可以正常使用NAS，但性能会有所下降。建议在夜间进行。
+    </div>
+
+    <h2>三、方案二：更换更大容量硬盘</h2>
+
+    <h3>适用条件</h3>
+
+    <ul>
+        <li>NAS盘位已满</li>
+        <li>存储池RAID类型支持更换硬盘扩容</li>
+    </ul>
+
+    <h3>支持的RAID类型</h3>
+
+    <table>
+        <tr>
+            <th>RAID类型</th>
+            <th>是否支持换盘扩容</th>
+        </tr>
+        <tr>
+            <td>RAID 1</td>
+            <td>✅ 支持</td>
+        </tr>
+        <tr>
+            <td>RAID 5</td>
+            <td>✅ 支持</td>
+        </tr>
+        <tr>
+            <td>RAID 6</td>
+            <td>✅ 支持</td>
+        </tr>
+        <tr>
+            <td>SHR（群晖）</td>
+            <td>✅ 支持</td>
+        </tr>
+        <tr>
+            <td>RAID 0</td>
+            <td>❌ 不支持</td>
+        </tr>
+    </ul>
+
+    <h3>扩容原理</h3>
+
+    <p>逐块更换硬盘为更大容量的硬盘，当所有硬盘都更换完成后，存储池自动扩容。</p>
+
+    <h3>操作步骤</h3>
+
+    <ol>
+        <li>记录存储池中容量最小的硬盘编号</li>
+        <li>关闭NAS（不支持热插拔）或直接拔出硬盘（支持热插拔）</li>
+        <li>移除容量最小的硬盘，插入新的大容量硬盘</li>
+        <li>启动NAS，进入存储管理器</li>
+        <li>存储池状态显示"降级"，选择【修复】</li>
+        <li>选择新硬盘进行修复，等待数据重建完成</li>
+        <li>重复以上步骤，直到所有硬盘都更换完成</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：每次只能更换一块硬盘，必须等数据重建完成后才能更换下一块。4盘RAID 5更换4块硬盘可能需要一周以上。
+    </div>
+
+    <h3>扩容时间估算</h3>
+
+    <table>
+        <tr>
+            <th>RAID类型</th>
+            <th>硬盘数量</th>
+            <th>单盘重建时间</th>
+            <th>总耗时</th>
+        </tr>
+        <tr>
+            <td>RAID 1</td>
+            <td>2块</td>
+            <td>6-12小时</td>
+            <td>1天左右</td>
+        </tr>
+        <tr>
+            <td>RAID 5</td>
+            <td>4块</td>
+            <td>12-24小时</td>
+            <td>4-7天</td>
+        </tr>
+        <tr>
+            <td>RAID 6</td>
+            <td>6块</td>
+            <td>18-36小时</td>
+            <td>7-14天</td>
+        </tr>
+    </table>
+
+    <h2>四、方案三：添加扩展柜</h2>
+
+    <h3>适用条件</h3>
+
+    <ul>
+        <li>NAS型号支持扩展柜</li>
+        <li>需要大幅增加存储空间</li>
+        <li>不想动现有硬盘</li>
+    </ul>
+
+    <h3>群晖扩展柜型号</h3>
+
+    <table>
+        <tr>
+            <th>扩展柜型号</th>
+            <th>盘位</th>
+            <th>兼容NAS型号</th>
+        </tr>
+        <tr>
+            <td>DX517</td>
+            <td>5盘位</td>
+            <td>DS923+、DS1522+等</td>
+        </tr>
+        <tr>
+            <td>DX525</td>
+            <td>5盘位</td>
+            <td>DS725+、DS925+等</td>
+        </tr>
+        <tr>
+            <td>RX418</td>
+            <td>4盘位</td>
+            <td>DS1819+、DS2419+等</td>
+        </tr>
+    </table>
+
+    <h3>威联通扩展柜型号</h3>
+
+    <table>
+        <tr>
+            <th>扩展柜型号</th>
+            <th>盘位</th>
+            <th>兼容NAS型号</th>
+        </tr>
+        <tr>
+            <td>TR-004</td>
+            <td>4盘位</td>
+            <td>多数x86 NAS</td>
+        </tr>
+        <tr>
+            <td>TR-002</td>
+            <td>2盘位</td>
+            <td>多数x86 NAS</td>
+        </tr>
+        <tr>
+            <td>TL-R800S</td>
+            <td>8盘位</td>
+            <td>企业级NAS</td>
+        </tr>
+    </table>
+
+    <h3>操作步骤</h3>
+
+    <ol>
+        <li>关闭NAS和扩展柜电源</li>
+        <li>用eSATA或USB线连接NAS和扩展柜</li>
+        <li>打开扩展柜电源，再打开NAS电源</li>
+        <li>进入存储管理器，识别扩展柜硬盘</li>
+        <li>创建新存储池或扩展现有存储池</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 建议</strong>：扩展柜适合需要大量存储空间的场景，但价格较高。如果只是小幅扩容，添加硬盘更划算。
+    </div>
+
+    <h2>五、单盘位NAS扩容</h2>
+
+    <p>单盘位NAS没有RAID保护，扩容需要完全备份数据：</p>
+
+    <ol>
+        <li>准备一块移动硬盘（容量≥NAS数据量）</li>
+        <li>使用Hyper Backup备份所有数据到移动硬盘</li>
+        <li>关闭NAS，更换大容量硬盘</li>
+        <li>重新安装DSM系统</li>
+        <li>使用Hyper Backup恢复数据</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ 风险提示</strong>：单盘位NAS扩容风险最大，务必做好备份。
+    </div>
+
+    <h2>六、扩容方案对比</h2>
+
+    <table>
+        <tr>
+            <th>方案</th>
+            <th>优点</th>
+            <th>缺点</th>
+            <th>适合场景</th>
+        </tr>
+        <tr>
+            <td>添加硬盘</td>
+            <td>简单快速、数据安全</td>
+            <td>需要空余盘位</td>
+            <td>有空位的NAS</td>
+        </tr>
+        <tr>
+            <td>更换硬盘</td>
+            <td>无需空位、可大幅扩容</td>
+            <td>耗时长、有风险</td>
+            <td>盘位已满</td>
+        </tr>
+        <tr>
+            <td>扩展柜</td>
+            <td>扩容幅度大、不动现有盘</td>
+            <td>价格高、占空间</td>
+            <td>企业/重度用户</td>
+        </tr>
+    </table>
+
+    <h2>七、扩容注意事项</h2>
+
+    <h3>数据安全</h3>
+
+    <ul>
+        <li>扩容前备份重要数据</li>
+        <li>确保存储池状态健康</li>
+        <li>避免在扩容过程中断电</li>
+        <li>扩容期间不要进行大量读写</li>
+    </ul>
+
+    <h3>硬盘选择</h3>
+
+    <ul>
+        <li>尽量使用相同品牌型号的硬盘</li>
+        <li>新硬盘容量应≥现有最大硬盘</li>
+        <li>新硬盘建议先做SMART检测</li>
+        <li>新旧硬盘混用性能会降低</li>
+    </ul>
+
+    <h3>时间规划</h3>
+
+    <ul>
+        <li>添加硬盘：数小时到数天</li>
+        <li>更换硬盘：数天到数周</li>
+        <li>建议在夜间或周末进行</li>
+        <li>预留充足时间，不要中断</li>
+    </ul>
+
+    <h2>八、常见问题解答</h2>
+
+    <p><strong>Q：扩容会影响现有数据吗？</strong></p>
+    <p>A：正常情况下不会，但扩容前备份是必须的。</p>
+
+    <p><strong>Q：可以用不同品牌的硬盘混用吗？</strong></p>
+    <p>A：可以，但建议容量相同，性能会取最低值。</p>
+
+    <p><strong>Q：扩容时能继续使用NAS吗？</strong></p>
+    <p>A：可以，但性能会下降，建议减少读写操作。</p>
+
+    <p><strong>Q：SHR和RAID 5扩容有什么区别？</strong></p>
+    <p>A：SHR更灵活，可以用不同容量硬盘；RAID 5要求硬盘容量相同。</p>
+
+    <h2>总结</h2>
+
+    <p><strong>有空位</strong>→添加硬盘，简单快速。</p>
+
+    <p><strong>盘位满</strong>→换大硬盘，需要耐心。</p>
+
+    <p><strong>重度用户</strong>→扩展柜，一步到位。</p>
+
+    <p><strong>单盘位</strong>→先备份再换盘，风险最大。</p>
+
+    <blockquote>
+        扩容是NAS的必修课，选对方案，才能安全高效地增加存储空间。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：群晖官网、威联通官网、什么值得买、知乎</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
