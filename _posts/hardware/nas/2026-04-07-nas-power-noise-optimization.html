@@ -1,0 +1,324 @@
+---
+layout: post
+title: NAS功耗与静音优化：一年能省多少电费？
+date: 2026-04-07
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS功耗, 节能优化, 静音, 电费]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS功耗与静音优化：一年能省多少电费？ - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS功耗与静音优化：一年能省多少电费？</h1>
+    <div class="meta">2026-04-07 · 数码硬件/NAS存储 · 🔖 NAS功耗, 节能优化, 静音, 电费</div>
+
+    <p>很多人担心NAS 7×24小时开着太费电。真相是：家用NAS功耗其实很低，一年电费也就一两百块钱。</p>
+
+    <p>这篇文章详解NAS功耗构成、节能技巧和静音优化方案。</p>
+
+    <h2>一、NAS功耗构成</h2>
+
+    <h3>功耗来源</h3>
+    <table>
+        <tr>
+            <th>组件</th>
+            <th>功耗范围</th>
+            <th>占比</th>
+        </tr>
+        <tr>
+            <td>硬盘（每块）</td>
+            <td>5-10W</td>
+            <td>最大头</td>
+        </tr>
+        <tr>
+            <td>CPU</td>
+            <td>10-35W</td>
+            <td>中等</td>
+        </tr>
+        <tr>
+            <td>主板</td>
+            <td>3-5W</td>
+            <td>较小</td>
+        </tr>
+        <tr>
+            <td>内存</td>
+            <td>2-3W</td>
+            <td>较小</td>
+        </tr>
+        <tr>
+            <td>风扇</td>
+            <td>1-3W</td>
+            <td>最小</td>
+        </tr>
+        <tr>
+            <td>网卡</td>
+            <td>1-2W</td>
+            <td>最小</td>
+        </tr>
+    </table>
+
+    <h3>典型NAS功耗</h3>
+    <table>
+        <tr>
+            <th>配置</th>
+            <th>待机功耗</th>
+            <th>满载功耗</th>
+        </tr>
+        <tr>
+            <td>2盘位ARM（群晖DS220+）</td>
+            <td>15-20W</td>
+            <td>25-30W</td>
+        </tr>
+        <tr>
+            <td>4盘位Intel（群晖DS920+）</td>
+            <td>20-30W</td>
+            <td>40-50W</td>
+        </tr>
+        <tr>
+            <td>4盘位Intel（威联通TS-464C）</td>
+            <td>25-35W</td>
+            <td>45-55W</td>
+        </tr>
+        <tr>
+            <td>自建NAS（N5105+4盘）</td>
+            <td>25-35W</td>
+            <td>50-60W</td>
+        </tr>
+        <tr>
+            <td>自建NAS（R5-5600G+4盘）</td>
+            <td>40-50W</td>
+            <td>80-100W</td>
+        </tr>
+    </table>
+
+    <h2>二、一年电费计算</h2>
+
+    <p>以30W功耗为例：</p>
+    <pre><code>功耗：30W = 0.03kW
+每天耗电：0.03kW × 24h = 0.72度
+每月耗电：0.72 × 30 = 21.6度
+每年耗电：21.6 × 12 = 259.2度
+
+电费按0.5元/度计算：
+每年电费：259.2 × 0.5 = 129.6元</code></pre>
+
+    <p><strong>结论</strong>：家用NAS一年电费约100-200元，并不贵。</p>
+
+    <h2>三、节能优化技巧</h2>
+
+    <h3>1. 硬盘休眠</h3>
+    <p>最有效的节能方式。设置硬盘闲置20-30分钟后自动休眠，可降低功耗50%以上。</p>
+
+    <p><strong>设置方法</strong>：</p>
+    <ul>
+        <li>群晖：控制面板 → 硬盘休眠</li>
+        <li>威联通：控制台 → 系统设置 → 硬盘休眠</li>
+        <li>飞牛NAS：设置 → 电源管理</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：频繁读写会打断休眠，如果装了很多Docker容器，可能无法休眠。
+    </div>
+
+    <h3>2. 选择低功耗硬盘</h3>
+    <p>不同类型硬盘功耗差异很大：</p>
+
+    <table>
+        <tr>
+            <th>硬盘类型</th>
+            <th>功耗（工作时）</th>
+            <th>功耗（休眠）</th>
+        </tr>
+        <tr>
+            <td>3.5英寸企业盘</td>
+            <td>8-10W</td>
+            <td>0.5-1W</td>
+        </tr>
+        <tr>
+            <td>3.5英寸NAS盘</td>
+            <td>5-7W</td>
+            <td>0.5W</td>
+        </tr>
+        <tr>
+            <td>2.5英寸笔记本盘</td>
+            <td>2-3W</td>
+            <td>0.2W</td>
+        </tr>
+        <tr>
+            <td>SSD固态硬盘</td>
+            <td>2-3W</td>
+            <td>0.1W</td>
+        </tr>
+    </table>
+
+    <p>5400转硬盘比7200转省电约20%。</p>
+
+    <h3>3. 关闭不必要的服务</h3>
+    <p>每开启一个服务都会增加功耗和阻止休眠：</p>
+    <ul>
+        <li>不需要的Docker容器 → 关闭</li>
+        <li>不常用的索引服务 → 关闭</li>
+        <li>不必要的日志记录 → 减少</li>
+    </ul>
+
+    <h3>4. 使用SSD做缓存</h3>
+    <p>将常用数据缓存到SSD，减少机械硬盘读写次数，延长休眠时间。</p>
+
+    <h3>5. 调整风扇转速</h3>
+    <p>根据温度自动调节风扇转速，低温时降低转速，既省电又静音。</p>
+
+    <h3>6. 启用EEE节能以太网</h3>
+    <p>网卡空闲时进入低功耗模式，可节省约30%网络功耗。</p>
+
+    <h2>四、静音优化</h2>
+
+    <p>NAS噪音主要来源：硬盘转动声、风扇声、共振。</p>
+
+    <h3>1. 硬盘噪音</h3>
+    <ul>
+        <li>选择5400转硬盘，噪音更小</li>
+        <li>NAS专用盘（酷狼、红盘）有降噪优化</li>
+        <li>SSD完全静音</li>
+    </ul>
+
+    <h3>2. 风扇噪音</h3>
+    <ul>
+        <li>设置温控策略，低温时降低转速</li>
+        <li>更换静音风扇（如猫扇Noctua）</li>
+        <li>不要把NAS放在卧室</li>
+    </ul>
+
+    <h3>3. 共振噪音</h3>
+    <ul>
+        <li>硬盘架加装减震垫</li>
+        <li>不要把NAS直接放在桌面上</li>
+        <li>机箱底部垫隔音材料</li>
+    </ul>
+
+    <h3>4. 放置位置</h3>
+    <p>最重要的一点：<strong>不要放在卧室</strong>。</p>
+    <p>NAS放在客厅、书房，噪音就不是问题。</p>
+
+    <h2>五、节能效果对比</h2>
+
+    <table>
+        <tr>
+            <th>优化措施</th>
+            <th>节电效果</th>
+            <th>年省电费</th>
+        </tr>
+        <tr>
+            <td>硬盘休眠</td>
+            <td>40-60%</td>
+            <td>50-80元</td>
+        </tr>
+        <tr>
+            <td>选择5400转硬盘</td>
+            <td>15-20%</td>
+            <td>20-30元</td>
+        </tr>
+        <tr>
+            <td>关闭不必要服务</td>
+            <td>10-20%</td>
+            <td>15-30元</td>
+        </tr>
+        <tr>
+            <td>使用SSD缓存</td>
+            <td>10-15%</td>
+            <td>15-25元</td>
+        </tr>
+        <tr>
+            <td>风扇温控</td>
+            <td>5-10%</td>
+            <td>10-15元</td>
+        </tr>
+    </table>
+
+    <h2>六、常见问题</h2>
+
+    <h3>Q：硬盘休眠会影响寿命吗？</h3>
+    <p>不会。频繁启停确实有损耗，但每天几次休眠完全在正常范围内。</p>
+
+    <h3>Q：硬盘休眠后唤醒很慢？</h3>
+    <p>正常现象，唤醒需要10-30秒。如果频繁访问，建议延长休眠时间或关闭休眠。</p>
+
+    <h3>Q：NAS可以定时开关机吗？</h3>
+    <p>可以。如果只在工作时间使用，可以设置定时开关机。但会失去7×24小时的优势。</p>
+
+    <h3>Q：用UPS会增加电费吗？</h3>
+    <p>UPS自身功耗约5-10W，一年增加约20-40元电费。但保护数据安全，值得。</p>
+
+    <h2>总结</h2>
+
+    <p><strong>NAS电费并不贵</strong>：</p>
+    <ul>
+        <li>家用NAS一年电费约100-200元</li>
+        <li>开启硬盘休眠可省一半</li>
+        <li>综合优化后一年电费可控制在100元以内</li>
+    </ul>
+
+    <p><strong>静音建议</strong>：</p>
+    <ul>
+        <li>选择5400转硬盘或SSD</li>
+        <li>风扇设置温控策略</li>
+        <li>最重要：不要放在卧室</li>
+    </ul>
+
+    <blockquote>
+        NAS的功耗和噪音，远比你想象的低。省电不如省心，该开的服务开着，该休眠的休眠，合理平衡即可。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：什么值得买、知乎、CSDN博客、哔哩哔哩</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
