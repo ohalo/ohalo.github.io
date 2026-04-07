@@ -84,7 +84,7 @@ def extract_article(html_path):
     }
 
 def create_markdown(article, output_path):
-    """生成 Markdown 文件"""
+    """生成 HTML 文件（不是 .md，因为 GitHub Pages 不支持 kramdown HTML 渲染）"""
     # 转义标题中的引号
     title = article['title'].replace('"', '\\"')
     
@@ -116,8 +116,10 @@ def main():
     for cat in CATEGORY_MAP.keys():
         cat_dir = output_dir / cat
         cat_dir.mkdir(parents=True, exist_ok=True)
-        # 清理旧文件
+        # 清理旧文件（.md 和 .html）
         for f in cat_dir.glob("*.md"):
+            f.unlink()
+        for f in cat_dir.glob("*.html"):
             f.unlink()
     
     count = 0
@@ -130,8 +132,8 @@ def main():
         try:
             article = extract_article(html_file)
             
-            # 生成文件名
-            output_name = f"{article['date']}-{html_file.stem}.md"
+            # 生成文件名 - 使用 .html 扩展名
+            output_name = f"{article['date']}-{html_file.stem}.html"
             output_path = output_dir / article['category'] / output_name
             
             create_markdown(article, output_path)
