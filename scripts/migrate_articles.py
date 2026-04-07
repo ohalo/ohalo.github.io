@@ -40,6 +40,13 @@ def extract_article(html_path):
     # 使用文件修改时间作为日期
     date = get_file_date(html_path)
     
+    # 提取标签 - 格式: 🔖 标签1, 标签2, 标签3
+    tags = []
+    tags_match = re.search(r'🔖\s*([^<]+)</div>', content)
+    if tags_match:
+        tags_str = tags_match.group(1).strip()
+        tags = [t.strip() for t in tags_str.split(',') if t.strip()]
+    
     # 提取正文内容 - 找到第一个 <p> 或 <hr> 开始
     # 跳过 header/nav 部分
     body_start = content.find('<body')
@@ -80,6 +87,7 @@ def extract_article(html_path):
         'date': date,
         'category': category,
         'category_name': category_name,
+        'tags': tags,
         'content': body
     }
 
@@ -88,12 +96,18 @@ def create_markdown(article, output_path):
     # 转义标题中的引号
     title = article['title'].replace('"', '\\"')
     
+    # 构建标签 YAML
+    tags_yaml = ""
+    if article.get('tags'):
+        tags_str = ", ".join([f'"{t}"' for t in article['tags']])
+        tags_yaml = f"\ntags: [{tags_str}]"
+    
     front_matter = f"""---
 layout: post
 title: "{title}"
 date: {article['date']}
 category: {article['category']}
-category_name: "{article['category_name']}"
+category_name: "{article['category_name']}"{tags_yaml}
 ---
 
 """
