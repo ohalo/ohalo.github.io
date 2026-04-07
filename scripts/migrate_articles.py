@@ -40,6 +40,12 @@ def extract_article(html_path):
     # 使用文件修改时间作为日期
     date = get_file_date(html_path)
     
+    # 提取数据来源 - 格式: 数据来源：xxx
+    source = "原创"
+    source_match = re.search(r'<em>数据来源[：:]\s*([^<]+)</em>', content)
+    if source_match:
+        source = source_match.group(1).strip()
+    
     # 提取标签 - 格式: 🔖 标签1, 标签2, 标签3
     tags = []
     tags_match = re.search(r'🔖\s*([^<]+)</div>', content)
@@ -74,6 +80,8 @@ def extract_article(html_path):
     body = re.sub(r'<div class="nav">.*?</div>', '', body, flags=re.DOTALL)
     # 去掉 div class="meta" 部分（模板会自动加）
     body = re.sub(r'<div class="meta">.*?</div>', '', body, flags=re.DOTALL)
+    # 去掉数据来源行（模板会自动加）
+    body = re.sub(r'<p><em>数据来源[：:][^<]*</em></p>', '', body)
     # 去掉第一个 h1（模板会自动加）
     body = re.sub(r'<h1[^>]*>[^<]*</h1>', '', body, count=1)
     # 去掉多余的 div 包裹
@@ -88,6 +96,7 @@ def extract_article(html_path):
         'category': category,
         'category_name': category_name,
         'tags': tags,
+        'source': source,
         'content': body
     }
 
@@ -102,12 +111,18 @@ def create_markdown(article, output_path):
         tags_str = ", ".join([f'"{t}"' for t in article['tags']])
         tags_yaml = f"\ntags: [{tags_str}]"
     
+    # 构建来源 YAML
+    source_yaml = ""
+    if article.get('source') and article['source'] != "原创":
+        source_escaped = article['source'].replace('"', '\\"')
+        source_yaml = f'\nsource: "{source_escaped}"'
+    
     front_matter = f"""---
 layout: post
 title: "{title}"
 date: {article['date']}
 category: {article['category']}
-category_name: "{article['category_name']}"{tags_yaml}
+category_name: "{article['category_name']}"{tags_yaml}{source_yaml}
 ---
 
 """
