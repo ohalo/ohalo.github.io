@@ -32,3 +32,9 @@ exclude:
 
 # 文章永久链接
 permalink: /posts/:categories/:title.html
+
+# Markdown 配置 - 允许 HTML 渲染
+markdown: kramdown
+kramdown:
+  parse_block_html: true
+  parse_span_html: true

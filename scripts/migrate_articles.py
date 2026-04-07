@@ -65,6 +65,8 @@ def extract_article(html_path):
     body = re.sub(r'<nav>.*?</nav>', '', body, flags=re.DOTALL)
     # 去掉 div class="nav" 部分
     body = re.sub(r'<div class="nav">.*?</div>', '', body, flags=re.DOTALL)
+    # 去掉 div class="meta" 部分（模板会自动加）
+    body = re.sub(r'<div class="meta">.*?</div>', '', body, flags=re.DOTALL)
     # 去掉第一个 h1（模板会自动加）
     body = re.sub(r'<h1[^>]*>[^<]*</h1>', '', body, count=1)
     # 去掉多余的 div 包裹

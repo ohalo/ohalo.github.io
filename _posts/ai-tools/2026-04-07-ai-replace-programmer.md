@@ -10,7 +10,7 @@ category_name: "AI工具"
         
         
         
-        <div class="meta">2026-04-07 · AI工具 · 🔖 AI, 程序员, 替代, 软件工程, 职业发展</div>
+        
         
         <p>直接说结论：<strong>AI已经替代了70%的"写代码"动作，但只替代了20%的"软件开发"工作。</strong></p>
         

@@ -6,9 +6,7 @@ category: ai-tools
 category_name: "AI工具"
 ---
 
-<div class="meta">2026-04-07 · AI工具 · 🔖 Mem0, AI Agent, 记忆层, 向量数据库, OpenClaw</div>
-    
-    <p>昨天聊的项目，今天忘了。</p>
+<p>昨天聊的项目，今天忘了。</p>
     
     <p>上周提到的偏好，下周再问一遍。</p>
     

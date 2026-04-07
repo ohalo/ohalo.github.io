@@ -6,9 +6,7 @@ category: ai-tools
 category_name: "AI工具"
 ---
 
-<div class="meta">2026-04-07 · AI工具 · 🔖 Claude Code, CLAUDE.md, Auto Memory, 记忆机制</div>
-
-    <blockquote>看完这篇，你会彻底搞懂 Claude Code 的记忆分层，不再被"明明告诉过它"的问题困扰。</blockquote>
+<blockquote>看完这篇，你会彻底搞懂 Claude Code 的记忆分层，不再被"明明告诉过它"的问题困扰。</blockquote>
 
     <h2>先说痛点</h2>
     <p>用 Claude Code 的人大概都遇到过：</p>
