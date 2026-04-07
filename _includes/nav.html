@@ -1,0 +1,7 @@
+<!-- 公共导航 -->
+<div class="nav">
+    <a href="/">← 首页</a>
+    {% if page.category %}
+    <a href="/posts/{{ page.category }}/index.html">{{ page.category_name | default: page.category }}</a>
+    {% endif %}
+</div>
