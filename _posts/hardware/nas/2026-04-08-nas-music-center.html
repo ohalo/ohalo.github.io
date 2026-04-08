@@ -1,0 +1,555 @@
+---
+layout: post
+title: NAS音乐中心搭建指南：打造私人音乐流媒体服务
+date: 2026-04-08
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 音乐, 流媒体, Navidrome, Audio Station, 音乐服务器]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS音乐中心搭建指南：打造私人音乐流媒体服务 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS音乐中心搭建指南：打造私人音乐流媒体服务</h1>
+    <div class="meta">2026-04-08 · 数码硬件/NAS存储 · 🔖 NAS, 音乐, 流媒体, Navidrome, Audio Station, 音乐服务器</div>
+
+    <p>音乐APP会员到期、歌单变灰、喜欢的歌被下架...</p>
+
+    <p>与其依赖各种音乐平台，不如在NAS上搭建自己的音乐中心。本文教你如何把NAS变成私人音乐流媒体服务器。</p>
+
+    <h2>一、为什么要自建音乐中心</h2>
+
+    <h3>流媒体音乐的痛点</h3>
+
+    <ul>
+        <li>会员到期，下载的歌无法播放</li>
+        <li>版权到期，歌单里的歌突然变灰</li>
+        <li>音质压缩，无损音乐额外收费</li>
+        <li>广告干扰，体验越来越差</li>
+        <li>个性化推荐，越听越窄</li>
+    </ul>
+
+    <h3>NAS音乐中心的优势</h3>
+
+    <table>
+        <tr>
+            <th>优势</th>
+            <th>说明</th>
+        </tr>
+        <tr>
+            <td>永久拥有</td>
+            <td>音乐文件保存在本地，不用担心下架</td>
+        </tr>
+        <tr>
+            <td>无损音质</td>
+            <td>支持FLAC、WAV等无损格式</td>
+        </tr>
+        <tr>
+            <td>无广告</td>
+            <td>纯粹的听歌体验</td>
+        </tr>
+        <tr>
+            <td>多设备同步</td>
+            <td>手机、电脑、车机都能播放</td>
+        </tr>
+        <tr>
+            <td>智能管理</td>
+            <td>自动整理、歌词显示、封面匹配</td>
+        </tr>
+    </table>
+
+    <h2>二、主流方案对比</h2>
+
+    <table>
+        <tr>
+            <th>方案</th>
+            <th>适用NAS</th>
+            <th>优点</th>
+            <th>缺点</th>
+        </tr>
+        <tr>
+            <td>群晖 Audio Station</td>
+            <td>群晖</td>
+            <td>官方套件、简单易用</td>
+            <td>功能较简单、可能停止维护</td>
+        </tr>
+        <tr>
+            <td>Navidrome</td>
+            <td>全平台</td>
+            <td>开源免费、资源占用低、功能丰富</td>
+            <td>需Docker或第三方套件</td>
+        </tr>
+        <tr>
+            <td>Jellyfin</td>
+            <td>全平台</td>
+            <td>音视一体、界面美观</td>
+            <td>音乐功能不如专业音乐服务器</td>
+        </tr>
+        <tr>
+            <td>Airsonic</td>
+            <td>全平台</td>
+            <td>老牌方案、客户端丰富</td>
+            <td>界面较旧、更新慢</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>💡 推荐</strong>：群晖用户首选Audio Station（简单）或Navidrome（功能强）；其他NAS用户推荐Navidrome。
+    </div>
+
+    <h2>三、群晖Audio Station</h2>
+
+    <h3>安装Audio Station</h3>
+
+    <ol>
+        <li>打开【套件中心】</li>
+        <li>搜索【Audio Station】</li>
+        <li>点击【安装套件】</li>
+    </ol>
+
+    <h3>导入音乐</h3>
+
+    <ol>
+        <li>将音乐文件放入NAS的【music】共享文件夹</li>
+        <li>Audio Station会自动扫描并索引</li>
+        <li>支持格式：MP3、AAC、FLAC、WAV、OGG、WMA等</li>
+    </ol>
+
+    <h3>界面功能</h3>
+
+    <ul>
+        <li><strong>按文件夹浏览</strong>：保持原有文件夹结构</li>
+        <li><strong>按艺术家/专辑/流派</strong>：自动分类整理</li>
+        <li><strong>播放列表</strong>：创建自定义歌单</li>
+        <li><strong>广播</strong>：收听网络电台</li>
+    </ul>
+
+    <h3>显示封面和歌词</h3>
+
+    <p>Audio Station会自动从互联网获取封面和歌词，但也可以手动整理：</p>
+
+    <ul>
+        <li>封面图片命名为<code>cover.jpg</code>放在专辑文件夹</li>
+        <li>歌词文件命名为与歌曲同名，后缀<code>.lrc</code></li>
+    </ul>
+
+    <h3>手机APP</h3>
+
+    <ul>
+        <li>iOS：【DS audio】</li>
+        <li>Android：【DS audio】</li>
+        <li>支持下载到本地离线播放</li>
+    </ul>
+
+    <h3>车机支持</h3>
+
+    <ul>
+        <li>支持CarPlay</li>
+        <li>支持Android Auto</li>
+        <li>开车时也能听NAS里的歌</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：群晖官方已暗示Audio Station可能停止维护，建议新用户考虑Navidrome。
+    </div>
+
+    <h2>四、Navidrome（推荐）</h2>
+
+    <h3>什么是Navidrome</h3>
+
+    <p>Navidrome是一款开源的自托管音乐服务器，特点：</p>
+
+    <ul>
+        <li>资源占用极低（树莓派都能跑）</li>
+        <li>支持几乎所有音频格式</li>
+        <li>兼容Subsonic API（客户端丰富）</li>
+        <li>支持即时转码</li>
+        <li>支持Opus编码</li>
+        <li>多用户支持</li>
+        <li>中文界面</li>
+    </ul>
+
+    <h3>群晖安装Navidrome（套件方式）</h3>
+
+    <p><strong>步骤1：添加套件源</strong></p>
+
+    <ol>
+        <li>打开【套件中心】</li>
+        <li>点击【设置】→【套件来源】</li>
+        <li>点击【新增】</li>
+        <li>名称：矿神源</li>
+        <li>位置：<code>https://spk7.imnks.com/</code></li>
+        <li>点击确定</li>
+    </ol>
+
+    <p><strong>步骤2：安装Navidrome</strong></p>
+
+    <ol>
+        <li>在套件中心左侧选择【社群】</li>
+        <li>搜索【Navidrome】</li>
+        <li>点击【安装套件】</li>
+        <li>选择安装位置</li>
+    </ol>
+
+    <p><strong>步骤3：设置权限</strong></p>
+
+    <ol>
+        <li>打开【控制面板】→【共享文件夹】</li>
+        <li>选择存放音乐的文件夹</li>
+        <li>点击【编辑】→【权限】</li>
+        <li>选择【系统内部用户账号】</li>
+        <li>找到【sc-navidrome】</li>
+        <li>勾选【读取】权限</li>
+    </ol>
+
+    <p><strong>步骤4：配置Navidrome</strong></p>
+
+    <ol>
+        <li>安装完成后点击【打开】</li>
+        <li>设置管理员用户名和密码</li>
+        <li>进入设置界面，选择中文</li>
+        <li>设置音乐库路径（默认是/music）</li>
+    </ol>
+
+    <h3>Docker安装Navidrome（通用方式）</h3>
+
+    <p>适合所有支持Docker的NAS：</p>
+
+    <pre>docker run -d \
+  --name navidrome \
+  -p 4533:4533 \
+  -v /path/to/music:/music \
+  -v /path/to/data:/data \
+  --restart unless-stopped \
+  deluan/navidrome:latest</pre>
+
+    <p>参数说明：</p>
+
+    <ul>
+        <li><code>-p 4533:4533</code>：映射端口</li>
+        <li><code>-v /path/to/music:/music</code>：音乐文件夹映射</li>
+        <li><code>-v /path/to/data:/data</code>：数据文件夹映射</li>
+    </ul>
+
+    <h3>Navidrome使用</h3>
+
+    <p><strong>Web界面</strong></p>
+
+    <ul>
+        <li>浏览器访问 <code>http://NAS_IP:4533</code></li>
+        <li>登录后即可浏览和播放</li>
+        <li>界面现代美观，支持暗黑模式</li>
+    </ul>
+
+    <p><strong>自动扫描</strong></p>
+
+    <ul>
+        <li>Navidrome会自动监控音乐文件夹变化</li>
+        <li>新增音乐自动导入</li>
+        <li>元数据变更自动更新</li>
+    </ul>
+
+    <h3>第三方客户端</h3>
+
+    <p>Navidrome兼容Subsonic API，可使用众多第三方客户端：</p>
+
+    <table>
+        <tr>
+            <th>平台</th>
+            <th>推荐客户端</th>
+            <th>特点</th>
+        </tr>
+        <tr>
+            <td>iOS</td>
+            <td>play:Sub、Substreamer</td>
+            <td>功能完善、界面美观</td>
+        </tr>
+        <tr>
+            <td>Android</td>
+            <td>DSub、Ultrasonic</td>
+            <td>开源免费、支持下载</td>
+        </tr>
+        <tr>
+            <td>Windows/Mac</td>
+            <td>Sublime Music、Sonixd</td>
+            <td>桌面级体验</td>
+        </tr>
+        <tr>
+            <td>Web</td>
+            <td>Navidrome自带</td>
+            <td>无需安装</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>💡 推荐</strong>：Android用户推荐【音流】APP，专为Navidrome优化，体验非常好。
+    </div>
+
+    <h2>五、音乐文件整理</h2>
+
+    <h3>推荐文件夹结构</h3>
+
+    <pre>music/
+├── 华语/
+│   ├── 周杰伦/
+│   │   ├── 范特西/
+│   │   │   ├── 01. 爱在西元前.flac
+│   │   │   ├── 02. 爸我回来了.flac
+│   │   │   └── cover.jpg
+│   │   └── 叶惠美/
+│   └── 陈奕迅/
+├── 欧美/
+│   ├── Taylor Swift/
+│   └── Ed Sheeran/
+├── 日语/
+└── 纯音乐/</pre>
+
+    <h3>元数据标签</h3>
+
+    <p>确保音乐文件有完整的ID3标签：</p>
+
+    <ul>
+        <li>标题（Title）</li>
+        <li>艺术家（Artist）</li>
+        <li>专辑（Album）</li>
+        <li>年份（Year）</li>
+        <li>流派（Genre）</li>
+        <li>音轨号（Track Number）</li>
+    </ul>
+
+    <h3>封面和歌词</h3>
+
+    <p><strong>自动获取工具</strong></p>
+
+    <ul>
+        <li><strong>MusicTag</strong>（Windows）：批量获取封面和歌词</li>
+        <li><strong>music_tag_web</strong>（Docker）：Web版标签编辑器</li>
+        <li><strong>Beets</strong>（命令行）：自动整理和标签补全</li>
+    </ul>
+
+    <p><strong>手动整理</strong></p>
+
+    <ul>
+        <li>封面：专辑文件夹下放<code>cover.jpg</code>或<code>folder.jpg</code></li>
+        <li>歌词：与歌曲同名，后缀<code>.lrc</code></li>
+    </ul>
+
+    <h2>六、音质与格式</h2>
+
+    <h3>常见音频格式</h3>
+
+    <table>
+        <tr>
+            <th>格式</th>
+            <th>压缩</th>
+            <th>音质</th>
+            <th>文件大小</th>
+            <th>适用场景</th>
+        </tr>
+        <tr>
+            <td>MP3</td>
+            <td>有损</td>
+            <td>中等</td>
+            <td>小</td>
+            <td>通用兼容</td>
+        </tr>
+        <tr>
+            <td>AAC</td>
+            <td>有损</td>
+            <td>较好</td>
+            <td>小</td>
+            <td>苹果设备</td>
+        </tr>
+        <tr>
+            <td>FLAC</td>
+            <td>无损</td>
+            <td>优秀</td>
+            <td>大</td>
+            <td>收藏首选</td>
+        </tr>
+        <tr>
+            <td>WAV</td>
+            <td>无损</td>
+            <td>优秀</td>
+            <td>很大</td>
+            <td>专业用途</td>
+        </tr>
+        <tr>
+            <td>DSD</td>
+            <td>无损</td>
+            <td>顶级</td>
+            <td>极大</td>
+            <td>发烧友</td>
+        </tr>
+    </table>
+
+    <h3>推荐收藏格式</h3>
+
+    <ul>
+        <li><strong>日常听歌</strong>：FLAC（音质好、兼容性好）</li>
+        <li><strong>移动设备</strong>：AAC 256kbps（省空间）</li>
+        <li><strong>发烧收藏</strong>：DSD或Hi-Res FLAC</li>
+    </ul>
+
+    <h2>七、远程访问</h2>
+
+    <h3>内网穿透方案</h3>
+
+    <p>出门在外也想听NAS里的歌？需要配置远程访问：</p>
+
+    <table>
+        <tr>
+            <th>方案</th>
+            <th>适用场景</th>
+            <th>难度</th>
+        </tr>
+        <tr>
+            <td>QuickConnect（群晖）</td>
+            <td>群晖用户</td>
+            <td>简单</td>
+        </tr>
+        <tr>
+            <td>myQNAPcloud（威联通）</td>
+            <td>威联通用户</td>
+            <td>简单</td>
+        </tr>
+        <tr>
+            <td>DDNS+端口映射</td>
+            <td>有公网IP</td>
+            <td>中等</td>
+        </tr>
+        <tr>
+            <td>内网穿透（frp等）</td>
+            <td>无公网IP</td>
+            <td>中等</td>
+        </tr>
+        <tr>
+            <td>VPN</td>
+            <td>安全要求高</td>
+            <td>中等</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>💡 建议</strong>：优先使用官方提供的远程访问服务（如QuickConnect），简单稳定。
+    </div>
+
+    <h2>八、常见问题</h2>
+
+    <p><strong>Q：Navidrome识别不到音乐？</strong></p>
+    <p>A：检查文件夹权限，确保navidrome用户有读取权限；检查音乐文件格式是否支持。</p>
+
+    <p><strong>Q：封面和歌词不显示？</strong></p>
+    <p>A：使用MusicTag等工具补全元数据；确保封面图片命名为cover.jpg。</p>
+
+    <p><strong>Q：手机播放卡顿？</strong></p>
+    <p>A：开启转码功能，将FLAC转为AAC或MP3，降低带宽需求。</p>
+
+    <p><strong>Q：如何备份音乐库？</strong></p>
+    <p>A：音乐文件本身就是备份，建议定期将NAS音乐文件夹同步到另一设备或云端。</p>
+
+    <p><strong>Q：支持多少首歌曲？</strong></p>
+    <p>A：Navidrome资源占用很低，轻松支持几万首歌曲。</p>
+
+    <h2>九、进阶玩法</h2>
+
+    <h3>智能歌单</h3>
+
+    <ul>
+        <li>按心情分类（工作、运动、睡前）</li>
+        <li>按场景分类（开车、学习、聚会）</li>
+        <li>自动随机播放</li>
+    </ul>
+
+    <h3>多用户管理</h3>
+
+    <ul>
+        <li>为家人创建独立账号</li>
+        <li>设置不同的访问权限</li>
+        <li>各自的歌单互不影响</li>
+    </ul>
+
+    <h3>智能音箱对接</h3>
+
+    <ul>
+        <li>部分智能音箱支持Subsonic API</li>
+        <li>可用NAS音乐替换在线音乐源</li>
+    </ul>
+
+    <h2>总结</h2>
+
+    <p>自建NAS音乐中心，告别音乐APP的各种限制：</p>
+
+    <ul>
+        <li><strong>群晖用户</strong>：Audio Station简单易用，Navidrome功能更强</li>
+        <li><strong>其他NAS用户</strong>：Navidrome是最佳选择</li>
+        <li><strong>音乐整理</strong>：良好的文件夹结构和完整的元数据很重要</li>
+        <li><strong>远程访问</strong>：配置好就能随时随地听歌</li>
+    </ul>
+
+    <p>推荐配置：</p>
+
+    <ul>
+        <li>音乐存储：FLAC格式，按艺术家/专辑整理</li>
+        <li>服务器：Navidrome（Docker部署）</li>
+        <li>客户端：音流（Android）或play:Sub（iOS）</li>
+        <li>标签整理：MusicTag</li>
+    </ul>
+
+    <blockquote>
+        音乐是生活的调味剂，自建音乐中心让听歌回归纯粹。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：什么值得买、知乎、Navidrome官方文档</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
