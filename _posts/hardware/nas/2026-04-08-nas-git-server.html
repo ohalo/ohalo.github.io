@@ -1,0 +1,591 @@
+---
+layout: post
+title: NAS搭建Git服务器：搭建私有代码仓库
+date: 2026-04-08
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, Git, Gitea, GitLab, 代码仓库, 版本控制]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS搭建Git服务器：搭建私有代码仓库 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS搭建Git服务器：搭建私有代码仓库</h1>
+    <div class="meta">2026-04-08 · 数码硬件/NAS存储 · 🔖 NAS, Git, Gitea, GitLab, 代码仓库, 版本控制</div>
+
+    <p>想拥有自己的代码托管平台？不想把代码放在GitHub上？NAS可以帮你搭建私有Git服务器！</p>
+
+    <p>本文详细讲解在NAS上搭建Git服务器的各种方案，从简单的命令行到功能完善的Web界面。</p>
+
+    <h2>一、方案对比</h2>
+
+    <table>
+        <tr>
+            <th>方案</th>
+            <th>难度</th>
+            <th>功能</th>
+            <th>资源占用</th>
+            <th>推荐度</th>
+        </tr>
+        <tr>
+            <td>Git Server套件</td>
+            <td>简单</td>
+            <td>基础</td>
+            <td>低</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Gitea</td>
+            <td>中等</td>
+            <td>完善</td>
+            <td>低</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>GitLab CE</td>
+            <td>复杂</td>
+            <td>全面</td>
+            <td>高</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Gogs</td>
+            <td>中等</td>
+            <td>完善</td>
+            <td>低</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>裸仓库</td>
+            <td>简单</td>
+            <td>极简</td>
+            <td>极低</td>
+            <td>⭐⭐</td>
+        </tr>
+    </table>
+
+    <h2>二、Gitea（推荐方案）</h2>
+
+    <p>Gitea是一款轻量级的开源Git服务，功能完善且资源占用低，非常适合NAS使用。</p>
+
+    <h3>Gitea特点</h3>
+
+    <ul>
+        <li>开源免费，社区活跃</li>
+        <li>界面类似GitHub，易于上手</li>
+        <li>支持Issue、Pull Request、Wiki</li>
+        <li>支持组织、团队权限管理</li>
+        <li>支持Webhook、CI/CD集成</li>
+        <li>资源占用低（内存仅需几百MB）</li>
+    </ul>
+
+    <h3>Docker安装Gitea</h3>
+
+    <p><strong>步骤1：创建目录</strong></p>
+
+    <pre>mkdir -p /volume1/docker/gitea/data
+mkdir -p /volume1/docker/gitea/config</pre>
+
+    <p><strong>步骤2：运行容器</strong></p>
+
+    <pre>docker run -d \
+  --name=gitea \
+  --restart=always \
+  -p 3000:3000 \
+  -p 222:22 \
+  -v /volume1/docker/gitea/data:/data \
+  -v /volume1/docker/gitea/config:/data/gitea/conf \
+  -e USER_UID=1000 \
+  -e USER_GID=1000 \
+  gitea/gitea:latest</pre>
+
+    <p><strong>参数说明</strong>：</p>
+
+    <ul>
+        <li><code>-p 3000:3000</code>：Web界面端口</li>
+        <li><code>-p 222:22</code>：SSH端口（避免与NAS SSH冲突）</li>
+        <li><code>-v</code>：数据持久化映射</li>
+    </ul>
+
+    <h3>初始化配置</h3>
+
+    <p><strong>步骤1：访问安装页面</strong></p>
+
+    <ol>
+        <li>浏览器访问 <code>http://NAS_IP:3000</code></li>
+        <li>进入安装配置页面</li>
+    </ol>
+
+    <p><strong>步骤2：数据库设置</strong></p>
+
+    <ul>
+        <li>数据库类型：SQLite（简单）或MySQL/PostgreSQL（推荐长期使用）</li>
+        <li>SQLite适合个人使用，无需额外配置</li>
+        <li>MySQL/PostgreSQL适合团队使用，性能更好</li>
+    </ul>
+
+    <p><strong>步骤3：基本设置</strong></p>
+
+    <table>
+        <tr>
+            <th>配置项</th>
+            <th>建议值</th>
+        </tr>
+        <tr>
+            <td>站点标题</td>
+            <td>你的Git服务器名称</td>
+        </tr>
+        <tr>
+            <td>仓库根目录</td>
+            <td>/data/git/repositories</td>
+        </tr>
+        <tr>
+            <td>SSH服务域名</td>
+            <td>NAS的IP或域名</td>
+        </tr>
+        <tr>
+            <td>SSH服务端口</td>
+            <td>222（与NAS SSH区分）</td>
+        </tr>
+        <tr>
+            <td>基础URL</td>
+            <td>http://NAS_IP:3000/</td>
+        </tr>
+    </table>
+
+    <p><strong>步骤4：创建管理员账号</strong></p>
+
+    <ol>
+        <li>设置管理员用户名</li>
+        <li>设置邮箱和密码</li>
+        <li>点击"安装Gitea"</li>
+    </ol>
+
+    <h3>使用Gitea</h3>
+
+    <p><strong>创建仓库</strong></p>
+
+    <ol>
+        <li>登录Gitea</li>
+        <li>点击右上角"+" → "新建仓库"</li>
+        <li>填写仓库名称和描述</li>
+        <li>选择公开或私有</li>
+        <li>点击"创建仓库"</li>
+    </ol>
+
+    <p><strong>克隆仓库</strong></p>
+
+    <pre># HTTP方式
+git clone http://NAS_IP:3000/用户名/仓库名.git
+
+# SSH方式（需配置SSH密钥）
+git clone ssh://git@NAS_IP:222/用户名/仓库名.git</pre>
+
+    <p><strong>配置SSH密钥</strong></p>
+
+    <ol>
+        <li>本地生成SSH密钥：<code>ssh-keygen -t rsa -C "your_email@example.com"</code></li>
+        <li>复制公钥内容：<code>cat ~/.ssh/id_rsa.pub</code></li>
+        <li>Gitea → 设置 → SSH/GPG密钥 → 添加密钥</li>
+    </ol>
+
+    <h3>Gitea高级功能</h3>
+
+    <p><strong>Issue跟踪</strong></p>
+
+    <ul>
+        <li>创建Issue记录bug或任务</li>
+        <li>分配责任人、设置标签、里程碑</li>
+        <li>支持Markdown格式</li>
+    </ul>
+
+    <p><strong>Pull Request</strong></p>
+
+    <ul>
+        <li>代码审查流程</li>
+        <li>分支合并前审核</li>
+        <li>评论和讨论</li>
+    </ul>
+
+    <p><strong>Webhook</strong></p>
+
+    <ul>
+        <li>推送事件触发外部服务</li>
+        <li>集成CI/CD工具</li>
+        <li>自动部署</li>
+    </ul>
+
+    <p><strong>组织管理</strong></p>
+
+    <ul>
+        <li>创建组织管理多个仓库</li>
+        <li>团队成员权限控制</li>
+        <li>组织级别的设置</li>
+    </ul>
+
+    <h2>三、GitLab CE</h2>
+
+    <p>GitLab是功能最全面的Git服务，但资源占用较高，适合配置较好的NAS。</p>
+
+    <h3>系统要求</h3>
+
+    <ul>
+        <li>CPU：4核以上</li>
+        <li>内存：4GB以上（推荐8GB）</li>
+        <li>存储：根据代码量决定</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：GitLab启动较慢，首次启动可能需要几分钟。内存小于4GB的NAS不建议安装。
+    </div>
+
+    <h3>Docker安装GitLab</h3>
+
+    <p><strong>步骤1：创建目录</strong></p>
+
+    <pre>mkdir -p /volume1/docker/gitlab/config
+mkdir -p /volume1/docker/gitlab/logs
+mkdir -p /volume1/docker/gitlab/data</pre>
+
+    <p><strong>步骤2：运行容器</strong></p>
+
+    <pre>docker run -d \
+  --name gitlab \
+  --hostname gitlab \
+  --restart always \
+  -p 8080:80 \
+  -p 8443:443 \
+  -p 2222:22 \
+  -v /volume1/docker/gitlab/config:/etc/gitlab \
+  -v /volume1/docker/gitlab/logs:/var/log/gitlab \
+  -v /volume1/docker/gitlab/data:/var/opt/gitlab \
+  gitlab/gitlab-ce:latest</pre>
+
+    <p><strong>步骤3：等待启动</strong></p>
+
+    <ol>
+        <li>首次启动需要几分钟初始化</li>
+        <li>查看日志：<code>docker logs -f gitlab</code></li>
+        <li>看到"gitlab Reconfigured!"表示启动完成</li>
+    </ol>
+
+    <p><strong>步骤4：初始配置</strong></p>
+
+    <ol>
+        <li>访问 <code>http://NAS_IP:8080</code></li>
+        <li>设置管理员密码（root账号）</li>
+        <li>使用root登录</li>
+    </ol>
+
+    <h3>GitLab特点</h3>
+
+    <ul>
+        <li>功能最全面（CI/CD、Registry、Pages等）</li>
+        <li>企业级权限管理</li>
+        <li>内置CI/CD流水线</li>
+        <li>容器镜像仓库</li>
+        <li>Wiki、Issue、Merge Request</li>
+    </ul>
+
+    <h2>四、群晖Git Server套件</h2>
+
+    <p>群晖官方提供的Git服务，配置简单但功能较基础。</p>
+
+    <h3>安装步骤</h3>
+
+    <p><strong>步骤1：安装套件</strong></p>
+
+    <ol>
+        <li>打开【套件中心】</li>
+        <li>搜索【Git Server】</li>
+        <li>点击安装</li>
+    </ol>
+
+    <p><strong>步骤2：创建共享文件夹</strong></p>
+
+    <ol>
+        <li>打开【控制面板】→【共享文件夹】</li>
+        <li>创建用于存放Git仓库的文件夹（如git_repos）</li>
+    </ol>
+
+    <p><strong>步骤3：创建Git用户</strong></p>
+
+    <ol>
+        <li>【控制面板】→【用户与群组】→【用户账号】</li>
+        <li>点击【新增】</li>
+        <li>创建专用Git用户（如git）</li>
+        <li>赋予git_repos文件夹的读写权限</li>
+    </ol>
+
+    <p><strong>步骤4：配置Git Server</strong></p>
+
+    <ol>
+        <li>打开【Git Server】套件</li>
+        <li>勾选允许访问的Git用户</li>
+        <li>保存设置</li>
+    </ol>
+
+    <p><strong>步骤5：启用SSH</strong></p>
+
+    <ol>
+        <li>【控制面板】→【终端机和SNMP】</li>
+        <li>勾选【启用SSH服务】</li>
+        <li>保存</li>
+    </ol>
+
+    <p><strong>步骤6：启用家目录</strong></p>
+
+    <ol>
+        <li>【控制面板】→【用户与群组】→【高级设置】</li>
+        <li>启用【家目录服务】</li>
+    </ol>
+
+    <h3>创建Git仓库</h3>
+
+    <p>通过SSH连接到NAS创建仓库：</p>
+
+    <pre># SSH连接到NAS（使用管理员账号）
+ssh admin@NAS_IP
+
+# 进入Git仓库目录
+cd /volume1/git_repos
+
+# 创建项目目录
+mkdir myproject.git
+cd myproject.git
+
+# 初始化裸仓库
+git init --bare
+
+# 设置权限（让git用户可以访问）
+sudo chown -R git:users /volume1/git_repos/myproject.git</pre>
+
+    <h3>使用仓库</h3>
+
+    <pre># 克隆仓库
+git clone ssh://git@NAS_IP/volume1/git_repos/myproject.git
+
+# 或使用HTTP（需配置Web服务器）
+git clone http://NAS_IP/git/myproject.git</pre>
+
+    <h2>五、裸仓库（极简方案）</h2>
+
+    <p>最简单的Git服务器，不需要任何Web界面，纯命令行操作。</p>
+
+    <h3>创建裸仓库</h3>
+
+    <pre># 在NAS上创建仓库目录
+mkdir -p /volume1/git/repo.git
+cd /volume1/git/repo.git
+
+# 初始化裸仓库
+git init --bare</pre>
+
+    <h3>本地使用</h3>
+
+    <pre># 添加远程仓库
+git remote add origin ssh://user@NAS_IP/volume1/git/repo.git
+
+# 推送代码
+git push -u origin master</pre>
+
+    <div class="tip">
+        <strong>💡 提示</strong>：裸仓库适合个人使用或作为备份，没有Web界面，需要通过SSH操作。
+    </div>
+
+    <h2>六、方案选择建议</h2>
+
+    <h3>个人开发者</h3>
+
+    <p><strong>推荐：Gitea</strong></p>
+
+    <ul>
+        <li>资源占用低</li>
+        <li>功能完善</li>
+        <li>界面友好</li>
+        <li>易于维护</li>
+    </ul>
+
+    <h3>小团队（2-10人）</h3>
+
+    <p><strong>推荐：Gitea或GitLab CE</strong></p>
+
+    <ul>
+        <li>需要CI/CD：选GitLab</li>
+        <li>追求轻量：选Gitea</li>
+        <li>权限管理：两者都支持</li>
+    </ul>
+
+    <h3>仅做备份</h3>
+
+    <p><strong>推荐：裸仓库或群晖Git Server</strong></p>
+
+    <ul>
+        <li>配置最简单</li>
+        <li>资源占用最低</li>
+        <li>满足基本需求</li>
+    </ul>
+
+    <h2>七、安全建议</h2>
+
+    <h3>SSH密钥认证</h3>
+
+    <ul>
+        <li>禁用密码登录，使用SSH密钥</li>
+        <li>定期更换密钥</li>
+        <li>不同设备使用不同密钥</li>
+    </ul>
+
+    <h3>访问控制</h3>
+
+    <ul>
+        <li>私有仓库默认不公开</li>
+        <li>团队成员按需分配权限</li>
+        <li>定期审查访问权限</li>
+    </ul>
+
+    <h3>备份策略</h3>
+
+    <ul>
+        <li>Git仓库定期备份到其他设备</li>
+        <li>使用Hyper Backup或HBS 3</li>
+        <li>异地备份到云端</li>
+    </ul>
+
+    <h3>HTTPS配置</h3>
+
+    <ul>
+        <li>使用反向代理配置HTTPS</li>
+        <li>申请Let's Encrypt证书</li>
+        <li>强制HTTPS访问</li>
+    </ul>
+
+    <h2>八、常见问题</h2>
+
+    <p><strong>Q：Gitea和GitLab怎么选？</strong></p>
+    <p>A：NAS配置好选GitLab，追求轻量选Gitea。GitLab功能全面但吃资源，Gitea够用且省资源。</p>
+
+    <p><strong>Q：外网怎么访问？</strong></p>
+    <p>A：配置DDNS+端口转发，或使用内网穿透。建议配合反向代理使用HTTPS。</p>
+
+    <p><strong>Q：代码会丢失吗？</strong></p>
+    <p>A：Git是分布式版本控制，本地和远程都有完整历史。但建议定期备份NAS数据。</p>
+
+    <p><strong>Q：多人协作冲突怎么办？</strong></p>
+    <p>A：使用分支开发，Pull Request合并。冲突时手动解决，Git会提示冲突位置。</p>
+
+    <p><strong>Q：可以替代GitHub吗？</strong></p>
+    <p>A：功能上可以，但GitHub的生态（Actions、Issues社区等）更丰富。私有项目用NAS，开源项目用GitHub。</p>
+
+    <h2>九、CI/CD集成</h2>
+
+    <p>在NAS上搭建Git服务器后，可以配合CI/CD工具实现自动化：</p>
+
+    <h3>Gitea + Drone CI</h3>
+
+    <pre># 安装Drone
+docker run -d \
+  --name=drone \
+  -p 8081:80 \
+  -v /volume1/docker/drone:/data \
+  -e DRONE_GITEA_SERVER=http://NAS_IP:3000 \
+  -e DRONE_RPC_SECRET=secret \
+  drone/drone:latest</pre>
+
+    <h3>GitLab CI</h3>
+
+    <p>GitLab内置CI/CD，在仓库根目录创建<code>.gitlab-ci.yml</code>：</p>
+
+    <pre>stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - echo "Building..."
+    - make build
+
+test:
+  stage: test
+  script:
+    - echo "Testing..."
+    - make test
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying..."
+    - make deploy</pre>
+
+    <h2>总结</h2>
+
+    <p>在NAS上搭建Git服务器，让代码管理更自主：</p>
+
+    <ul>
+        <li><strong>Gitea</strong>：轻量好用，个人和小团队首选</li>
+        <li><strong>GitLab</strong>：功能全面，适合有CI/CD需求的团队</li>
+        <li><strong>群晖Git Server</strong>：简单配置，基础够用</li>
+        <li><strong>裸仓库</strong>：极简方案，纯备份用</li>
+    </ul>
+
+    <p>选择适合自己需求的方案，开始搭建私有代码仓库吧！</p>
+
+    <blockquote>
+        拥有自己的Git服务器，代码隐私有保障，不再依赖第三方平台。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：Gitea官方文档、GitLab官方文档、群晖官网</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
