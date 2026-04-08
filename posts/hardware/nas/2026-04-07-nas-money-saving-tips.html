@@ -1,0 +1,175 @@
+---
+layout: post
+title: "用飞牛OS组了个NAS，哪些钱不能省，哪些时间必须花？"
+date: 2026-04-07
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 飞牛OS, 企业级硬盘, 备份方案]
+---
+
+<p>
+组了3年NAS，踩过不少坑。有些钱省了，后来花更多钱补救；有些钱花了，到现在都觉得值。
+</p>
+
+<h2>一、最后悔省钱的地方</h2>
+
+<h3>1. 硬盘 —— 绝对不能省</h3>
+
+<p>我第一台NAS，为了省钱买了普通台式机硬盘。</p>
+
+<p>结果呢？<strong>一年内坏了2块。</strong></p>
+
+<p>普通硬盘的设计是每天开机几小时、偶尔读写。放到NAS里7×24小时运行、多盘振动、密集访问，<strong>就是定时炸弹。</strong></p>
+
+<p>后来换了企业级硬盘（希捷银河），再也没出过问题。</p>
+
+<p><strong>血泪教训</strong>：</p>
+<ul>
+<li>普通硬盘放NAS = 数据恢复费用 = 硬盘价格10倍+</li>
+<li>省硬盘的钱 = 赌数据安全</li>
+</ul>
+
+<p><strong>过来人建议</strong>：</p>
+
+<table>
+<tr><th>预算</th><th>推荐</th><th>理由</th></tr>
+<tr><td>充足</td><td>希捷酷狼/西数红盘Plus</td><td>5年质保，NAS专用</td></tr>
+<tr><td>紧张</td><td>企业级二手（HC550/银河）</td><td>便宜30%，更稳定</td></tr>
+</table>
+
+<h3>2. 没买UPS —— 一次停电毁所有</h3>
+
+<p>我省了UPS的钱（当时觉得300块买个电池太贵）。</p>
+
+<p>结果夏天一次突然断电，<strong>2块硬盘同时损坏</strong>，数据恢复花了1800块。</p>
+
+<p><strong>UPS的作用</strong>：</p>
+<ul>
+<li>断电自动关机，保护硬盘</li>
+<li>电压不稳时稳压</li>
+<li>一次投入，终身保护</li>
+</ul>
+
+<p><strong>买什么</strong>：山特/ APC入门款，300-500元就够。</p>
+
+<h3>3. 只做RAID没备份</h3>
+
+<p>我以为RAID5够安全了，3块盘坏1块还能恢复。</p>
+
+<p>结果一次误操作+勒索病毒，<strong>数据全没了。</strong></p>
+
+<p>RAID只能防硬盘损坏，防不了：</p>
+<ul>
+<li>误删</li>
+<li>勒索病毒</li>
+<li>火灾/水灾</li>
+</ul>
+
+<p><strong>必须做异地备份</strong>。我现在是：</p>
+<ul>
+<li>本地：RAID5</li>
+<li>冷备：移动硬盘定期备份重要数据</li>
+<li>云端：百度网盘自动同步照片/文档</li>
+</ul>
+
+<hr>
+
+<h2>二、最不后悔花钱的地方</h2>
+
+<h3>1. 一步到位买企业级硬盘</h3>
+
+<p>虽然当时心疼（4块16T花了5000+），但<strong>3年运行无故障</strong>。</p>
+
+<p>算一笔账：</p>
+<ul>
+<li>企业盘：5000元 + 5年质保 = 安心</li>
+<li>普通盘：2000元 + 数据恢复1800元×2 = <strong>5600元</strong> + 提心吊胆</li>
+</ul>
+
+<p><strong>结论</strong>：企业盘反而更划算。</p>
+
+<h3>2. 提前铺了2.5G网线</h3>
+
+<p>装修时多花了几百块埋了超六类网线。</p>
+
+<p>后来升级2.5G交换机，直接插上就能用，<strong>不用重新走线</strong>。</p>
+
+<p><strong>网络建议</strong>：</p>
+
+<table>
+<tr><th>需求</th><th>建议</th></tr>
+<tr><td>家庭日常</td><td>千兆足够</td></tr>
+<tr><td>大文件传输</td><td>2.5G性价比最高</td></tr>
+<tr><td>万兆</td><td>企业/工作室才需要</td></tr>
+</table>
+
+<p><strong>省钱思路</strong>：先千兆，不够再升级。2.5G交换机现在很便宜（100-200元）。</p>
+
+<h3>3. 买了UPS</h3>
+
+<p>300块的山特UPS，救了我3次。</p>
+
+<p>每次停电，NAS自动关机，数据完好。</p>
+
+<p><strong>这笔钱，值。</strong></p>
+
+<hr>
+
+<h2>三、网络设备要不要提前铺？</h2>
+
+<p><strong>我的经验</strong>：</p>
+
+<table>
+<tr><th>设备</th><th>建议</th><th>理由</th></tr>
+<tr><td>网线</td><td>提前铺超六类</td><td>升级不用重新走线</td></tr>
+<tr><td>交换机</td><td>先千兆，不够再换</td><td>便宜，随时升级</td></tr>
+<tr><td>万兆</td><td>家庭用户没必要</td><td>千兆/2.5G够用</td></tr>
+</table>
+
+<p><strong>过来人话</strong>：万兆宽带一月1000块，对家庭用户来说<strong>除了贵，没啥用</strong>。</p>
+
+<hr>
+
+<h2>四、备份方案怎么选？</h2>
+
+<table>
+<tr><th>方案</th><th>成本</th><th>安全性</th><th>适合谁</th></tr>
+<tr><td>只做RAID</td><td>0元</td><td>❌ 误删/病毒照样完蛋</td><td>不推荐</td></tr>
+<tr><td>冷备份</td><td>移动硬盘成本</td><td>⚠️ 不及时，容易忘</td><td>有备份习惯的人</td></tr>
+<tr><td>异地备份</td><td>云存储/第二NAS</td><td>✅ 真正安全</td><td>数据重要的人</td></tr>
+</table>
+
+<p><strong>我的选择</strong>：RAID5 + 冷备 + 云同步。</p>
+
+<p>虽然麻烦点，但<strong>数据丢了就是真没了</strong>。</p>
+
+<hr>
+
+<h2>五、给你的建议（飞牛OS场景）</h2>
+
+<table>
+<tr><th>项目</th><th>建议</th><th>预算分配</th></tr>
+<tr><td><strong>硬盘</strong></td><td>企业级二手/酷狼/红盘Plus</td><td>60%预算</td></tr>
+<tr><td><strong>UPS</strong></td><td>山特/APC入门款</td><td>10%预算</td></tr>
+<tr><td><strong>网络</strong></td><td>2.5G交换机（100-200元）</td><td>5%预算</td></tr>
+<tr><td><strong>备份</strong></td><td>云盘同步 + 冷备硬盘</td><td>15%预算</td></tr>
+<tr><td><strong>NAS主机</strong></td><td>飞牛OS适配入门款</td><td>剩余预算</td></tr>
+</table>
+
+<hr>
+
+<h2>一句话总结</h2>
+
+<blockquote>
+<strong>硬盘不能省，备份必须做，网络看需求，UPS买一个。</strong>
+</blockquote>
+
+<p>省硬盘的钱 = 数据恢复的10倍代价<br>
+省备份的精力 = 误删/病毒的后悔成本<br>
+省UPS的钱 = 一次停电毁所有</p>
+
+<p><strong>网络可以慢慢升级，但数据没了就是真没了。</strong></p>
+
+<hr>
+
+<p><em>数据来源：知乎问答、搜狐科技、企鹅号、CSDN博客</em></p>

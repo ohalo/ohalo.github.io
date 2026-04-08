@@ -1,0 +1,361 @@
+---
+layout: post
+title: 飞牛NAS进阶玩法：Docker容器推荐与部署教程
+date: 2026-04-07
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [飞牛NAS, Docker, 容器部署, 进阶教程]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞牛NAS进阶玩法：Docker容器推荐与部署教程 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>飞牛NAS进阶玩法：Docker容器推荐与部署教程</h1>
+    <div class="meta">2026-04-07 · 数码硬件/NAS存储 · 🔖 飞牛NAS, Docker, 容器部署, 进阶教程</div>
+
+    <p>飞牛NAS（fnOS）最大的优势之一就是Docker支持完善。通过Docker，可以扩展NAS的功能，把它变成一台多功能服务器。</p>
+
+    <p>这篇文章推荐几个实用的Docker容器，并提供详细的部署教程。</p>
+
+    <h2>一、Docker基础操作</h2>
+
+    <h3>1. 开启SSH</h3>
+    <p>进入【设置】→【SSH】，开启SSH服务。默认端口22，密码就是飞牛NAS的登录密码。</p>
+
+    <h3>2. Docker镜像源配置</h3>
+    <p>国内用户建议配置镜像源加速：</p>
+    <pre><code># 进入Docker设置
+# 镜像源地址：
+https://docker.m.daocloud.io
+https://dockerhub.icu</code></pre>
+
+    <h3>3. 两种部署方式</h3>
+    <ul>
+        <li><strong>图形界面</strong>：适合新手，点鼠标完成</li>
+        <li><strong>Docker Compose</strong>：适合进阶，配置文件管理，方便迁移</li>
+    </ul>
+
+    <h2>二、实用容器推荐</h2>
+
+    <h3>1. qBittorrent - 下载神器</h3>
+
+    <p>最常用的BT下载工具，支持RSS订阅、远程访问。</p>
+
+    <p><strong>docker-compose.yml</strong>：</p>
+    <pre><code>version: '3.7'
+services:
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1001
+      - TZ=Asia/Shanghai
+      - WEBUI_PORT=8080
+    volumes:
+      - ./config:/config
+      - /vol2/1000/downloads:/downloads
+    network_mode: host
+    restart: unless-stopped</code></pre>
+
+    <p><strong>访问</strong>：http://NAS的IP:8080</p>
+    <p><strong>默认账号</strong>：admin / adminadmin</p>
+
+    <h3>2. Home Assistant - 智能家居中枢</h3>
+
+    <p>统一管理小米、涂鸦、飞利浦等智能家居设备。</p>
+
+    <pre><code>version: '3'
+services:
+  homeassistant:
+    image: homeassistant/home-assistant:stable
+    container_name: homeassistant
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./config:/config
+    network_mode: host
+    restart: unless-stopped</code></pre>
+
+    <p><strong>访问</strong>：http://NAS的IP:8123</p>
+
+    <h3>3. Jellyfin - 影音服务器</h3>
+
+    <p>开源免费的影音服务器，自动刮削海报、支持多设备播放。</p>
+
+    <pre><code>version: '3'
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - /vol2/1000/media:/media
+    network_mode: host
+    restart: unless-stopped</code></pre>
+
+    <p><strong>访问</strong>：http://NAS的IP:8096</p>
+
+    <h3>4. Heimdall - 个人导航页</h3>
+
+    <p>把所有NAS服务整合到一个导航页面，一目了然。</p>
+
+    <pre><code>version: '3'
+services:
+  heimdall:
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heimdall
+    environment:
+      - PUID=1000
+      - PGID=1001
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./config:/config
+    ports:
+      - "8710:80"
+    restart: unless-stopped</code></pre>
+
+    <p><strong>访问</strong>：http://NAS的IP:8710</p>
+
+    <h3>5. Homebox - 内网测速</h3>
+
+    <p>测试局域网到NAS的网速，排查网络问题。</p>
+
+    <pre><code>version: '3'
+services:
+  homebox:
+    image: ghcr.io/homarr/homebox:latest
+    container_name: homebox
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "3300:3300"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped</code></pre>
+
+    <p><strong>访问</strong>：http://NAS的IP:3300</p>
+
+    <h3>6. MrDoc - 个人知识库</h3>
+
+    <p>在线文档系统，可以当个人Wiki使用。</p>
+
+    <pre><code>version: '3'
+services:
+  mrdoc:
+    image: registry.cn-hangzhou.aliyuncs.com/zmister/mrdoc:v9.1
+    container_name: mrdoc
+    volumes:
+      - ./MrDoc:/app/MrDoc
+    ports:
+      - "10086:10086"
+    restart: always</code></pre>
+
+    <p><strong>访问</strong>：http://NAS的IP:10086</p>
+
+    <h3>7. LibreTV - 在线观影</h3>
+
+    <p>聚合多个视频源，免费无广告观影。</p>
+
+    <pre><code>version: '3'
+services:
+  libretv:
+    image: bestzwei/libretv:latest
+    container_name: libretv
+    ports:
+      - "8899:8080"
+    environment:
+      - PASSWORD=your_password
+    restart: unless-stopped</code></pre>
+
+    <p><strong>访问</strong>：http://NAS的IP:8899</p>
+
+    <h2>三、部署步骤（以qBittorrent为例）</h2>
+
+    <h3>方式一：图形界面部署</h3>
+
+    <ol>
+        <li>打开飞牛NAS的Docker应用</li>
+        <li>点击【镜像仓库】，搜索 qbittorrent</li>
+        <li>点击下载镜像</li>
+        <li>下载完成后，点击【容器】→【添加容器】</li>
+        <li>填写容器名称，勾选"开机自动开启"</li>
+        <li>配置端口映射：主机端口8080 → 容器端口8080</li>
+        <li>配置存储位置：映射配置目录和下载目录</li>
+        <li>点击创建，等待启动</li>
+    </ol>
+
+    <h3>方式二：Docker Compose部署</h3>
+
+    <ol>
+        <li>打开Docker应用，点击【Compose】→【新建项目】</li>
+        <li>输入项目名称（如 qbittorrent）</li>
+        <li>选择存储路径</li>
+        <li>点击【创建docker-compose.yml】</li>
+        <li>粘贴上面的配置内容</li>
+        <li>勾选【创建项目后立即启动】</li>
+        <li>点击确定，等待部署完成</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 建议</strong>：使用Docker Compose部署，配置文件可以备份，迁移到其他NAS时直接复制粘贴就行。
+    </div>
+
+    <h2>四、常见问题</h2>
+
+    <h3>1. 容器启动失败？</h3>
+    <ul>
+        <li>检查端口是否被占用</li>
+        <li>检查存储目录权限（右键文件夹→属性→确保可读写）</li>
+        <li>查看容器日志，根据错误信息排查</li>
+    </ul>
+
+    <h3>2. 访问不了Web界面？</h3>
+    <ul>
+        <li>检查端口映射是否正确</li>
+        <li>检查防火墙是否放行端口</li>
+        <li>确认容器状态为"运行中"</li>
+    </ul>
+
+    <h3>3. 数据存储在哪里？</h3>
+    <p>容器内的数据需要映射到NAS存储空间，否则容器删除后数据会丢失。</p>
+
+    <h3>4. 如何更新容器？</h3>
+    <pre><code># 1. 停止并删除旧容器
+# 2. 拉取新镜像
+# 3. 重新创建容器</code></pre>
+
+    <h2>五、进阶技巧</h2>
+
+    <h3>1. 网络模式选择</h3>
+    <table>
+        <tr>
+            <th>模式</th>
+            <th>特点</th>
+            <th>适用场景</th>
+        </tr>
+        <tr>
+            <td>Bridge（桥接）</td>
+            <td>需要手动映射端口</td>
+            <td>大多数应用</td>
+        </tr>
+        <tr>
+            <td>Host（主机）</td>
+            <td>容器直接使用主机网络</td>
+            <td>需要IPv6、多端口应用</td>
+        </tr>
+    </table>
+
+    <h3>2. 资源限制</h3>
+    <p>可以在创建容器时限制CPU和内存使用，避免某个容器占用过多资源影响NAS整体性能。</p>
+
+    <h3>3. 自动重启策略</h3>
+    <pre><code>restart: unless-stopped  # 除非手动停止，否则自动重启
+restart: always          # 总是自动重启
+restart: on-failure      # 失败时重启</code></pre>
+
+    <h2>六、容器推荐清单</h2>
+
+    <table>
+        <tr>
+            <th>容器</th>
+            <th>用途</th>
+            <th>推荐指数</th>
+        </tr>
+        <tr>
+            <td>qBittorrent</td>
+            <td>BT下载</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Jellyfin</td>
+            <td>影音服务器</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Home Assistant</td>
+            <td>智能家居</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Heimdall</td>
+            <td>导航页</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Homebox</td>
+            <td>内网测速</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>MrDoc</td>
+            <td>知识库</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>LibreTV</td>
+            <td>在线观影</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+    </table>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：不要装太多容器！每个容器都会占用系统资源。够用就行，不是越多越好。
+    </div>
+
+    <hr>
+
+    <p><em>数据来源：飞牛NAS论坛、CSDN博客、今日头条、腾讯云</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>

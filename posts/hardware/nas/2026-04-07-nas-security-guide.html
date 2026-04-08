@@ -1,0 +1,325 @@
+---
+layout: post
+title: NAS安全防护指南：防止勒索病毒和黑客攻击的9个关键设置
+date: 2026-04-07
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS安全, 勒索病毒, 防黑客, 密码安全]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS安全防护指南：防止勒索病毒和黑客攻击的9个关键设置 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS安全防护指南：防止勒索病毒和黑客攻击的9个关键设置</h1>
+    <div class="meta">2026-04-07 · 数码硬件/NAS存储 · 🔖 NAS安全, 勒索病毒, 防黑客, 密码安全</div>
+
+    <p>很多人买了NAS就不管安全了，结果数据被勒索病毒加密，损失惨重。</p>
+
+    <p>NAS连在网上，就像你家的门敞开着。不做好安全防护，迟早出事。</p>
+
+    <h2>一、NAS面临的安全威胁</h2>
+
+    <h3>1. 勒索病毒</h3>
+    <p>最可怕的威胁。病毒会加密你NAS上的所有文件，然后索要赎金。</p>
+    <p>典型案例：2020年群晖NAS大规模勒索病毒攻击，大量用户数据被加密。</p>
+
+    <h3>2. 暴力破解</h3>
+    <p>黑客通过自动化工具，不断尝试密码组合，直到破解成功。</p>
+    <p>如果你的密码是123456、admin123这类，分分钟被攻破。</p>
+
+    <h3>3. 漏洞攻击</h3>
+    <p>NAS系统存在安全漏洞，黑客利用漏洞直接获取系统权限。</p>
+
+    <h3>4. 数据泄露</h3>
+    <p>弱密码、默认端口，让陌生人轻松访问你的隐私数据。</p>
+
+    <h2>二、9个关键安全设置</h2>
+
+    <h3>1. 停用默认admin账户</h3>
+    <p>这是最重要的一步。</p>
+    <p>黑客首先攻击的就是admin、administrator、root这些默认账户。</p>
+
+    <p><strong>操作步骤</strong>：</p>
+    <ol>
+        <li>创建一个新的管理员账户（用户名不要用admin）</li>
+        <li>用新账户登录</li>
+        <li>停用或删除默认的admin账户</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：不要只停用admin账户，要先创建新管理员账户，否则你将无法管理NAS。
+    </div>
+
+    <h3>2. 设置强密码</h3>
+    <p>密码是第一道防线，也是最容易被忽视的。</p>
+
+    <p><strong>强密码标准</strong>：</p>
+    <ul>
+        <li>至少12位</li>
+        <li>包含大小写字母、数字、特殊符号</li>
+        <li>不要用生日、姓名、常用词</li>
+        <li>不要和其他平台共用密码</li>
+    </ul>
+
+    <p><strong>弱密码示例</strong>：admin123、password、123456、qwerty</p>
+    <p><strong>强密码示例</strong>：Kj#9mP$2xL!qW7@n</p>
+
+    <h3>3. 开启双因素认证（2FA）</h3>
+    <p>即使密码被破解，没有第二重验证也无法登录。</p>
+
+    <p><strong>支持的认证方式</strong>：</p>
+    <table>
+        <tr>
+            <th>方式</th>
+            <th>安全级别</th>
+            <th>便捷性</th>
+        </tr>
+        <tr>
+            <td>手机验证码</td>
+            <td>高</td>
+            <td>高</td>
+        </tr>
+        <tr>
+            <td>Google Authenticator</td>
+            <td>高</td>
+            <td>中</td>
+        </tr>
+        <tr>
+            <td>硬件安全密钥</td>
+            <td>极高</td>
+            <td>低</td>
+        </tr>
+    </table>
+
+    <p><strong>设置方法</strong>：</p>
+    <ul>
+        <li>群晖：控制面板 → 安全性 → 账户 → 双重验证</li>
+        <li>威联通：控制台 → 系统 → 安全性 → 两步验证</li>
+    </ul>
+
+    <h3>4. 启用自动封锁</h3>
+    <p>连续登录失败多次后，自动封锁该IP。</p>
+
+    <p><strong>推荐设置</strong>：</p>
+    <ul>
+        <li>登录失败5次后封锁</li>
+        <li>封锁时间：24小时以上</li>
+    </ul>
+
+    <p><strong>设置方法</strong>：</p>
+    <ul>
+        <li>群晖：控制面板 → 安全性 → 账户 → 自动封锁</li>
+        <li>威联通：控制台 → 系统 → 安全性 → 网络攻击防御</li>
+    </ul>
+
+    <h3>5. 启用防火墙</h3>
+    <p>只开放必要的端口，阻止其他所有访问。</p>
+
+    <p><strong>推荐规则</strong>：</p>
+    <table>
+        <tr>
+            <th>端口</th>
+            <th>用途</th>
+            <th>是否开放</th>
+        </tr>
+        <tr>
+            <td>80/443</td>
+            <td>Web访问</td>
+            <td>根据需要</td>
+        </tr>
+        <tr>
+            <td>22</td>
+            <td>SSH</td>
+            <td>限制IP</td>
+        </tr>
+        <tr>
+            <td>445/139</td>
+            <td>SMB文件共享</td>
+            <td>仅内网</td>
+        </tr>
+        <tr>
+            <td>其他</td>
+            <td>-</td>
+            <td>全部拒绝</td>
+        </tr>
+    </table>
+
+    <h3>6. 修改默认端口</h3>
+    <p>群晖默认端口5000/5001，威联通默认8080，这些端口容易被扫描攻击。</p>
+
+    <p><strong>建议修改</strong>：</p>
+    <ul>
+        <li>Web管理端口改为非标准端口（如18080）</li>
+        <li>SSH端口改为非22端口（如22222）</li>
+    </ul>
+
+    <h3>7. 关闭不必要的服务</h3>
+    <p>每开启一个服务，就多一个攻击面。</p>
+
+    <p><strong>建议关闭</strong>：</p>
+    <ul>
+        <li>不用的SSH（如果不需要命令行管理）</li>
+        <li>不用的Telnet</li>
+        <li>不用的FTP</li>
+        <li>不用的Web服务器</li>
+    </ul>
+
+    <h3>8. 定期更新系统</h3>
+    <p>厂商会定期发布安全补丁，修复已知漏洞。</p>
+
+    <p><strong>建议</strong>：</p>
+    <ul>
+        <li>开启自动更新</li>
+        <li>至少每月检查一次更新</li>
+        <li>重要安全更新立即安装</li>
+    </ul>
+
+    <h3>9. 设置IP白名单</h3>
+    <p>只允许特定IP访问管理界面。</p>
+
+    <p><strong>适用场景</strong>：</p>
+    <ul>
+        <li>家庭NAS：只允许内网IP访问管理界面</li>
+        <li>远程访问：只允许公司IP或VPN IP访问</li>
+    </ul>
+
+    <h2>三、不同品牌的设置入口</h2>
+
+    <table>
+        <tr>
+            <th>功能</th>
+            <th>群晖DSM</th>
+            <th>威联通QTS</th>
+            <th>飞牛NAS</th>
+        </tr>
+        <tr>
+            <td>用户管理</td>
+            <td>控制面板→用户账号</td>
+            <td>控制台→用户</td>
+            <td>设置→用户</td>
+        </tr>
+        <tr>
+            <td>双因素认证</td>
+            <td>控制面板→安全性</td>
+            <td>控制台→系统→安全性</td>
+            <td>设置→安全</td>
+        </tr>
+        <tr>
+            <td>防火墙</td>
+            <td>控制面板→安全性→防火墙</td>
+            <td>控制台→系统→安全性</td>
+            <td>设置→防火墙</td>
+        </tr>
+        <tr>
+            <td>自动封锁</td>
+            <td>控制面板→安全性→账户</td>
+            <td>控制台→系统→安全中心</td>
+            <td>设置→安全</td>
+        </tr>
+    </table>
+
+    <h2>四、安全检查清单</h2>
+
+    <ul>
+        <li>☐ 已停用默认admin账户</li>
+        <li>☐ 所有账户使用强密码</li>
+        <li>☐ 已开启双因素认证</li>
+        <li>☐ 已启用自动封锁</li>
+        <li>☐ 已启用防火墙</li>
+        <li>☐ 已修改默认端口</li>
+        <li>☐ 已关闭不必要的服务</li>
+        <li>☐ 系统已更新到最新版本</li>
+        <li>☐ 远程访问使用HTTPS</li>
+        <li>☐ 有异地备份</li>
+    </ul>
+
+    <h2>五、被攻击后怎么办</h2>
+
+    <h3>勒索病毒</h3>
+    <ol>
+        <li>立即断开网络，防止扩散</li>
+        <li>不要支付赎金（不一定能解密）</li>
+        <li>查看是否有备份可恢复</li>
+        <li>联系专业数据恢复服务</li>
+    </ol>
+
+    <h3>账户被盗</h3>
+    <ol>
+        <li>立即修改所有密码</li>
+        <li>检查是否有未知用户账户</li>
+        <li>查看系统日志，确认攻击来源</li>
+        <li>加强安全设置</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 最佳实践</strong>：定期（每周）检查NAS登录日志，发现异常登录立即处理。
+    </div>
+
+    <h2>总结</h2>
+
+    <p>NAS安全的核心原则：<strong>多层防护 + 定期检查</strong>。</p>
+
+    <p>最重要的3件事：</p>
+    <ol>
+        <li>停用默认admin账户，使用强密码</li>
+        <li>开启双因素认证</li>
+        <li>做好异地备份（防勒索病毒的最后防线）</li>
+    </ol>
+
+    <blockquote>
+        安全是一场攻防战，没有绝对安全。但做好以上设置，能挡住99%的攻击。黑客会跳过你，去找更容易下手的目标。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：什么值得买、群晖官网、网易科技、腾讯云</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>

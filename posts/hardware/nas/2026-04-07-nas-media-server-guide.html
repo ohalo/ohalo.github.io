@@ -1,0 +1,363 @@
+---
+layout: post
+title: NAS搭建家庭影音中心：Plex、Jellyfin、Emby怎么选？
+date: 2026-04-07
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 家庭影院, Plex, Jellyfin, Emby, 4K转码]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS搭建家庭影音中心：Plex、Jellyfin、Emby怎么选？ - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS搭建家庭影音中心：Plex、Jellyfin、Emby怎么选？</h1>
+    <div class="meta">2026-04-07 · 数码硬件/NAS存储 · 🔖 NAS, 家庭影院, Plex, Jellyfin, Emby, 4K转码</div>
+
+    <p>买了NAS，最实用的玩法就是搭建家庭影音中心。</p>
+
+    <p>把电影、电视剧存进去，手机、平板、电视都能看，还能远程访问。比网盘快，比流媒体自由。</p>
+
+    <p>但Plex、Jellyfin、Emby该选哪个？今天讲清楚。</p>
+
+    <h2>一、什么是媒体服务器？</h2>
+
+    <p>媒体服务器软件能帮你：</p>
+    <ul>
+        <li>整理影音文件，自动匹配海报、简介</li>
+        <li>转码播放（把4K转成1080P，适配不同设备）</li>
+        <li>远程访问（在公司看家里的电影）</li>
+        <li>多端同步（看到一半，换设备继续看）</li>
+    </ul>
+
+    <h2>二、三款软件对比</h2>
+
+    <table>
+        <tr>
+            <th>特性</th>
+            <th>Plex</th>
+            <th>Jellyfin</th>
+            <th>Emby</th>
+        </tr>
+        <tr>
+            <td>价格</td>
+            <td>免费+付费订阅</td>
+            <td>完全免费开源</td>
+            <td>免费+付费会员</td>
+        </tr>
+        <tr>
+            <td>硬件转码</td>
+            <td>付费解锁</td>
+            <td>免费支持</td>
+            <td>付费解锁</td>
+        </tr>
+        <tr>
+            <td>客户端支持</td>
+            <td>全平台最强</td>
+            <td>主流平台</td>
+            <td>主流平台</td>
+        </tr>
+        <tr>
+            <td>刮削能力</td>
+            <td>最强</td>
+            <td>一般（需插件）</td>
+            <td>较强</td>
+        </tr>
+        <tr>
+            <td>界面美观度</td>
+            <td>最佳</td>
+            <td>简洁</td>
+            <td>中等</td>
+        </tr>
+        <tr>
+            <td>学习成本</td>
+            <td>低</td>
+            <td>中</td>
+            <td>中</td>
+        </tr>
+        <tr>
+            <td>远程访问</td>
+            <td>Plex Relay免费</td>
+            <td>需配置</td>
+            <td>需配置</td>
+        </tr>
+    </table>
+
+    <h2>三、各软件详解</h2>
+
+    <h3>1. Jellyfin：完全免费，开源首选</h3>
+
+    <p><strong>优点</strong>：</p>
+    <ul>
+        <li>完全免费开源，无任何付费墙</li>
+        <li>硬件转码免费支持（Intel QuickSync、NVIDIA NVENC）</li>
+        <li>社区活跃，插件丰富</li>
+        <li>隐私保护，数据完全本地</li>
+    </ul>
+
+    <p><strong>缺点</strong>：</p>
+    <ul>
+        <li>刮削能力一般，需要配置插件</li>
+        <li>4K硬解性能不如Plex/Emby</li>
+        <li>字幕支持需要手动配置</li>
+        <li>客户端体验略差</li>
+    </ul>
+
+    <p><strong>适合人群</strong>：预算有限、喜欢开源、愿意折腾的用户。</p>
+
+    <div class="tip">
+        <strong>💡 推荐配置</strong>：安装MetaShark插件增强中文刮削能力，配合tinyMediaManager使用效果更佳。
+    </div>
+
+    <h3>2. Plex：体验最佳，付费最强</h3>
+
+    <p><strong>优点</strong>：</p>
+    <ul>
+        <li>客户端全平台支持最好</li>
+        <li>界面最美观，体验最流畅</li>
+        <li>刮削能力最强，自动匹配率最高</li>
+        <li>Plex Relay免费远程访问（速度有限）</li>
+        <li>字幕渲染效果最好</li>
+    </ul>
+
+    <p><strong>缺点</strong>：</p>
+    <ul>
+        <li>硬件转码需付费（Plex Pass约$4.99/月）</li>
+        <li>终身会员价格较高（约$119.99）</li>
+        <li>部分功能需要联网验证</li>
+    </ul>
+
+    <p><strong>适合人群</strong>：追求体验、苹果生态用户、预算充足的用户。</p>
+
+    <div class="tip">
+        <strong>💡 省钱技巧</strong>：不买会员也能用，只是没有硬件转码。如果你的NAS性能强或终端支持直播，不需要转码。
+    </div>
+
+    <h3>3. Emby：平衡之选</h3>
+
+    <p><strong>优点</strong>：</p>
+    <ul>
+        <li>功能介于Plex和Jellyfin之间</li>
+        <li>更新速度快，功能迭代积极</li>
+        <li>硬件转码性能优秀</li>
+        <li>价格比Plex便宜</li>
+    </ul>
+
+    <p><strong>缺点</strong>：</p>
+    <ul>
+        <li>硬件转码需付费（Premiere约$4.99/月）</li>
+        <li>字幕渲染效果不如Plex</li>
+        <li>客户端支持不如Plex全面</li>
+    </ul>
+
+    <p><strong>适合人群</strong>：想要Plex体验但预算有限、喜欢折腾的用户。</p>
+
+    <h2>四、硬件转码是什么？重要吗？</h2>
+
+    <p><strong>场景</strong>：你有一部4K HEVC电影，但手机只支持1080P H.264播放。</p>
+
+    <p><strong>解决方案</strong>：</p>
+    <ul>
+        <li><strong>直接播放</strong>：终端自己解码（需要终端支持）</li>
+        <li><strong>转码播放</strong>：NAS实时转成终端支持的格式</li>
+    </ul>
+
+    <p><strong>转码方式对比</strong>：</p>
+    <table>
+        <tr>
+            <th>方式</th>
+            <th>CPU占用</th>
+            <th>画质</th>
+            <th>同时转码数</th>
+        </tr>
+        <tr>
+            <td>软解码（CPU）</td>
+            <td>100%</td>
+            <td>最好</td>
+            <td>1-2路</td>
+        </tr>
+        <tr>
+            <td>硬解码（Intel QuickSync）</td>
+            <td>10-20%</td>
+            <td>好</td>
+            <td>5-10路</td>
+        </tr>
+        <tr>
+            <td>硬解码（NVIDIA NVENC）</td>
+            <td>5-10%</td>
+            <td>好</td>
+            <td>10+路</td>
+        </tr>
+    </table>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：如果你只有一个人看，且终端支持直拨（大部分智能电视、电脑都支持），其实不需要转码。只有多人同时看不同分辨率的视频，或远程访问带宽有限时，才需要转码。
+    </div>
+
+    <h2>五、部署教程（以Jellyfin为例）</h2>
+
+    <h3>步骤1：安装Docker</h3>
+
+    <p>群晖/威联通直接在套件中心安装Docker。</p>
+
+    <h3>步骤2：拉取镜像</h3>
+
+    <pre><code>docker pull jellyfin/jellyfin:latest</code></pre>
+
+    <h3>步骤3：启动容器</h3>
+
+    <pre><code>docker run -d \
+  --name jellyfin \
+  -p 8096:8096 \
+  -v /path/to/config:/config \
+  -v /path/to/cache:/cache \
+  -v /path/to/media:/media \
+  --restart=unless-stopped \
+  jellyfin/jellyfin:latest</code></pre>
+
+    <h3>步骤4：初始化配置</h3>
+
+    <ol>
+        <li>访问 http://NAS_IP:8096</li>
+        <li>选择中文语言</li>
+        <li>创建管理员账号</li>
+        <li>添加媒体库（选择/media目录）</li>
+    </ol>
+
+    <h3>步骤5：配置刮削插件</h3>
+
+    <ol>
+        <li>控制台 → 插件 → 存储库</li>
+        <li>添加MetaShark插件（增强中文刮削）</li>
+        <li>重启Jellyfin</li>
+    </ol>
+
+    <h2>六、选择建议</h2>
+
+    <table>
+        <tr>
+            <th>你的情况</th>
+            <th>推荐</th>
+            <th>理由</th>
+        </tr>
+        <tr>
+            <td>完全不想花钱</td>
+            <td>Jellyfin</td>
+            <td>免费开源，硬件转码免费</td>
+        </tr>
+        <tr>
+            <td>苹果全家桶用户</td>
+            <td>Plex</td>
+            <td>客户端体验最好，Infuse兼容</td>
+        </tr>
+        <tr>
+            <td>多人远程访问</td>
+            <td>Plex</td>
+            <td>Plex Relay免配置</td>
+        </tr>
+        <tr>
+            <td>追求性价比</td>
+            <td>Emby</td>
+            <td>会员比Plex便宜</td>
+        </tr>
+        <tr>
+            <td>喜欢折腾</td>
+            <td>Jellyfin</td>
+            <td>开源可定制，社区活跃</td>
+        </tr>
+    </table>
+
+    <h2>七、性能要求</h2>
+
+    <table>
+        <tr>
+            <th>使用场景</th>
+            <th>最低配置</th>
+            <th>推荐配置</th>
+        </tr>
+        <tr>
+            <td>单用户直拨</td>
+            <td>任意NAS</td>
+            <td>任意NAS</td>
+        </tr>
+        <tr>
+            <td>1080P转码1路</td>
+            <td>J3455以上</td>
+            <td>N100处理器</td>
+        </tr>
+        <tr>
+            <td>4K转码1路</td>
+            <td>N100处理器</td>
+            <td>N5105/N100+核显</td>
+        </tr>
+        <tr>
+            <td>4K转码多路</td>
+            <td>i3处理器</td>
+            <td>i5/i7 + NVIDIA显卡</td>
+        </tr>
+    </table>
+
+    <h2>总结</h2>
+
+    <p><strong>新手入门</strong>：Jellyfin，免费无门槛，学习成本适中。</p>
+
+    <p><strong>追求体验</strong>：Plex，付费用得爽，客户端最全。</p>
+
+    <p><strong>性价比党</strong>：Emby，功能强，价格比Plex便宜。</p>
+
+    <blockquote>
+        三款软件各有优势，没有绝对最好的选择。建议先试用Jellyfin（免费），不满意再考虑Plex或Emby。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：什么值得买、哔哩哔哩、知乎专栏、腾讯云</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+---
+layout: post
+title: NAS照片管理软件对比：Immich、MT-Photos、PhotoPrism、Synology Photos怎么选？
+date: 2026-04-07
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 照片管理, Immich, MT-Photos, PhotoPrism, AI相册]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS照片管理软件对比：Immich、MT-Photos、PhotoPrism、Synology Photos怎么选？ - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS照片管理软件对比：Immich、MT-Photos、PhotoPrism、Synology Photos怎么选？</h1>
+    <div class="meta">2026-04-07 · 数码硬件/NAS存储 · 🔖 NAS, 照片管理, Immich, MT-Photos, PhotoPrism, AI相册</div>
+
+    <p>手机照片越来越多，iCloud、Google Photos要收费，隐私还让人担心。</p>
+
+    <p>有了NAS，可以搭建私有相册，照片在自己手里，安全又省钱。</p>
+
+    <p>但Immich、MT-Photos、PhotoPrism、Synology Photos该选哪个？今天讲清楚。</p>
+
+    <h2>一、为什么需要NAS照片管理？</h2>
+
+    <p><strong>痛点</strong>：</p>
+    <ul>
+        <li>iCloud 200GB要21元/月，2TB要68元/月</li>
+        <li>Google Photos无限存储已取消</li>
+        <li>百度网盘、阿里云盘会压缩画质</li>
+        <li>照片隐私泄露风险</li>
+    </ul>
+
+    <p><strong>NAS优势</strong>：</p>
+    <ul>
+        <li>一次性投入，无限存储空间</li>
+        <li>原画质保存，不压缩</li>
+        <li>隐私完全掌控，数据本地化</li>
+        <li>多用户管理，家庭共享</li>
+        <li>AI智能识别，快速检索</li>
+    </ul>
+
+    <h2>二、四款软件对比</h2>
+
+    <table>
+        <tr>
+            <th>特性</th>
+            <th>Immich</th>
+            <th>MT-Photos</th>
+            <th>PhotoPrism</th>
+            <th>Synology Photos</th>
+        </tr>
+        <tr>
+            <td>价格</td>
+            <td>免费开源</td>
+            <td>99元终身</td>
+            <td>免费开源</td>
+            <td>群晖免费</td>
+        </tr>
+        <tr>
+            <td>AI识别</td>
+            <td>支持（需配置）</td>
+            <td>支持（中文优化）</td>
+            <td>支持</td>
+            <td>支持</td>
+        </tr>
+        <tr>
+            <td>中文支持</td>
+            <td>无（需社区汉化）</td>
+            <td>原生中文</td>
+            <td>部分中文</td>
+            <td>完整中文</td>
+        </tr>
+        <tr>
+            <td>手机App</td>
+            <td>iOS/Android</td>
+            <td>iOS/Android</td>
+            <td>无（仅Web）</td>
+            <td>iOS/Android</td>
+        </tr>
+        <tr>
+            <td>自动备份</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td>需第三方工具</td>
+            <td>支持</td>
+        </tr>
+        <tr>
+            <td>人脸识别</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td>支持</td>
+        </tr>
+        <tr>
+            <td>地点识别</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td>支持</td>
+        </tr>
+        <tr>
+            <td>稳定性</td>
+            <td>快速迭代</td>
+            <td>稳定</td>
+            <td>稳定</td>
+            <td>最稳定</td>
+        </tr>
+    </table>
+
+    <h2>三、各软件详解</h2>
+
+    <h3>1. Immich：开源界最强</h3>
+
+    <p><strong>优点</strong>：</p>
+    <ul>
+        <li>完全免费开源，社区活跃</li>
+        <li>功能完整度高，开发迭代快</li>
+        <li>支持iOS/Android自动备份</li>
+        <li>AI场景识别、人脸识别</li>
+        <li>界面现代美观</li>
+    </ul>
+
+    <p><strong>缺点</strong>：</p>
+    <ul>
+        <li>无原生中文界面</li>
+        <li>亚洲人脸识别效果一般</li>
+        <li>更新快，偶尔有Bug</li>
+        <li>部署相对复杂</li>
+    </ul>
+
+    <p><strong>适合人群</strong>：喜欢开源、愿意折腾、不需要中文界面的用户。</p>
+
+    <div class="tip">
+        <strong>💡 部署建议</strong>：使用Docker Compose一键部署，机器学习模型需要较大内存（建议8GB以上）。
+    </div>
+
+    <h3>2. MT-Photos：国产最强</h3>
+
+    <p><strong>优点</strong>：</p>
+    <ul>
+        <li>原生中文，界面友好</li>
+        <li>AI识别针对中文优化，准确率高</li>
+        <li>支持中文关键词搜索（"夏天"、"海边"）</li>
+        <li>部署简单，开箱即用</li>
+        <li>支持iOS/Android自动备份</li>
+    </ul>
+
+    <p><strong>缺点</strong>：</p>
+    <ul>
+        <li>收费（99元终身，可试用1个月）</li>
+        <li>不开源，存在项目停止维护风险</li>
+    </ul>
+
+    <p><strong>适合人群</strong>：追求体验、需要中文AI搜索、愿意付费的用户。</p>
+
+    <div class="tip">
+        <strong>💡 试用建议</strong>：先试用1个月，体验AI搜索效果再决定是否购买。
+    </div>
+
+    <h3>3. PhotoPrism：老牌开源</h3>
+
+    <p><strong>优点</strong>：</p>
+    <ul>
+        <li>免费开源，成熟稳定</li>
+        <li>AI自动标签、地图视图</li>
+        <li>支持WebDAV同步</li>
+        <li>隐私保护，数据本地化</li>
+    </ul>
+
+    <p><strong>缺点</strong>：</p>
+    <ul>
+        <li>无官方手机App</li>
+        <li>界面不如Immich现代</li>
+        <li>中文支持一般</li>
+        <li>AI识别准确度一般</li>
+    </ul>
+
+    <p><strong>适合人群</strong>：主要用Web端浏览、不需要手机App的用户。</p>
+
+    <h3>4. Synology Photos：群晖专属</h3>
+
+    <p><strong>优点</strong>：</p>
+    <ul>
+        <li>群晖NAS免费内置</li>
+        <li>最稳定，零配置</li>
+        <li>完整中文支持</li>
+        <li>支持iOS/Android自动备份</li>
+        <li>人脸识别、地点识别</li>
+        <li>与群晖系统集成度高</li>
+    </ul>
+
+    <p><strong>缺点</strong>：</p>
+    <ul>
+        <li>仅限群晖NAS使用</li>
+        <li>AI搜索不如MT-Photos智能</li>
+        <li>人脸识别准确度一般</li>
+    </ul>
+
+    <p><strong>适合人群</strong>：群晖用户，追求稳定、不想折腾。</p>
+
+    <h2>四、AI识别能力对比</h2>
+
+    <table>
+        <tr>
+            <th>功能</th>
+            <th>Immich</th>
+            <th>MT-Photos</th>
+            <th>PhotoPrism</th>
+            <th>Synology Photos</th>
+        </tr>
+        <tr>
+            <td>人脸识别</td>
+            <td>⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>场景识别</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>中文搜索</td>
+            <td>❌</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>地点识别</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>物体识别</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+    </table>
+
+    <h2>五、部署教程（以Immich为例）</h2>
+
+    <h3>步骤1：创建目录</h3>
+
+    <pre><code>mkdir -p /path/to/immich/{upload,library,thumbs,profile}</code></pre>
+
+    <h3>步骤2：创建docker-compose.yml</h3>
+
+    <pre><code>version: '3.8'
+services:
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:latest
+    volumes:
+      - ./upload:/usr/src/app/upload
+    environment:
+      - DB_HOSTNAME=immich-db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE_NAME=immich
+    ports:
+      - "2283:3001"
+    depends_on:
+      - immich-db
+      - immich-redis
+
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:latest
+    volumes:
+      - ./model-cache:/cache
+
+  immich-db:
+    image: postgres:14
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=immich
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+  immich-redis:
+    image: redis:6</code></pre>
+
+    <h3>步骤3：启动服务</h3>
+
+    <pre><code>docker-compose up -d</code></pre>
+
+    <h3>步骤4：访问Web界面</h3>
+
+    <p>打开 http://NAS_IP:2283，创建管理员账号。</p>
+
+    <h3>步骤5：安装手机App</h3>
+
+    <p>iOS/Android搜索"Immich"，登录后开启自动备份。</p>
+
+    <h2>六、选择建议</h2>
+
+    <table>
+        <tr>
+            <th>你的情况</th>
+            <th>推荐</th>
+            <th>理由</th>
+        </tr>
+        <tr>
+            <td>群晖用户</td>
+            <td>Synology Photos</td>
+            <td>免费内置，零配置</td>
+        </tr>
+        <tr>
+            <td>追求AI搜索体验</td>
+            <td>MT-Photos</td>
+            <td>中文优化，AI最智能</td>
+        </tr>
+        <tr>
+            <td>喜欢开源免费</td>
+            <td>Immich</td>
+            <td>功能完整，社区活跃</td>
+        </tr>
+        <tr>
+            <td>主要Web浏览</td>
+            <td>PhotoPrism</td>
+            <td>成熟稳定，部署简单</td>
+        </tr>
+        <tr>
+            <td>有娃家庭</td>
+            <td>MT-Photos/Immich</td>
+            <td>AI按人物分类，找照片快</td>
+        </tr>
+    </table>
+
+    <h2>七、硬件要求</h2>
+
+    <table>
+        <tr>
+            <th>照片数量</th>
+            <th>最低内存</th>
+            <th>推荐内存</th>
+            <th>存储空间</th>
+        </tr>
+        <tr>
+            <td>1万张以下</td>
+            <td>4GB</td>
+            <td>8GB</td>
+            <td>100GB</td>
+        </tr>
+        <tr>
+            <td>1-5万张</td>
+            <td>8GB</td>
+            <td>16GB</td>
+            <td>500GB</td>
+        </tr>
+        <tr>
+            <td>5-10万张</td>
+            <td>16GB</td>
+            <td>32GB</td>
+            <td>1TB</td>
+        </tr>
+        <tr>
+            <td>10万张以上</td>
+            <td>32GB</td>
+            <td>64GB</td>
+            <td>2TB+</td>
+        </tr>
+    </table>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：AI识别需要较大内存，如果内存不足会导致识别慢或失败。建议至少8GB。
+    </div>
+
+    <h2>总结</h2>
+
+    <p><strong>群晖用户</strong>：直接用Synology Photos，稳定免费。</p>
+
+    <p><strong>追求AI体验</strong>：MT-Photos，中文搜索最强。</p>
+
+    <p><strong>开源爱好者</strong>：Immich，功能完整，社区活跃。</p>
+
+    <p><strong>简单需求</strong>：PhotoPrism，稳定老牌。</p>
+
+    <blockquote>
+        照片管理是NAS最实用的功能之一。选对软件，让照片管理变成享受而不是负担。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：知乎专栏、什么值得买、阿里云、SegmentFault</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
