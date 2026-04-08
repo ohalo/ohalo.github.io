@@ -1,0 +1,545 @@
+---
+layout: post
+title: NAS监控摄像头接入指南：把NAS变成NVR录像机
+date: 2026-04-08
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 监控, 摄像头, NVR, Surveillance Station, QVR Pro]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS监控摄像头接入指南：把NAS变成NVR录像机 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS监控摄像头接入指南：把NAS变成NVR录像机</h1>
+    <div class="meta">2026-04-08 · 数码硬件/NAS存储 · 🔖 NAS, 监控, 摄像头, NVR, Surveillance Station, QVR Pro</div>
+
+    <p>买了摄像头还要买NVR录像机？</p>
+
+    <p>不用！你的NAS就能变身专业监控录像机，支持多路摄像头接入、24小时录像、远程查看。本文详细讲解如何把NAS变成NVR。</p>
+
+    <h2>一、为什么选择NAS做NVR</h2>
+
+    <h3>传统方案的痛点</h3>
+
+    <ul>
+        <li>摄像头自带的SD卡容量小，只能存几天</li>
+        <li>云存储需要付费，隐私还有风险</li>
+        <li>NVR录像机价格贵，功能单一</li>
+        <li>多个品牌的摄像头无法统一管理</li>
+    </ul>
+
+    <h3>NAS做NVR的优势</h3>
+
+    <table>
+        <tr>
+            <th>优势</th>
+            <th>说明</th>
+        </tr>
+        <tr>
+            <td>大容量存储</td>
+            <td>几TB到几十TB，存几个月都没问题</td>
+        </tr>
+        <tr>
+            <td>统一管理</td>
+            <td>不同品牌摄像头集中管理</td>
+        </tr>
+        <tr>
+            <td>远程访问</td>
+            <td>配合NAS远程功能，随时随地查看</td>
+        </tr>
+        <tr>
+            <td>智能分析</td>
+            <td>移动侦测、人脸识别、区域入侵</td>
+        </tr>
+        <tr>
+            <td>成本更低</td>
+            <td>无需额外购买NVR设备</td>
+        </tr>
+    </table>
+
+    <h2>二、硬件要求与准备</h2>
+
+    <h3>NAS要求</h3>
+
+    <ul>
+        <li><strong>群晖</strong>：支持Surveillance Station的型号（x86架构）</li>
+        <li><strong>威联通</strong>：支持QVR Pro的型号（x86架构性能更好）</li>
+        <li><strong>极空间</strong>：自带监控中心功能</li>
+        <li><strong>飞牛OS</strong>：可通过Docker实现</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：入门级ARM架构NAS（如群晖J系列、威联通TS-212P3）监控路数受限，建议x86架构NAS。
+    </div>
+
+    <h3>摄像头要求</h3>
+
+    <ul>
+        <li>支持<strong>ONVIF</strong>协议（最通用的标准）</li>
+        <li>或支持<strong>RTSP</strong>协议</li>
+        <li>网络摄像头（IP Camera），非模拟摄像头</li>
+    </ul>
+
+    <h3>免费路数限制</h3>
+
+    <table>
+        <tr>
+            <th>NAS品牌</th>
+            <th>免费路数</th>
+            <th>扩展费用</th>
+        </tr>
+        <tr>
+            <td>群晖 Surveillance Station</td>
+            <td>2路</td>
+            <td>约¥400/路</td>
+        </tr>
+        <tr>
+            <td>威联通 QVR Pro（x86）</td>
+            <td>8路</td>
+            <td>订阅制</td>
+        </tr>
+        <tr>
+            <td>威联通 QVR Elite（ARM）</td>
+            <td>2路</td>
+            <td>订阅制</td>
+        </tr>
+        <tr>
+            <td>极空间</td>
+            <td>4路</td>
+            <td>免费</td>
+        </tr>
+    </table>
+
+    <h2>三、群晖Surveillance Station设置</h2>
+
+    <h3>安装套件</h3>
+
+    <ol>
+        <li>打开【套件中心】</li>
+        <li>搜索【Surveillance Station】</li>
+        <li>点击安装</li>
+    </ol>
+
+    <h3>添加摄像头</h3>
+
+    <p><strong>步骤1：打开Surveillance Station</strong></p>
+
+    <p>安装完成后，在主菜单中找到Surveillance Station并打开。</p>
+
+    <p><strong>步骤2：添加摄像头</strong></p>
+
+    <ol>
+        <li>点击左侧菜单【摄像机】</li>
+        <li>点击【添加】→【添加摄像机】</li>
+        <li>选择【完整设置】</li>
+    </ol>
+
+    <p><strong>步骤3：配置摄像头</strong></p>
+
+    <ol>
+        <li>选择品牌（如海康威视选Hikvision）</li>
+        <li>输入摄像头IP地址（可在路由器查看）</li>
+        <li>输入用户名和密码（默认通常是admin/admin）</li>
+        <li>选择协议（ONVIF或RTSP）</li>
+        <li>点击【测试连接】确认能连上</li>
+        <li>点击【下一步】完成添加</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 提示</strong>：如果不知道摄像头品牌，选择【用户定义】→【ONVIF】，输入IP和账号密码即可自动识别。
+    </div>
+
+    <h3>设置录像计划</h3>
+
+    <ol>
+        <li>点击【录制设置】</li>
+        <li>选择录像模式：
+            <ul>
+                <li><strong>连续录制</strong>：24小时不间断录像</li>
+                <li><strong>动作检测录制</strong>：检测到移动才录像</li>
+                <li><strong>计划录制</strong>：按时间表录像</li>
+            </ul>
+        </li>
+        <li>设置录像保留天数</li>
+        <li>选择存储位置</li>
+    </ol>
+
+    <h3>手机远程查看</h3>
+
+    <ol>
+        <li>手机下载【DS cam】APP</li>
+        <li>使用QuickConnect ID或DDNS连接NAS</li>
+        <li>登录后即可查看实时画面和回放</li>
+    </ol>
+
+    <h2>四、威联通QVR Pro设置</h2>
+
+    <h3>安装QVR Pro</h3>
+
+    <ol>
+        <li>打开【App Center】</li>
+        <li>搜索【QVR Pro】（x86 NAS）或【QVR Elite】（ARM NAS）</li>
+        <li>点击安装</li>
+    </ol>
+
+    <h3>初始化设置</h3>
+
+    <ol>
+        <li>打开QVR Pro</li>
+        <li>按向导完成初始设置</li>
+        <li>设置录像存储位置（选择存储池和容量）</li>
+        <li>设置录像保留策略</li>
+    </ol>
+
+    <h3>添加摄像头</h3>
+
+    <p><strong>步骤1：进入摄像头设置</strong></p>
+
+    <p>在QVR Pro界面中选择【摄像头设置】。</p>
+
+    <p><strong>步骤2：搜索或手动添加</strong></p>
+
+    <ol>
+        <li>点击【添加摄像头】</li>
+        <li>选择【搜索摄像头】自动发现局域网摄像头</li>
+        <li>或选择【手动添加】输入摄像头信息</li>
+    </ol>
+
+    <p><strong>步骤3：配置参数</strong></p>
+
+    <ol>
+        <li>选择品牌型号（或ONVIF通用协议）</li>
+        <li>输入IP地址、用户名、密码</li>
+        <li>点击【测试】确认连接</li>
+        <li>设置视频流参数（分辨率、帧率、码率）</li>
+        <li>完成添加</li>
+    </ol>
+
+    <h3>录像文件格式</h3>
+
+    <p>威联通QVR Pro默认保存的录像文件格式：</p>
+
+    <ul>
+        <li><code>.qvi</code>：威联通专用格式</li>
+        <li><code>.mp4</code>：通用视频格式</li>
+        <li><code>.avi</code>：部分版本支持</li>
+    </ul>
+
+    <p>录像文件可直接用播放器打开，也可在QVR Pro中回放查看。</p>
+
+    <h2>五、摄像头兼容性查询</h2>
+
+    <h3>群晖兼容性列表</h3>
+
+    <p>访问群晖官网查询支持的摄像头型号：</p>
+
+    <ul>
+        <li>进入群晖官网→支持→兼容性列表</li>
+        <li>选择【网络摄像机】</li>
+        <li>输入品牌或型号搜索</li>
+    </ul>
+
+    <div class="tip">
+        <strong>💡 提示</strong>：查询时要输入英文品牌名，如海康威视输入"Hikvision"，大华输入"Dahua"。
+    </div>
+
+    <h3>威联通兼容性列表</h3>
+
+    <p>访问威联通官网查询QVR Pro支持的摄像头：</p>
+
+    <ul>
+        <li>进入威联通官网→兼容性→QVR Pro</li>
+        <li>按品牌或型号筛选</li>
+    </ul>
+
+    <h3>通用协议支持</h3>
+
+    <p>即使不在官方列表中，只要摄像头支持以下协议，通常都能接入：</p>
+
+    <ul>
+        <li><strong>ONVIF</strong>：最通用的网络视频标准</li>
+        <li><strong>RTSP</strong>：实时流传输协议</li>
+    </ul>
+
+    <h2>六、存储空间规划</h2>
+
+    <h3>容量计算公式</h3>
+
+    <pre>每日存储容量(GB) = 码率(Mbps) × 3600秒 × 24小时 ÷ 8 ÷ 1024
+
+示例：
+- 200万像素摄像头，码率2Mbps
+- 每日容量 = 2 × 3600 × 24 ÷ 8 ÷ 1024 ≈ 21GB
+- 4路摄像头存30天 = 21GB × 4 × 30 ≈ 2.5TB</pre>
+
+    <h3>不同分辨率存储需求</h3>
+
+    <table>
+        <tr>
+            <th>分辨率</th>
+            <th>推荐码率</th>
+            <th>单路每日容量</th>
+            <th>4路30天总容量</th>
+        </tr>
+        <tr>
+            <td>1080P (200万)</td>
+            <td>2Mbps</td>
+            <td>~21GB</td>
+            <td>~2.5TB</td>
+        </tr>
+        <tr>
+            <td>3MP (300万)</td>
+            <td>3Mbps</td>
+            <td>~32GB</td>
+            <td>~3.8TB</td>
+        </tr>
+        <tr>
+            <td>4MP (400万)</td>
+            <td>4Mbps</td>
+            <td>~42GB</td>
+            <td>~5TB</td>
+        </tr>
+        <tr>
+            <td>8MP (800万)</td>
+            <td>8Mbps</td>
+            <td>~84GB</td>
+            <td>~10TB</td>
+        </tr>
+    </table>
+
+    <h3>节省存储空间的方法</h3>
+
+    <ul>
+        <li><strong>动作检测录制</strong>：只录有移动的画面</li>
+        <li><strong>降低帧率</strong>：从25fps降到15fps</li>
+        <li><strong>降低码率</strong>：在画质可接受范围内降低</li>
+        <li><strong>设置保留天数</strong>：自动删除过期录像</li>
+        <li><strong>使用H.265编码</strong>：比H.264节省约50%空间</li>
+    </ul>
+
+    <h2>七、高级功能</h2>
+
+    <h3>动作检测与报警</h3>
+
+    <ul>
+        <li>设置检测区域（只监控特定区域）</li>
+        <li>设置灵敏度（避免误报）</li>
+        <li>配置报警通知（邮件、APP推送）</li>
+        <li>联动其他设备（如开灯、鸣笛）</li>
+    </ul>
+
+    <h3>人脸识别（部分型号支持）</h3>
+
+    <ul>
+        <li>建立人脸库</li>
+        <li>设置黑白名单</li>
+        <li>陌生人报警</li>
+    </ul>
+
+    <h3>多屏显示</h3>
+
+    <ul>
+        <li>电脑端：浏览器多窗口查看</li>
+        <li>手机端：APP多画面模式</li>
+        <li>电视端：部分NAS支持HDMI输出</li>
+    </ul>
+
+    <h2>八、常见问题解答</h2>
+
+    <p><strong>Q：摄像头连不上怎么办？</strong></p>
+    <p>A：检查以下几点：</p>
+    <ul>
+        <li>摄像头和NAS是否在同一局域网</li>
+        <li>摄像头IP地址是否正确</li>
+        <li>用户名密码是否正确</li>
+        <li>摄像头是否开启ONVIF功能（部分需要手动开启）</li>
+    </ul>
+
+    <p><strong>Q：录像画面卡顿怎么办？</strong></p>
+    <p>A：可能原因和解决方法：</p>
+    <ul>
+        <li>码率设置过高→降低码率</li>
+        <li>NAS性能不足→减少路数或升级NAS</li>
+        <li>网络带宽不足→检查网线或更换千兆设备</li>
+        <li>硬盘速度慢→使用SSD或企业级硬盘</li>
+    </ul>
+
+    <p><strong>Q：可以接入多少路摄像头？</strong></p>
+    <p>A：取决于NAS性能：</p>
+    <ul>
+        <li>入门级NAS（J1900/N5095）：4-8路</li>
+        <li>中端NAS（i3/i5）：8-16路</li>
+        <li>高端NAS（i7/至强）：16路以上</li>
+    </ul>
+
+    <p><strong>Q：录像文件在哪里？</strong></p>
+    <p>A：群晖在存储空间的@surveillance目录；威联通在设置的录像存储位置；可通过文件管理器访问。</p>
+
+    <p><strong>Q：如何导出录像？</strong></p>
+    <p>A：在Surveillance Station或QVR Pro中选择时间范围，点击导出即可下载为MP4文件。</p>
+
+    <h2>九、推荐摄像头</h2>
+
+    <h3>家用性价比款</h3>
+
+    <table>
+        <tr>
+            <th>品牌</th>
+            <th>型号</th>
+            <th>特点</th>
+            <th>参考价</th>
+        </tr>
+        <tr>
+            <td>海康威视</td>
+            <td>DS-2CD3T25-I3</td>
+            <td>200万、POE供电、夜视</td>
+            <td>¥150-200</td>
+        </tr>
+        <tr>
+            <td>大华</td>
+            <td>DH-IPC-HFW2230M</td>
+            <td>200万、H.265、防水</td>
+            <td>¥150-200</td>
+        </tr>
+        <tr>
+            <td>TP-LINK</td>
+            <td>TL-IPC534EP-W</td>
+            <td>300万、全彩夜视</td>
+            <td>¥180-250</td>
+        </tr>
+    </table>
+
+    <h3>户外监控款</h3>
+
+    <table>
+        <tr>
+            <th>品牌</th>
+            <th>型号</th>
+            <th>特点</th>
+            <th>参考价</th>
+        </tr>
+        <tr>
+            <td>海康威视</td>
+            <td>DS-2CD3T46WD-I3</td>
+            <td>400万、全彩、POE</td>
+            <td>¥300-400</td>
+        </tr>
+        <tr>
+            <td>大华</td>
+            <td>DH-IPC-HFW2433M</td>
+            <td>400万、智能侦测</td>
+            <td>¥280-350</td>
+        </tr>
+    </table>
+
+    <h2>十、方案对比</h2>
+
+    <table>
+        <tr>
+            <th>方案</th>
+            <th>优点</th>
+            <th>缺点</th>
+            <th>适合人群</th>
+        </tr>
+        <tr>
+            <td>NAS做NVR</td>
+            <td>大容量、统一管理、功能丰富</td>
+            <td>需要NAS、有路数限制</td>
+            <td>已有NAS用户</td>
+        </tr>
+        <tr>
+            <td>摄像头+SD卡</td>
+            <td>简单、便宜</td>
+            <td>容量小、易丢失</td>
+            <td>临时使用</td>
+        </tr>
+        <tr>
+            <td>云存储</td>
+            <td>无需设备、随时查看</td>
+            <td>需付费、隐私风险</td>
+            <td>不想折腾</td>
+        </tr>
+        <tr>
+            <td>专业NVR</td>
+            <td>稳定、路数多</td>
+            <td>贵、功能单一</td>
+            <td>商业用户</td>
+        </tr>
+    </table>
+
+    <h2>总结</h2>
+
+    <p>用NAS做NVR是家庭监控的最佳方案：</p>
+
+    <ul>
+        <li>大容量存储，存几个月没问题</li>
+        <li>统一管理，不同品牌摄像头一起管</li>
+        <li>远程查看，配合NAS远程功能随时看</li>
+        <li>智能分析，移动侦测、人脸识别</li>
+    </ul>
+
+    <p>推荐配置：</p>
+
+    <ul>
+        <li>2-4路家用：群晖DS220+或威联通TS-464C</li>
+        <li>4-8路：群晖DS920+或威联通TS-464C2</li>
+        <li>8路以上：群晖DS1821+或威联通TS-673A</li>
+    </ul>
+
+    <blockquote>
+        把NAS变成NVR，一物多用，省钱又省心。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：群晖官网、威联通官网、什么值得买、知乎</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
