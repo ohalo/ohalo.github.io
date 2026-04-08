@@ -1,0 +1,583 @@
+---
+layout: post
+title: NAS电子书管理：搭建个人数字图书馆
+date: 2026-04-08
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 电子书, Calibre, 书库, 阅读, 图书管理]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS电子书管理：搭建个人数字图书馆 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS电子书管理：搭建个人数字图书馆</h1>
+    <div class="meta">2026-04-08 · 数码硬件/NAS存储 · 🔖 NAS, 电子书, Calibre, 书库, 阅读, 图书管理</div>
+
+    <p>电子书越来越多，找不到想看的书？不同设备间图书同步麻烦？</p>
+
+    <p>用NAS搭建个人数字图书馆，统一管理所有电子书，随时随地在线阅读！</p>
+
+    <h2>一、方案介绍</h2>
+
+    <h3>Calibre-Web</h3>
+
+    <p>Calibre-Web是基于Calibre数据库的Web界面，功能完善且美观：</p>
+
+    <ul>
+        <li>支持海量图书管理</li>
+        <li>在线阅读（EPUB、PDF、TXT）</li>
+        <li>格式转换（EPUB↔MOBI↔AZW3）</li>
+        <li>推送到Kindle</li>
+        <li>用户权限管理</li>
+        <li>OPDS订阅（阅读器同步）</li>
+        <li>多语言支持（含中文）</li>
+    </ul>
+
+    <h3>其他方案对比</h3>
+
+    <table>
+        <tr>
+            <th>方案</th>
+            <th>特点</th>
+            <th>适合场景</th>
+        </tr>
+        <tr>
+            <td>Calibre-Web</td>
+            <td>功能全面、界面美观</td>
+            <td>个人书库、多用户</td>
+        </tr>
+        <tr>
+            <td>Calibre桌面版</td>
+            <td>功能最强、需PC</td>
+            <td>图书整理、格式转换</td>
+        </tr>
+        <tr>
+            <td>Kavita</td>
+            <td>漫画/杂志优化</td>
+            <td>漫画收藏</td>
+        </tr>
+        <tr>
+            <td>Komga</td>
+            <td>专注漫画</td>
+            <td>漫画管理</td>
+        </tr>
+        <tr>
+            <td>简单文件夹</td>
+            <td>零配置</td>
+            <td>少量图书</td>
+        </tr>
+    </table>
+
+    <h2>二、Docker安装Calibre-Web</h2>
+
+    <h3>准备工作</h3>
+
+    <p><strong>创建目录</strong></p>
+
+    <pre>mkdir -p /volume1/docker/calibre/books
+mkdir -p /volume1/docker/calibre/config</pre>
+
+    <p><strong>获取UID/GID（避免权限问题）</strong></p>
+
+    <pre># SSH连接到NAS
+ssh admin@NAS_IP
+
+# 查看当前用户UID/GID
+id
+
+# 记录输出，如：uid=1024(admin) gid=100(users)</pre>
+
+    <h3>运行容器</h3>
+
+    <pre>docker run -d \
+  --name=calibre-web \
+  --restart=always \
+  -p 8083:8083 \
+  -v /volume1/docker/calibre/books:/books \
+  -v /volume1/docker/calibre/config:/config \
+  -e PUID=1024 \
+  -e PGID=100 \
+  -e TZ=Asia/Shanghai \
+  technosoft2000/calibre-web:latest</pre>
+
+    <p><strong>参数说明</strong>：</p>
+
+    <ul>
+        <li><code>-p 8083:8083</code>：Web访问端口</li>
+        <li><code>-v /books</code>：图书库存储路径</li>
+        <li><code>-v /config</code>：配置文件路径</li>
+        <li><code>-e PUID/PGID</code>：用户权限ID</li>
+    </ul>
+
+    <div class="tip">
+        <strong>💡 镜像选择</strong>：technosoft2000/calibre-web功能最全，支持在线阅读和格式转换。linuxserver/calibre-web更轻量但没有转换功能。
+    </div>
+
+    <h3>初始化配置</h3>
+
+    <p><strong>步骤1：访问安装页面</strong></p>
+
+    <ol>
+        <li>浏览器访问 <code>http://NAS_IP:8083</code></li>
+        <li>进入Calibre-Web配置向导</li>
+    </ol>
+
+    <p><strong>步骤2：配置数据库路径</strong></p>
+
+    <ul>
+        <li>数据库路径：<code>/books</code>（固定写法）</li>
+        <li>如果没有数据库，会自动创建</li>
+    </ul>
+
+    <p><strong>步骤3：设置管理员账号</strong></p>
+
+    <ol>
+        <li>默认管理员：admin</li>
+        <li>默认密码：admin123</li>
+        <li>登录后立即修改密码</li>
+    </ol>
+
+    <h2>三、基本配置</h2>
+
+    <h3>切换中文界面</h3>
+
+    <ol>
+        <li>登录后点击右上角【admin】</li>
+        <li>Language选择【简体中文】</li>
+        <li>点击【保存】</li>
+    </ol>
+
+    <h3>开启上传功能</h3>
+
+    <ol>
+        <li>进入【管理权限】→【编辑基本配置】</li>
+        <li>勾选【启动上传】</li>
+        <li>保存设置</li>
+    </ol>
+
+    <h3>配置格式转换</h3>
+
+    <ol>
+        <li>进入【基本配置】→【扩展程序配置】</li>
+        <li>Calibre电子书转换器路径：<code>/usr/bin/ebook-convert</code></li>
+        <li>Kepubify电子书转换器路径：<code>/usr/bin/kepubify</code></li>
+        <li>保存设置</li>
+    </ol>
+
+    <h3>开启用户注册</h3>
+
+    <ol>
+        <li>【管理权限】→【编辑基本配置】</li>
+        <li>勾选【启动注册】</li>
+        <li>选择【使用邮箱或用户名】</li>
+        <li>配置SMTP邮箱（用于发送验证邮件）</li>
+    </ol>
+
+    <h2>四、图书管理</h2>
+
+    <h3>添加图书</h3>
+
+    <p><strong>方式1：Web上传</strong></p>
+
+    <ol>
+        <li>点击【上传】按钮</li>
+        <li>选择电子书文件（EPUB、PDF、MOBI等）</li>
+        <li>自动提取元数据</li>
+    </ol>
+
+    <p><strong>方式2：批量导入</strong></p>
+
+    <ol>
+        <li>将电子书放入<code>/books</code>文件夹</li>
+        <li>进入【管理权限】→【图书列表】</li>
+        <li>点击【扫描书籍】</li>
+    </ol>
+
+    <p><strong>方式3：Calibre桌面版同步</strong></p>
+
+    <ol>
+        <li>电脑安装Calibre桌面版</li>
+        <li>书库位置设置为NAS的<code>/books</code>文件夹</li>
+        <li>在电脑上整理图书，自动同步到NAS</li>
+    </ol>
+
+    <h3>编辑元数据</h3>
+
+    <p>点击图书→【编辑元数据】：</p>
+
+    <ul>
+        <li>书名、作者、出版社</li>
+        <li>ISBN、出版日期</li>
+        <li>书籍简介</li>
+        <li>封面图片</li>
+        <li>标签分类</li>
+    </ul>
+
+    <h3>创建书架</h3>
+
+    <ol>
+        <li>点击【书架】→【新建书架】</li>
+        <li>输入书架名称（如"技术书籍"、"小说"）</li>
+        <li>将图书添加到书架</li>
+    </ol>
+
+    <h2>五、在线阅读</h2>
+
+    <h3>浏览器阅读</h3>
+
+    <ol>
+        <li>点击图书封面</li>
+        <li>选择【在线阅读】</li>
+        <li>支持EPUB、PDF、TXT格式</li>
+    </ol>
+
+    <h3>阅读设置</h3>
+
+    <ul>
+        <li>字体大小调整</li>
+        <li>背景颜色（白天/夜间模式）</li>
+        <li>行间距、页边距</li>
+        <li>书签功能</li>
+        <li>阅读进度同步</li>
+    </ul>
+
+    <h3>格式转换</h3>
+
+    <p>转换为Kindle格式：</p>
+
+    <ol>
+        <li>点击图书→【转换书籍】</li>
+        <li>选择目标格式（MOBI/AZW3）</li>
+        <li>点击【开始转换】</li>
+        <li>转换完成后下载</li>
+    </ol>
+
+    <h2>六、推送到Kindle</h2>
+
+    <h3>配置Kindle邮箱</h3>
+
+    <ol>
+        <li>登录亚马逊账户</li>
+        <li>进入【管理我的内容和设备】</li>
+        <li>找到Kindle设备的邮箱地址（如xxx@kindle.cn）</li>
+    </ol>
+
+    <h3>配置Calibre-Web</h3>
+
+    <ol>
+        <li>进入【管理权限】→【编辑基本配置】</li>
+        <li>配置SMTP邮箱（用于发送）</li>
+        <li>设置已认可的发件人邮箱</li>
+    </ol>
+
+    <h3>推送图书</h3>
+
+    <ol>
+        <li>点击图书→【推送到Kindle】</li>
+        <li>选择目标Kindle设备</li>
+        <li>自动转换为MOBI格式并发送</li>
+        <li>Kindle联网后自动下载</li>
+    </ol>
+
+    <h2>七、OPDS订阅</h2>
+
+    <h3>什么是OPDS</h3>
+
+    <p>OPDS（Open Publication Distribution System）是一种电子书分发协议，支持在阅读器中直接浏览和下载图书。</p>
+
+    <h3>获取OPDS地址</h3>
+
+    <ul>
+        <li>OPDS地址：<code>http://NAS_IP:8083/opds</code></li>
+        <li>需要登录验证</li>
+    </ul>
+
+    <h3>阅读器配置</h3>
+
+    <p><strong>KyBook（iOS）</strong></p>
+
+    <ol>
+        <li>打开KyBook</li>
+        <li>添加书库→选择OPDS</li>
+        <li>输入Calibre-Web的OPDS地址</li>
+        <li>输入用户名密码</li>
+    </ol>
+
+    <p><strong>FBReader（Android）</strong></p>
+
+    <ol>
+        <li>打开FBReader</li>
+        <li>书库→添加网络书库</li>
+        <li>选择OPDS，输入地址</li>
+    </ol>
+
+    <p><strong>其他支持OPDS的阅读器</strong></p>
+
+    <ul>
+        <li>Marvin（iOS）</li>
+        <li>MapleRead（iOS）</li>
+        <li>Aldiko（Android）</li>
+    </ul>
+
+    <h2>八、用户权限管理</h2>
+
+    <h3>创建用户</h3>
+
+    <ol>
+        <li>【管理用户】→【新建用户】</li>
+        <li>设置用户名、密码、邮箱</li>
+        <li>分配权限（查看/上传/编辑/删除）</li>
+    </ol>
+
+    <h3>权限设置</h3>
+
+    <table>
+        <tr>
+            <th>权限</th>
+            <th>说明</th>
+        </tr>
+        <tr>
+            <td>查看书籍</td>
+            <td>浏览和在线阅读</td>
+        </tr>
+        <tr>
+            <td>下载书籍</td>
+            <td>下载电子书文件</td>
+        </tr>
+        <tr>
+            <td>上传书籍</td>
+            <td>添加新图书</td>
+        </tr>
+        <tr>
+            <td>编辑书籍</td>
+            <td>修改元数据</td>
+        </tr>
+        <tr>
+            <td>删除书籍</td>
+            <td>删除图书</td>
+        </tr>
+        <tr>
+            <td>匿名浏览</td>
+            <td>无需登录查看</td>
+        </tr>
+    </table>
+
+    <h3>访客模式</h3>
+
+    <ol>
+        <li>【管理权限】→【编辑基本配置】</li>
+        <li>勾选【允许匿名浏览】</li>
+        <li>设置访客可见的书架</li>
+    </ol>
+
+    <h2>九、高级功能</h2>
+
+    <h3>豆瓣插件（获取元数据）</h3>
+
+    <ol>
+        <li>进入【管理权限】→【插件】</li>
+        <li>安装豆瓣元数据插件</li>
+        <li>编辑图书时点击【从网络获取元数据】</li>
+        <li>自动从豆瓣获取书籍信息</li>
+    </ol>
+
+    <h3>自动标签</h3>
+
+    <ul>
+        <li>根据文件路径自动添加标签</li>
+        <li>如<code>/books/技术/Python/</code>自动添加"技术"、"Python"标签</li>
+    </ul>
+
+    <h3>定期备份</h3>
+
+    <ul>
+        <li>书库文件夹：<code>/books</code></li>
+        <li>配置文件夹：<code>/config</code></li>
+        <li>使用Hyper Backup定期备份</li>
+    </ul>
+
+    <h2>十、图书获取渠道</h2>
+
+    <h3>正版购买</h3>
+
+    <ul>
+        <li>亚马逊Kindle商店</li>
+        <li>豆瓣阅读</li>
+        <li>微信读书（可导出）</li>
+        <li>多看阅读</li>
+    </ul>
+
+    <h3>免费资源</h3>
+
+    <ul>
+        <li>Project Gutenberg（公版书）</li>
+        <li>Standard Ebooks（精排版公版书）</li>
+        <li>Library Genesis（学术书籍）</li>
+        <li>Z-Library镜像站</li>
+    </ul>
+
+    <h3>格式说明</h3>
+
+    <table>
+        <tr>
+            <th>格式</th>
+            <th>特点</th>
+            <th>适用设备</th>
+        </tr>
+        <tr>
+            <td>EPUB</td>
+            <td>开放标准、排版好</td>
+            <td>手机、平板、Kobo</td>
+        </tr>
+        <tr>
+            <td>MOBI</td>
+            <td>Kindle专用</td>
+            <td>Kindle</td>
+        </tr>
+        <tr>
+            <td>AZW3</td>
+            <td>Kindle新格式</td>
+            <td>Kindle</td>
+        </tr>
+        <tr>
+            <td>PDF</td>
+            <td>固定排版</td>
+            <td>全平台</td>
+        </tr>
+        <tr>
+            <td>TXT</td>
+            <td>纯文本</td>
+            <td>全平台</td>
+        </tr>
+    </table>
+
+    <h2>十一、常见问题</h2>
+
+    <p><strong>Q：Calibre-Web和Calibre桌面版什么关系？</strong></p>
+    <p>A：Calibre-Web使用Calibre的数据库格式，可以共用同一个书库。桌面版适合整理图书，Web版适合在线访问。</p>
+
+    <p><strong>Q：没有数据库怎么办？</strong></p>
+    <p>A：首次运行会自动创建空数据库。也可以先在电脑上安装Calibre桌面版创建书库，再复制到NAS。</p>
+
+    <p><strong>Q：权限错误怎么解决？</strong></p>
+    <p>A：检查PUID/PGID设置是否正确；确保books和config文件夹有读写权限。</p>
+
+    <p><strong>Q：在线阅读支持哪些格式？</strong></p>
+    <p>A：支持EPUB、PDF、TXT。MOBI/AZW3需要转换为EPUB才能在线阅读。</p>
+
+    <p><strong>Q：如何批量导入图书？</strong></p>
+    <p>A：将图书文件复制到books文件夹，然后在管理界面点击"扫描书籍"。</p>
+
+    <p><strong>Q：书库可以多大？</strong></p>
+    <p>A：取决于NAS硬盘容量。Calibre支持管理数万本图书。</p>
+
+    <h2>十二、最佳实践</h2>
+
+    <h3>书库目录结构</h3>
+
+    <pre>books/
+├── 技术/
+│   ├── 编程/
+│   ├── 架构/
+│   └── 产品/
+├── 文学/
+│   ├── 小说/
+│   ├── 散文/
+│   └── 诗歌/
+├── 社科/
+│   ├── 历史/
+│   ├── 经济/
+│   └── 心理学/
+└── 杂志/
+    ├── 2026/
+    └── 2025/</pre>
+
+    <h3>元数据规范</h3>
+
+    <ul>
+        <li>书名：完整书名</li>
+        <li>作者：主要作者</li>
+        <li>标签：添加分类标签</li>
+        <li>评分：个人评分</li>
+        <li>评论：阅读笔记</li>
+    </ul>
+
+    <h3>备份策略</h3>
+
+    <ul>
+        <li>定期备份books和config文件夹</li>
+        <li>重要图书多设备保存</li>
+        <li>使用版本控制管理书库变更</li>
+    </ul>
+
+    <h2>总结</h2>
+
+    <p>用NAS搭建个人数字图书馆，让电子书管理井井有条：</p>
+
+    <ul>
+        <li><strong>统一管理</strong>：所有电子书集中存储</li>
+        <li><strong>随时阅读</strong>：浏览器在线阅读，无需下载</li>
+        <li><strong>多设备同步</strong>：OPDS订阅，阅读器直接访问</li>
+        <li><strong>格式转换</strong>：一键转换为Kindle格式</li>
+        <li><strong>家庭共享</strong>：多用户权限管理</li>
+    </ul>
+
+    <p>打造属于你的私人图书馆，享受阅读的乐趣！</p>
+
+    <blockquote>
+        书是人类进步的阶梯。用NAS搭建个人书库，让知识触手可及。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：Calibre官方文档、Calibre-Web GitHub</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
