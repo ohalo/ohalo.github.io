@@ -1,0 +1,471 @@
+---
+layout: post
+title: NAS数据迁移指南：换NAS、换硬盘如何无损迁移数据？
+date: 2026-04-08
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 数据迁移, 群晖, 威联通, Hyper Backup]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS数据迁移指南：换NAS、换硬盘如何无损迁移数据？ - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS数据迁移指南：换NAS、换硬盘如何无损迁移数据？</h1>
+    <div class="meta">2026-04-08 · 数码硬件/NAS存储 · 🔖 NAS, 数据迁移, 群晖, 威联通, Hyper Backup</div>
+
+    <p>换了新NAS，旧数据怎么办？</p>
+
+    <p>本文详细讲解三种数据迁移方法，帮你安全、快速地完成数据转移。</p>
+
+    <h2>一、迁移前的准备</h2>
+
+    <h3>1. 明确迁移场景</h3>
+
+    <table>
+        <tr>
+            <th>场景</th>
+            <th>推荐方案</th>
+        </tr>
+        <tr>
+            <td>同品牌NAS换机（群晖→群晖）</td>
+            <td>直接硬盘迁移</td>
+        </tr>
+        <tr>
+            <td>同品牌NAS换机（威联通→威联通）</td>
+            <td>直接硬盘迁移</td>
+        </tr>
+        <tr>
+            <td>跨品牌迁移（群晖↔威联通）</td>
+            <td>软件迁移</td>
+        </tr>
+        <tr>
+            <td>旧NAS硬盘换到新NAS</td>
+            <td>直接硬盘迁移</td>
+        </tr>
+        <tr>
+            <td>NAS硬盘更换大容量</td>
+            <td>Hyper Backup备份还原</td>
+        </tr>
+    </table>
+
+    <h3>2. 迁移前必做检查</h3>
+
+    <ul>
+        <li><strong>备份重要数据</strong>：迁移前务必备份，任何迁移都有风险</li>
+        <li><strong>检查兼容性</strong>：确认新旧NAS型号是否支持硬盘迁移</li>
+        <li><strong>记录硬盘顺序</strong>：多盘位NAS要记录硬盘安装位置</li>
+        <li><strong>记录配置信息</strong>：套件设置、用户权限、网络配置等</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ 重要提醒</strong>：迁移前务必备份重要数据！虽然迁移通常安全，但意外总是可能发生。
+    </div>
+
+    <h2>二、方案一：直接硬盘迁移</h2>
+
+    <h3>适用条件</h3>
+
+    <ul>
+        <li>新旧NAS为同一品牌</li>
+        <li>新旧NAS型号支持硬盘迁移</li>
+        <li>硬盘RAID类型兼容</li>
+    </ul>
+
+    <h3>群晖NAS硬盘迁移</h3>
+
+    <p><strong>步骤1：检查兼容性</strong></p>
+
+    <p>访问群晖官网查询NAS系统迁移兼容性，确认新旧NAS型号是否支持迁移。</p>
+
+    <p><strong>步骤2：备份配置</strong></p>
+
+    <ol>
+        <li>登录旧NAS</li>
+        <li>进入【控制面板】→【更新和还原】→【备份配置】</li>
+        <li>将配置文件保存到电脑</li>
+    </ol>
+
+    <p><strong>步骤3：迁移硬盘</strong></p>
+
+    <ol>
+        <li>关闭新旧NAS电源</li>
+        <li>从旧NAS取出硬盘，<strong>记录硬盘顺序和仓位号</strong></li>
+        <li>按原顺序将硬盘安装到新NAS</li>
+        <li>开启新NAS电源</li>
+    </ol>
+
+    <p><strong>步骤4：完成迁移</strong></p>
+
+    <ol>
+        <li>打开Synology Assistant，查看新NAS状态</li>
+        <li>显示"可移转"才能继续</li>
+        <li>点击【联机】，按向导完成迁移</li>
+        <li>迁移完成后恢复系统设置</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：如果迁移过程中出现"硬盘上的所有数据将被删除"的警告，立即停止操作！关机检查硬盘顺序是否正确。
+    </div>
+
+    <h3>威联通NAS硬盘迁移</h3>
+
+    <p><strong>步骤1：检查兼容性</strong></p>
+
+    <p>登录威联通官网，找到【NAS系统迁移】选项，输入来源NAS和目标NAS型号查询兼容性。</p>
+
+    <p><strong>步骤2：迁移硬盘</strong></p>
+
+    <ol>
+        <li>关闭旧NAS，抽出所有硬盘并标记顺序</li>
+        <li>按原顺序插入到新NAS（确保新NAS未开机）</li>
+        <li>插入完成后开机</li>
+        <li>新NAS会自动识别并进入系统</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 提示</strong>：确保新NAS固件版本高于或等于旧机器，否则可能无法识别。
+    </div>
+
+    <h3>硬盘迁移优缺点</h3>
+
+    <table>
+        <tr>
+            <th>优点</th>
+            <th>缺点</th>
+        </tr>
+        <tr>
+            <td>速度快，几分钟完成</td>
+            <td>仅限同品牌NAS</td>
+        </tr>
+        <tr>
+            <td>保留所有数据和设置</td>
+            <td>需要查询兼容性</td>
+        </tr>
+        <tr>
+            <td>无需额外存储空间</td>
+            <td>有一定风险</td>
+        </tr>
+    </table>
+
+    <h2>三、方案二：Hyper Backup迁移（群晖）</h2>
+
+    <h3>适用场景</h3>
+
+    <ul>
+        <li>跨品牌NAS迁移</li>
+        <li>硬盘更换大容量</li>
+        <li>需要完整备份的场景</li>
+    </ul>
+
+    <h3>Hyper Backup能备份什么</h3>
+
+    <ul>
+        <li>✅ 所有共享文件夹数据</li>
+        <li>✅ 系统配置（用户、权限、网络等）</li>
+        <li>✅ 部分套件配置</li>
+        <li>✅ Docker容器数据（在docker文件夹中）</li>
+        <li>❌ 所有套件（需重新安装）</li>
+        <li>❌ Synology账户和许可证</li>
+    </ul>
+
+    <h3>操作步骤</h3>
+
+    <p><strong>步骤1：在新NAS安装Hyper Backup Vault</strong></p>
+
+    <p>进入套件中心，搜索并安装【Hyper Backup Vault】。</p>
+
+    <p><strong>步骤2：在旧NAS创建备份任务</strong></p>
+
+    <ol>
+        <li>打开【Hyper Backup】</li>
+        <li>点击【+】创建【数据备份任务】</li>
+        <li>选择【远程NAS设备】</li>
+        <li>输入新NAS的IP地址、用户名和密码</li>
+        <li>选择要备份的共享文件夹和套件</li>
+        <li>设置备份计划（可选）</li>
+        <li>开始备份</li>
+    </ol>
+
+    <p><strong>步骤3：在新NAS还原数据</strong></p>
+
+    <ol>
+        <li>打开【Hyper Backup】</li>
+        <li>点击【还原】图标→【数据】</li>
+        <li>选择【从已有存储库还原】→【远程NAS设备】</li>
+        <li>选择备份任务，按向导完成还原</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ 空间要求</strong>：Hyper Backup需要临时存储空间。如果旧NAS有1.8TB数据，新NAS需要有3.6TB以上空间，或准备一个能容纳1.8TB数据的移动硬盘。
+    </div>
+
+    <h2>四、方案三：HBS 3迁移（威联通）</h2>
+
+    <h3>适用场景</h3>
+
+    <ul>
+        <li>威联通NAS数据迁移</li>
+        <li>跨品牌NAS迁移（群晖→威联通）</li>
+        <li>云端/本地混合备份</li>
+    </ul>
+
+    <h3>操作步骤（威联通→威联通）</h3>
+
+    <p><strong>步骤1：安装HBS 3</strong></p>
+
+    <p>在目标NAS上安装【Hybrid Backup Sync 3】套件。</p>
+
+    <p><strong>步骤2：创建同步作业</strong></p>
+
+    <ol>
+        <li>打开HBS 3，点击【同步】</li>
+        <li>点击【创建】→选择【活动同步作业】</li>
+        <li>选择【远程CIFS/SMB服务器】</li>
+        <li>输入来源NAS的IP地址、用户名和密码</li>
+        <li>测试连接确保信息正确</li>
+    </ol>
+
+    <p><strong>步骤3：设置同步</strong></p>
+
+    <ol>
+        <li>选择源端文件夹（旧NAS的共享文件夹）</li>
+        <li>选择本地存放目录（新NAS的目标位置）</li>
+        <li>确认同步配置</li>
+        <li>选择【立即同步】开始迁移</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 建议</strong>：如果有多个共享文件夹，建议排序执行，避免多个文件夹同时拷贝造成随机读写过多，降低IO性能。
+    </div>
+
+    <h2>五、方案四：Migration Assistant（群晖）</h2>
+
+    <h3>什么是Migration Assistant</h3>
+
+    <p>群晖官方推出的迁移助手，可以直接将一台NAS的数据、套件及套件设置、系统配置迁移到新的NAS。</p>
+
+    <h3>优势</h3>
+
+    <ul>
+        <li>迁移过程中源NAS仍可正常使用</li>
+        <li>自动迁移套件和数据</li>
+        <li>保留系统配置</li>
+    </ul>
+
+    <h3>操作步骤</h3>
+
+    <p><strong>步骤1：准备工作</strong></p>
+
+    <ul>
+        <li>在目标NAS上安装【Migration Assistant】</li>
+        <li>目标NAS需要有大于或等于来源NAS的存储池</li>
+        <li>备份目标NAS上的数据（会被覆盖）</li>
+    </ul>
+
+    <p><strong>步骤2：开始迁移</strong></p>
+
+    <ol>
+        <li>在目标NAS打开Migration Assistant</li>
+        <li>按向导指示操作</li>
+        <li>等待数据传输完成</li>
+        <li>进行一致性检查并重启源NAS</li>
+    </ol>
+
+    <p><strong>步骤3：完成配置</strong></p>
+
+    <ol>
+        <li>重启目标NAS</li>
+        <li>手动配置Synology账户和许可证</li>
+        <li>检查并配置部分需要手动设置的套件</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：Migration Assistant不会传输Synology账户和许可证，某些服务和套件需要手动配置。
+    </div>
+
+    <h2>六、跨品牌迁移方案</h2>
+
+    <h3>群晖→威联通</h3>
+
+    <ol>
+        <li>在威联通NAS安装HBS 3</li>
+        <li>使用【活动同步作业】功能</li>
+        <li>选择【远程CIFS/SMB服务器】</li>
+        <li>输入群晖NAS的IP、用户名、密码</li>
+        <li>选择群晖的共享文件夹作为源</li>
+        <li>选择威联通的目标文件夹</li>
+        <li>开始同步</li>
+    </ol>
+
+    <h3>威联通→群晖</h3>
+
+    <ol>
+        <li>在群晖NAS安装Hyper Backup</li>
+        <li>创建【数据备份任务】</li>
+        <li>选择【远程CIFS/SMB服务器】</li>
+        <li>输入威联通NAS的IP、用户名、密码</li>
+        <li>选择要备份的文件夹</li>
+        <li>开始备份</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 提示</strong>：跨品牌迁移只能迁移文件数据，套件和系统配置需要重新设置。
+    </div>
+
+    <h2>七、Docker容器数据迁移</h2>
+
+    <h3>群晖Docker迁移</h3>
+
+    <p>Docker容器数据保存在<code>/docker</code>文件夹中，包含：</p>
+
+    <ul>
+        <li>✅ 容器镜像文件</li>
+        <li>✅ 容器数据卷</li>
+        <li>❌ 容器本身（需重新运行）</li>
+        <li>❌ 端口映射和环境变量（需重新配置）</li>
+    </ul>
+
+    <p><strong>迁移步骤</strong>：</p>
+
+    <ol>
+        <li>使用Hyper Backup备份docker文件夹</li>
+        <li>在新NAS还原docker文件夹</li>
+        <li>重新安装Docker套件</li>
+        <li>重新运行容器，配置端口映射和环境变量</li>
+    </ol>
+
+    <h2>八、迁移方案对比</h2>
+
+    <table>
+        <tr>
+            <th>方案</th>
+            <th>适用场景</th>
+            <th>速度</th>
+            <th>完整性</th>
+            <th>难度</th>
+        </tr>
+        <tr>
+            <td>直接硬盘迁移</td>
+            <td>同品牌换机</td>
+            <td>快（几分钟）</td>
+            <td>完整</td>
+            <td>简单</td>
+        </tr>
+        <tr>
+            <td>Hyper Backup</td>
+            <td>群晖任意场景</td>
+            <td>慢（数小时）</td>
+            <td>较完整</td>
+            <td>中等</td>
+        </tr>
+        <tr>
+            <td>HBS 3</td>
+            <td>威联通任意场景</td>
+            <td>中等</td>
+            <td>文件数据</td>
+            <td>中等</td>
+        </tr>
+        <tr>
+            <td>Migration Assistant</td>
+            <td>群晖同品牌</td>
+            <td>中等</td>
+            <td>完整</td>
+            <td>简单</td>
+        </tr>
+    </table>
+
+    <h2>九、常见问题解答</h2>
+
+    <p><strong>Q：迁移过程中可以断电吗？</strong></p>
+    <p>A：绝对不可以！断电可能导致数据损坏或RAID崩溃。</p>
+
+    <p><strong>Q：迁移后IP地址会变吗？</strong></p>
+    <p>A：会。新NAS需要重新配置网络设置，建议使用DHCP保留或静态IP。</p>
+
+    <p><strong>Q：可以只迁移部分数据吗？</strong></p>
+    <p>A：可以。Hyper Backup和HBS 3都支持选择特定文件夹进行迁移。</p>
+
+    <p><strong>Q：迁移后套件需要重新安装吗？</strong></p>
+    <p>A：直接硬盘迁移和Migration Assistant会保留套件；其他方式需要重新安装。</p>
+
+    <p><strong>Q：RAID配置会保留吗？</strong></p>
+    <p>A：直接硬盘迁移会保留RAID配置；其他方式需要在新NAS重新配置。</p>
+
+    <h2>十、迁移注意事项</h2>
+
+    <ul>
+        <li><strong>备份第一</strong>：迁移前务必备份重要数据</li>
+        <li><strong>检查兼容性</strong>：硬盘迁移前确认型号兼容</li>
+        <li><strong>记录配置</strong>：截图保存重要设置</li>
+        <li><strong>保持电源稳定</strong>：迁移过程中不要断电</li>
+        <li><strong>耐心等待</strong>：大容量数据迁移可能需要数小时甚至数天</li>
+        <li><strong>验证数据</strong>：迁移完成后检查关键数据是否完整</li>
+    </ul>
+
+    <h2>总结</h2>
+
+    <p><strong>同品牌换机</strong>→直接硬盘迁移，最快最完整。</p>
+
+    <p><strong>群晖用户</strong>→Hyper Backup或Migration Assistant。</p>
+
+    <p><strong>威联通用户</strong>→HBS 3同步或硬盘迁移。</p>
+
+    <p><strong>跨品牌迁移</strong>→使用SMB/CIFS协议拷贝文件。</p>
+
+    <blockquote>
+        数据迁移是NAS升级必经之路，选对方法，数据安全有保障。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：群晖官网、威联通官网、知乎、腾讯云</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
