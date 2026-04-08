@@ -1,0 +1,434 @@
+---
+layout: post
+title: NAS虚拟机使用指南：在NAS上跑Windows、Linux、软路由
+date: 2026-04-08
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 虚拟机, VMM, Virtualization Station, 软路由]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS虚拟机使用指南：在NAS上跑Windows、Linux、软路由 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS虚拟机使用指南：在NAS上跑Windows、Linux、软路由</h1>
+    <div class="meta">2026-04-08 · 数码硬件/NAS存储 · 🔖 NAS, 虚拟机, VMM, Virtualization Station, 软路由</div>
+
+    <p>NAS只能存文件？太浪费了！</p>
+
+    <p>现代NAS都支持虚拟机功能，你可以在NAS上运行Windows、Linux、软路由，甚至黑群晖。本文详细讲解各大品牌NAS的虚拟机使用方法。</p>
+
+    <h2>一、NAS虚拟机能做什么</h2>
+
+    <h3>常见用途</h3>
+
+    <table>
+        <tr>
+            <th>用途</th>
+            <th>说明</th>
+            <th>推荐系统</th>
+        </tr>
+        <tr>
+            <td>软路由</td>
+            <td>替代家用路由器，功能更强大</td>
+            <td>OpenWrt、iStoreOS</td>
+        </tr>
+        <tr>
+            <td>下载机</td>
+            <td>24小时不间断下载</td>
+            <td>Windows、Linux</td>
+        </tr>
+        <tr>
+            <td>测试环境</td>
+            <td>软件测试、开发环境</td>
+            <td>Ubuntu、CentOS</td>
+        </tr>
+        <tr>
+            <td>远程办公</td>
+            <td>随时随地远程使用</td>
+            <td>Windows 10/11</td>
+        </tr>
+        <tr>
+            <td>黑群晖</td>
+            <td>在NAS里再跑一个群晖</td>
+            <td>DSM（需引导）</td>
+        </tr>
+        <tr>
+            <td>智能家居</td>
+            <td>Home Assistant等</td>
+            <td>Home Assistant OS</td>
+        </tr>
+    </table>
+
+    <h3>硬件要求</h3>
+
+    <ul>
+        <li><strong>CPU</strong>：需要支持虚拟化技术（Intel VT-x/AMD-V）</li>
+        <li><strong>内存</strong>：建议8GB以上，每开一个虚拟机至少分配2GB</li>
+        <li><strong>存储</strong>：SSD推荐，机械硬盘也能跑但性能较差</li>
+        <li><strong>网络</strong>：双网口更适合做软路由</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：入门级ARM架构NAS（如群晖J系列）不支持虚拟机功能，购买前需确认CPU是否支持虚拟化。
+    </div>
+
+    <h2>二、群晖VMM虚拟机</h2>
+
+    <h3>安装VMM</h3>
+
+    <ol>
+        <li>打开【套件中心】</li>
+        <li>搜索【Virtual Machine Manager】</li>
+        <li>点击安装</li>
+        <li>安装完成后打开，按向导完成初始化设置</li>
+    </ol>
+
+    <h3>创建Windows虚拟机</h3>
+
+    <p><strong>步骤1：准备镜像</strong></p>
+
+    <ol>
+        <li>下载Windows ISO镜像（推荐MSDN我告诉你）</li>
+        <li>下载Synology Guest Tool（VMM中可下载）</li>
+        <li>进入VMM→【映像】→【新增】→上传ISO文件</li>
+    </ol>
+
+    <p><strong>步骤2：创建虚拟机</strong></p>
+
+    <ol>
+        <li>VMM→【虚拟机】→【新增】</li>
+        <li>选择【Microsoft Windows】</li>
+        <li>选择存储空间</li>
+        <li>配置参数：
+            <ul>
+                <li>CPU：根据NAS核心数分配（建议2-4核）</li>
+                <li>内存：建议2-4GB</li>
+                <li>硬盘：建议50GB以上</li>
+                <li>网络：默认即可</li>
+            </ul>
+        </li>
+        <li>选择Windows ISO镜像</li>
+        <li>完成创建并启动</li>
+    </ol>
+
+    <p><strong>步骤3：安装系统</strong></p>
+
+    <ol>
+        <li>启动虚拟机，按提示安装Windows</li>
+        <li>安装完成后，在虚拟机中挂载Synology Guest Tool</li>
+        <li>安装Guest Tool驱动，提升性能和兼容性</li>
+    </ol>
+
+    <h3>创建Linux虚拟机</h3>
+
+    <ol>
+        <li>VMM→【虚拟机】→【新增】</li>
+        <li>选择【Linux】</li>
+        <li>选择发行版（Ubuntu、Debian等）</li>
+        <li>配置CPU、内存、硬盘</li>
+        <li>上传Linux ISO镜像</li>
+        <li>完成创建并安装系统</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 建议</strong>：Linux虚拟机资源占用更低，1核1GB内存就能流畅运行，适合做轻量级服务。
+    </div>
+
+    <h2>三、威联通Virtualization Station</h2>
+
+    <h3>安装Virtualization Station</h3>
+
+    <ol>
+        <li>打开【App Center】</li>
+        <li>搜索【Virtualization Station】</li>
+        <li>点击安装</li>
+    </ol>
+
+    <h3>创建虚拟机</h3>
+
+    <p><strong>步骤1：准备镜像</strong></p>
+
+    <ol>
+        <li>下载系统ISO镜像</li>
+        <li>在FileStation中创建虚拟机数据文件夹</li>
+        <li>将ISO文件上传到该文件夹</li>
+    </ol>
+
+    <p><strong>步骤2：创建虚拟机</strong></p>
+
+    <ol>
+        <li>打开Virtualization Station</li>
+        <li>点击【创建虚拟机】</li>
+        <li>选择操作系统类型和版本</li>
+        <li>配置参数：
+            <ul>
+                <li>CPU：选择Passthrough直接使用主机CPU</li>
+                <li>内存：建议2GB以上</li>
+                <li>硬盘：设置容量和格式（推荐qcow2）</li>
+                <li>网络：默认网卡</li>
+                <li>显卡：推荐QXL，提供更好的远程图形性能</li>
+            </ul>
+        </li>
+        <li>选择ISO镜像文件</li>
+        <li>勾选【创建后自动启动】</li>
+        <li>点击建立</li>
+    </ol>
+
+    <h3>安装飞牛OS虚拟机（示例）</h3>
+
+    <ol>
+        <li>下载fnOS镜像（fnos.xxx.iso）</li>
+        <li>创建虚拟机时选择Linux→Debian 9.1.0</li>
+        <li>CPU选择Passthrough</li>
+        <li>分配1核1GB内存（飞牛OS资源占用很低）</li>
+        <li>硬盘控制器选择SCSI</li>
+        <li>选择fnOS ISO镜像</li>
+        <li>创建后自动启动，按提示完成安装</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 提示</strong>：威联通Virtualization Station支持.ova、.ovf、.qvm格式导入，可以直接导入现成的虚拟机。
+    </div>
+
+    <h2>四、飞牛OS虚拟机</h2>
+
+    <h3>飞牛OS的虚拟化能力</h3>
+
+    <p>飞牛OS基于Linux内核，支持KVM虚拟化，可以通过以下方式运行虚拟机：</p>
+
+    <ul>
+        <li>【应用中心】安装虚拟机管理工具</li>
+        <li>使用Docker运行轻量级虚拟环境</li>
+        <li>命令行使用qemu-kvm</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：飞牛OS目前虚拟机功能相对简单，重度虚拟化用户建议用群晖或威联通。
+    </div>
+
+    <h2>五、软路由部署实战</h2>
+
+    <h3>为什么用NAS做软路由</h3>
+
+    <ul>
+        <li>24小时开机，不额外耗电</li>
+        <li>性能比家用路由器强</li>
+        <li>功能丰富：去广告、科学上网、流量控制</li>
+        <li>NAS和软路由一体化，节省设备</li>
+    </ul>
+
+    <h3>硬件要求</h3>
+
+    <ul>
+        <li>NAS必须有<strong>双网口</strong>（一个接光猫，一个接交换机）</li>
+        <li>建议x86架构，性能更好</li>
+        <li>至少4GB内存</li>
+    </ul>
+
+    <h3>OpenWrt软路由部署（群晖VMM）</h3>
+
+    <p><strong>步骤1：下载OpenWrt镜像</strong></p>
+
+    <ol>
+        <li>下载OpenWrt x86镜像（img格式）</li>
+        <li>使用StarWind V2V Converter转换为vmdk格式</li>
+    </ol>
+
+    <p><strong>步骤2：创建虚拟机</strong></p>
+
+    <ol>
+        <li>VMM→【虚拟机】→【新增】→【导入】</li>
+        <li>选择Linux→其他Linux</li>
+        <li>分配1核512MB内存（OpenWrt资源占用极低）</li>
+        <li>导入转换后的vmdk镜像</li>
+        <li>添加第二块网卡（用于LAN口）</li>
+    </ol>
+
+    <p><strong>步骤3：配置网络</strong></p>
+
+    <ol>
+        <li>启动OpenWrt虚拟机</li>
+        <li>通过VNC连接，修改网络配置</li>
+        <li>设置WAN口和LAN口</li>
+        <li>配置DHCP和DNS</li>
+    </ol>
+
+    <p><strong>步骤4：物理连接</strong></p>
+
+    <ol>
+        <li>NAS网口1连接光猫（WAN）</li>
+        <li>NAS网口2连接交换机或路由器（LAN）</li>
+        <li>设置完成后，所有设备通过NAS上网</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ 风险提示</strong>：软路由配置错误可能导致断网，建议先在测试环境验证配置。
+    </div>
+
+    <h2>六、虚拟机性能优化</h2>
+
+    <h3>CPU优化</h3>
+
+    <ul>
+        <li>开启CPU热添加（支持运行时动态调整）</li>
+        <li>选择Passthrough模式直接使用物理CPU</li>
+        <li>不要分配超过物理核心数的虚拟CPU</li>
+    </ul>
+
+    <h3>内存优化</h3>
+
+    <ul>
+        <li>开启内存共享（相同内存页共享，节省空间）</li>
+        <li>为NAS系统预留至少2GB内存</li>
+        <li>根据实际需求分配，不要过度分配</li>
+    </ul>
+
+    <h3>存储优化</h3>
+
+    <ul>
+        <li>虚拟机磁盘放在SSD上，性能提升明显</li>
+        <li>使用精简配置（Thin Provisioning），按需分配空间</li>
+        <li>定期整理虚拟机磁盘碎片</li>
+    </ul>
+
+    <h3>网络优化</h3>
+
+    <ul>
+        <li>使用virtio网卡驱动，性能更好</li>
+        <li>软路由场景使用直通网卡</li>
+        <li>多虚拟机时配置不同的虚拟交换机</li>
+    </ul>
+
+    <h2>七、常见问题与解决</h2>
+
+    <p><strong>Q：虚拟机启动很慢怎么办？</strong></p>
+    <p>A：检查磁盘类型，机械硬盘跑虚拟机会很慢，建议用SSD；同时检查内存分配是否充足。</p>
+
+    <p><strong>Q：虚拟机无法连接网络？</strong></p>
+    <p>A：检查虚拟网卡配置，确保选择了正确的网络模式（桥接/NAT）；软路由场景检查网口直通设置。</p>
+
+    <p><strong>Q：可以开多少个虚拟机？</strong></p>
+    <p>A：取决于NAS硬件配置，一般建议：4核8GB内存的NAS开2-3个轻量级虚拟机；8核16GB可以开4-5个。</p>
+
+    <p><strong>Q：虚拟机会影响NAS性能吗？</strong></p>
+    <p>A：会占用CPU、内存、磁盘资源，建议在高负载时关闭不必要的虚拟机。</p>
+
+    <p><strong>Q：虚拟机数据如何备份？</strong></p>
+    <p>A：可以使用快照功能，或导出虚拟机文件进行备份。</p>
+
+    <h2>八、虚拟机方案对比</h2>
+
+    <table>
+        <tr>
+            <th>功能</th>
+            <th>群晖VMM</th>
+            <th>威联通Virtualization Station</th>
+            <th>飞牛OS</th>
+        </tr>
+        <tr>
+            <td>易用性</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>性能</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>功能丰富度</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>软路由支持</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐</td>
+        </tr>
+        <tr>
+            <td>快照功能</td>
+            <td>✅ 支持</td>
+            <td>✅ 支持</td>
+            <td>❌ 不支持</td>
+        </tr>
+    </table>
+
+    <h2>总结</h2>
+
+    <p>NAS虚拟机让一台设备发挥多台设备的价值：</p>
+
+    <ul>
+        <li><strong>群晖用户</strong>：VMM易用性强，适合新手</li>
+        <li><strong>威联通用户</strong>：Virtualization Station性能更好，适合进阶</li>
+        <li><strong>飞牛OS用户</strong>：虚拟化功能还在完善，建议轻度使用</li>
+    </ul>
+
+    <p>推荐玩法：</p>
+
+    <ul>
+        <li>轻度用户：开1个Linux跑下载+1个OpenWrt软路由</li>
+        <li>中度用户：开1个Windows远程桌面+1个Linux服务器</li>
+        <li>重度用户：多虚拟机+软路由+测试环境</li>
+    </ul>
+
+    <blockquote>
+        虚拟机是NAS的进阶玩法，合理利用能让你的NAS成为真正的家庭数据中心。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：群晖官网、威联通官网、什么值得买、知乎</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
