@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我用 AI 写了大半年代码，发现最缺的不是模型，是一套开发流程 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/ai-tools/">AI工具</a>
+    </div>
+
+    <h1>我用 AI 写了大半年代代码，发现最缺的不是模型，是一套开发流程</h1>
+    <div class="meta">2026-04-08 · AI工具 · 🔖 AI开发, HAFW, Claude Code, Cursor, 效率工具</div>
+
+    <p>用 Cursor 写前端很爽，用 Claude Code 写后端很爽，用 Copilot 补全代码很爽。</p>
+
+    <p>但把它们串起来做一个完整的项目——</p>
+
+    <p>爽不起来了。</p>
+
+    <h2>说出来有点荒谬</h2>
+
+    <p>AI 写代码的能力已经很强了，但每次让它帮我做一个完整的项目，结果都是：</p>
+
+    <p>要么做到一半说"已经完成了"，实际上功能残缺；<br>
+要么前后端风格不统一，接口和数据模型对不上；<br>
+要么测试写了，但根本跑不过；<br>
+要么代码跑通了，但不知道为什么要这样设计。</p>
+
+    <p>我以为是我不会提问。</p>
+
+    <p>后来我发现，不是的。</p>
+
+    <p><strong>是 AI 工具只管"生成"，不管"流程"。</strong></p>
+
+    <h2>Cursor、Claude Code、Copilot 都在做什么</h2>
+
+    <p>它们都在解决同一个问题：<strong>给定上下文，生成代码。</strong></p>
+
+    <p>但软件开发不只是"生成代码"这件事。</p>
+
+    <p>软件开发是：</p>
+    <ul>
+        <li>需求分析 → 搞清楚要做什么</li>
+        <li>架构设计 → 搞清楚怎么做</li>
+        <li>代码生成 → 动手做</li>
+        <li>测试验证 → 确保做对了</li>
+        <li>部署上线 → 让别人用得上</li>
+        <li>监控维护 → 保证不出问题</li>
+    </ul>
+
+    <p>每个环节都有坑，每个环节的产出物要交给下一个环节。</p>
+
+    <p><strong>现在的 AI 工具，只在最中间那一环——代码生成——做得很好。</strong></p>
+
+    <p>两头的需求和部署，基本不管。</p>
+
+    <h2>所以我自己搭了一套</h2>
+
+    <p>我花了两个月，把我自己的开发流程固定下来，做成了一个工具。</p>
+
+    <p>叫 HAFW——High-efficiency AI Framework Workspace。</p>
+
+    <p>一句话：<strong>让 AI 从需求到部署都能跑起来的开发框架。</strong></p>
+
+    <p>27 个智能指令，覆盖 6 个阶段：</p>
+
+    <table>
+        <tr><th>阶段</th><th>做的事</th><th>核心指令</th></tr>
+        <tr><td><strong>需求分析</strong></td><td>把用户需求翻译成 PRD</td><td><code>/hafw-req-analysis</code></td></tr>
+        <tr><td><strong>架构设计</strong></td><td>生成系统架构和数据库</td><td><code>/hafw-design-arch</code></td></tr>
+        <tr><td><strong>代码开发</strong></td><td>按架构生成代码</td><td><code>/hafw-dev-code</code></td></tr>
+        <tr><td><strong>质量保障</strong></td><td>自动化测试 + 代码审查</td><td><code>/hafw-qa-test</code></td></tr>
+        <tr><td><strong>部署运维</strong></td><td>一键构建 + 发布 + 监控</td><td><code>/hafw-deploy-release</code></td></tr>
+        <tr><td><strong>上下文管理</strong></td><td>让 AI 记住项目上下文</td><td><code>/hafw-context-init</code></td></tr>
+    </table>
+
+    <p>基本思路是：<strong>每个阶段有明确的产出物，每个产出物进入下一个阶段之前要评审。</strong></p>
+
+    <p>这样 AI 就不是一个人在闷头写代码了，而是一个有流程、有规范、有检查点的开发团队。</p>
+
+    <h2>拿一个具体例子说</h2>
+
+    <p>比如我最近想做一个"用户积分系统"。</p>
+
+    <p>以前我会跟 AI 说："帮我做一个积分系统。"</p>
+
+    <p>然后 AI 给我一堆代码，我看不懂，改不动，越改越乱。</p>
+
+    <p>现在我会这样做：</p>
+
+    <p><strong>第一步：需求分析</strong></p>
+
+<pre><code>$ /hafw-req-analysis "实现用户积分系统"</code></pre>
+
+    <p>它会问我要一系列问题：</p>
+    <ul>
+        <li>用户怎么获得积分？（购物？签到？邀请？）</li>
+        <li>积分怎么扣减？（过期？兑换商品？）</li>
+        <li>要不要风控？（同一用户高频操作怎么算？）</li>
+    </ul>
+
+    <p>然后生成一份结构化的需求文档，不是 PRD 那种长篇大论，是可以直接拿来开发的那种。</p>
+
+    <p><strong>第二步：架构设计</strong></p>
+
+    <p>根据需求文档，自动生成：</p>
+    <ul>
+        <li>数据库表结构</li>
+        <li>API 接口规范</li>
+        <li>项目目录结构</li>
+    </ul>
+
+    <p>这个阶段我可以 review，可以修改，可以提意见。</p>
+
+    <p><strong>第三步：代码生成</strong></p>
+
+    <p>根据评审过的架构，自动生成代码。</p>
+
+    <p>而且生成的是<strong>能跑的那种</strong>——有边界处理，有异常捕获，不是那种"示例代码"。</p>
+
+    <p><strong>第四步：测试 + 审查</strong></p>
+
+    <p>自动生成测试用例，跑一遍，有问题直接标出来。</p>
+
+    <p><strong>第五步：部署</strong></p>
+
+<pre><code>$ /hafw-deploy-release</code></pre>
+
+    <p>Docker 打包、CI/CD 流程、监控告警，一键搞定。</p>
+
+    <p>整个过程不需要我盯着，AI 会按流程走，每一步做完等我确认。</p>
+
+    <h2>和 Cursor、Claude Code 比，HAFW 强在哪</h2>
+
+    <table>
+        <tr><th>维度</th><th>Cursor</th><th>Claude Code</th><th>HAFW</th></tr>
+        <tr><td>单文件代码质量</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td>需求分析能力</td><td>⭐</td><td>⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td>多文件一致性</td><td>⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td>测试自动生成</td><td>插件支持</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td>部署自动化</td><td>❌</td><td>❌</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td>团队协作流程</td><td>❌</td><td>❌</td><td>⭐⭐⭐⭐</td></tr>
+    </table>
+
+    <p>简单说：<strong>HAFW 不是比它们强，是它们不管的事，HAFW 管了。</strong></p>
+
+    <h2>怎么安装</h2>
+
+    <p>支持主流 AI 助手工具：</p>
+
+<pre><code># 安装 CLI
+$ npm install -g hafw-cli
+
+# 初始化项目
+$ hafw init my-project
+
+# 开始需求分析
+$ hafw req-analysis "实现用户积分系统"</code></pre>
+
+    <p>然后在你习惯的 AI 工具里，按照提示操作就行。支持 Copilot、Cursor、Claude Code 等主流工具。</p>
+
+    <p>完整文档：<a href="https://hafw.halo26812.eu.org/">https://hafw.halo26812.eu.org/</a></p>
+
+    <h2>我自己用了多久的感受</h2>
+
+    <p>用 HAFW 之后，开发一个中等规模功能的平均时间从 2-3 天降到了半天。</p>
+
+    <p>不是 AI 写得更快了，是<strong>流程对了，不用返工了</strong>。</p>
+
+    <p>以前返工的原因大多是：</p>
+    <ul>
+        <li>做到一半发现需求没想清楚 → HAFW 要求需求评审后才能继续</li>
+        <li>代码写完了发现架构有问题 → HAFW 要求架构评审后才能开发</li>
+        <li>测试跑不过 → HAFW 自动生成测试，不会漏</li>
+    </ul>
+
+    <p>流程固定了，坑就少了。</p>
+
+    <hr>
+
+    <p>以上。</p>
+
+    <p>我是 <strong>@halo-67-80</strong>，自己搭了一套 AI 开发框架。</p>
+
+    <p>如果你也在用 AI 写代码，欢迎评论区聊聊：你的开发流程是怎么组织的？有没有遇到"AI 生成没问题，串起来就出问题"的情况？</p>
+
+    <p>觉得有收获的，点个赞再走 👋</p>
+
+    <hr>
+
+    <p><em>数据来源：HAFW 官方文档、GitHub Copilot、Cursor、Claude Code 官网</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
