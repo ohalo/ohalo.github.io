@@ -4,46 +4,55 @@ layout: default
 <article>
     <h1>{{ page.title }}</h1>
     
-    {% comment %}处理多级分类映射{% endcomment %}
-    {% assign category_display = "" %}
-    {% for cat in page.categories %}
-        {% if cat == "ai-observation" %}
-            {% assign category_display = category_display | append: "AI观察" %}
-        {% elsif cat == "ai-tools" %}
-            {% assign category_display = category_display | append: "AI工具" %}
-        {% elsif cat == "society" %}
-            {% assign category_display = category_display | append: "社会现象" %}
-        {% elsif cat == "industry" %}
-            {% assign category_display = category_display | append: "行业动态" %}
-        {% elsif cat == "career" %}
-            {% assign category_display = category_display | append: "职业影响" %}
-        {% elsif cat == "claude-code" %}
-            {% assign category_display = category_display | append: "Claude代码" %}
-        {% elsif cat == "openclaw" %}
-            {% assign category_display = category_display | append: "OpenClaw" %}
-        {% elsif cat == "others" %}
-            {% assign category_display = category_display | append: "其他工具" %}
-        {% elsif cat == "hardware" %}
-            {% assign category_display = category_display | append: "硬件" %}
-        {% elsif cat == "nas" %}
-            {% assign category_display = category_display | append: "NAS存储" %}
-        {% elsif cat == "entrepreneurship" %}
-            {% assign category_display = category_display | append: "创业思考" %}
-        {% elsif cat == "tech-tips" %}
-            {% assign category_display = category_display | append: "技术技巧" %}
-        {% elsif cat == "software" %}
-            {% assign category_display = category_display | append: "软件工具" %}
-        {% elsif cat == "investment" %}
-            {% assign category_display = category_display | append: "投资理财" %}
-        {% elsif cat == "stock-analysis" %}
-            {% assign category_display = category_display | append: "股票分析" %}
-        {% else %}
-            {% assign category_display = category_display | append: cat %}
-        {% endif %}
-        {% unless forloop.last %}
-            {% assign category_display = category_display | append: " > " %}
-        {% endunless %}
-    {% endfor %}
+    {% comment %}处理category字段（一级或多级分类）{% endcomment %}
+    {% assign cat = page.category %}
+    {% if cat %}
+        {% assign category_display = "" %}
+        {% assign cat_parts = cat | split: "/" %}
+        {% for part in cat_parts %}
+            {% if part == "ai-observation" %}
+                {% assign part_name = "AI观察" %}
+            {% elsif part == "society" %}
+                {% assign part_name = "社会现象" %}
+            {% elsif part == "industry" %}
+                {% assign part_name = "行业动态" %}
+            {% elsif part == "career" %}
+                {% assign part_name = "职业影响" %}
+            {% elsif part == "ai-tools" %}
+                {% assign part_name = "AI工具" %}
+            {% elsif part == "claude-code" %}
+                {% assign part_name = "Claude代码" %}
+            {% elsif part == "openclaw" %}
+                {% assign part_name = "OpenClaw" %}
+            {% elsif part == "others" %}
+                {% assign part_name = "其他工具" %}
+            {% elsif part == "hafw" %}
+                {% assign part_name = "HAFW框架" %}
+            {% elsif part == "hardware" %}
+                {% assign part_name = "硬件" %}
+            {% elsif part == "nas" %}
+                {% assign part_name = "NAS存储" %}
+            {% elsif part == "entrepreneurship" %}
+                {% assign part_name = "创业思考" %}
+            {% elsif part == "tech-tips" %}
+                {% assign part_name = "技术技巧" %}
+            {% elsif part == "software" %}
+                {% assign part_name = "软件工具" %}
+            {% elsif part == "investment" %}
+                {% assign part_name = "投资理财" %}
+            {% elsif part == "stock-analysis" %}
+                {% assign part_name = "股票分析" %}
+            {% else %}
+                {% assign part_name = part %}
+            {% endif %}
+            {% assign category_display = category_display | append: part_name %}
+            {% unless forloop.last %}
+                {% assign category_display = category_display | append: " > " %}
+            {% endunless %}
+        {% endfor %}
+    {% else %}
+        {% assign category_display = "未分类" %}
+    {% endif %}
     
     <div class="meta">{{ page.date | date: "%Y-%m-%d" }} · {{ category_display }} · 🔖 {{ page.tags | join: ", " }}</div>
     
