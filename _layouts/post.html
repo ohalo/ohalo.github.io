@@ -4,7 +4,32 @@ layout: default
 <article>
     <h1>{{ page.title }}</h1>
     
-    <div class="meta">{{ page.date | date: "%Y-%m-%d" }} · {% if page.categories %}{{ page.categories | join: " > " }}{% else %}{{ page.category }}{% endif %} · 🔖 {{ page.tags | join: ", " }}</div>
+    {% assign category_names = "" | split: "" %}
+    {% for cat in page.categories %}
+        {% if cat == "ai-observation" %}
+            {% assign category_names = category_names | push: "AI观察" %}
+        {% elsif cat == "ai-tools" %}
+            {% assign category_names = category_names | push: "AI工具" %}
+        {% elsif cat == "society" %}
+            {% assign category_names = category_names | push: "社会现象" %}
+        {% elsif cat == "industry" %}
+            {% assign category_names = category_names | push: "行业动态" %}
+        {% elsif cat == "career" %}
+            {% assign category_names = category_names | push: "职业影响" %}
+        {% elsif cat == "hardware" %}
+            {% assign category_names = category_names | push: "硬件" %}
+        {% elsif cat == "entrepreneurship" %}
+            {% assign category_names = category_names | push: "创业思考" %}
+        {% elsif cat == "tech-tips" %}
+            {% assign category_names = category_names | push: "技术技巧" %}
+        {% elsif cat == "claude-code" %}
+            {% assign category_names = category_names | push: "Claude代码" %}
+        {% else %}
+            {% assign category_names = category_names | push: cat %}
+        {% endif %}
+    {% endfor %}
+    
+    <div class="meta">{{ page.date | date: "%Y-%m-%d" }} · {{ category_names | join: " > " }} · 🔖 {{ page.tags | join: ", " }}</div>
     
     {{ content }}
 </article>
