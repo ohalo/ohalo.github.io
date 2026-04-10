@@ -1,0 +1,230 @@
+---
+layout: post
+title: "OpenClaw onboard：一条命令，10个步骤，从零到能用"
+date: 2026-04-10
+category: ai-tools/openclaw
+category_name: "AI工具/OpenClaw"
+---
+
+<p>刚装完 OpenClaw，终端里敲什么？
+</p>
+
+<p>很多人第一反应是 <code>openclaw help</code>。但真正应该敲的是：
+</p>
+
+<pre><code class="language-bash">openclaw onboard
+</code></pre>
+
+<p>这一个命令，会带你走完 10 个步骤——从检测现有配置到安装守护进程，从选模型到接渠道，最后给你一个 24 小时在线的 AI 助手。
+</p>
+
+<p>我自己跑过两次这个流程，第一次选了 OpenAI API + Telegram，第二次换了 Codex 订阅 + 微信。两次体验完全不一样，踩过的坑也不一样。
+</p>
+
+<hr>
+
+<h2>第一步：它不会乱删你的东西</h2>
+
+<p>如果你之前跑过 <code>onboard</code>，再跑一次会怎样？
+</p>
+
+<p>它会问你要不要保留现有配置。选项有三个：
+</p>
+
+<ul>
+<li><strong>保留</strong>：直接跳到下一步</li>
+<li><strong>修改</strong>：保留部分配置，改其他的</li>
+<li><strong>重置</strong>：清空重来</li>
+</ul>
+
+<p>重点：<strong>重置用 <code>trash</code>，不用 <code>rm</code></strong>。删掉的东西在废纸篓里，还能找回来。
+</p>
+
+<p>除非你明确选了"重置"，否则什么都不会丢。
+</p>
+
+<hr>
+
+<h2>第二步：选模型，像选手机套餐</h2>
+
+<p>这是最容易卡住的一步。
+</p>
+
+<p>OpenClaw 支持的模型提供商有十几个：Anthropic、OpenAI、Codex、xAI、Ollama、MiniMax、StepFun、Moonshot……
+</p>
+
+<p>怎么选？我整理了一个简单的对比：
+</p>
+
+<table>
+<tr><td>方案</td><td>适合谁</td><td>成本</td></tr>
+<tr><td>Codex 订阅</td><td>重度用户，每天用</td><td>$20/月，不限量</td></tr>
+<tr><td>OpenAI API</td><td>轻度用户，偶尔用</td><td>按次计费，几毛到几块</td></tr>
+<tr><td>Ollama 本地</td><td>有显卡、重视隐私</td><td>免费，但需要硬件</td></tr>
+<tr><td>MiniMax</td><td>国内用户，中文优先</td><td>按 API 用量计费</td></tr>
+</table>
+
+<p><strong>我自己选的是 Codex 订阅</strong>。原因很简单：每天用，API 费用加起来比订阅还贵。
+</p>
+
+<p>如果你有现成的 <code>ANTHROPIC_API_KEY</code> 或 <code>OPENAI_API_KEY</code> 环境变量，onboard 会自动检测到，省得你手动输入。
+</p>
+
+<hr>
+
+<h2>第三步：工作区在哪</h2>
+
+<p>默认是 <code>~/.openclaw/workspace</code>。
+</p>
+
+<p>这个目录里有你的 AGENTS.md、SOUL.md、TOOLS.md，还有 memory 目录——AI 的"长期记忆"存在这里。
+</p>
+
+<p>不建议改这个路径，除非你有特殊的目录管理习惯。改了之后容易忘，出了问题排查也麻烦。
+</p>
+
+<hr>
+
+<h2>第四步：Gateway 是什么</h2>
+
+<p>Gateway 是 OpenClaw 的"大脑"，负责接收消息、调用模型、执行命令。
+</p>
+
+<p>配置项不多，但有一个坑：
+</p>
+
+<p><strong>即使是本地运行，也建议设置 Token。</strong>
+</p>
+
+<p>为什么？因为如果你开了 WebSocket 客户端（比如某些第三方前端），没有 Token 的话，任何人都能连上来。
+</p>
+
+<p>Token 模式下，你可以选择：
+</p>
+<ul>
+<li>明文存储（简单，适合个人电脑）</li>
+<li>SecretRef（复杂，适合服务器环境）</li>
+</ul>
+
+<p>我自己的 Mac 上用的是明文，服务器上用的是 SecretRef。
+</p>
+
+<hr>
+
+<h2>第五步：接渠道，让你的 AI 有"入口"</h2>
+
+<p>这是 OpenClaw 真正强大的地方。
+</p>
+
+<p>你可以让 AI 接入这些渠道：
+</p>
+
+<ul>
+<li><strong>Telegram</strong>：最简单，找 @BotFather 创建机器人，拿到 Token 就行</li>
+<li><strong>Discord</strong>：类似 Telegram，创建 Bot 拿 Token</li>
+<li><strong>WhatsApp</strong>：扫码登录</li>
+<li><strong>Signal</strong>：需要安装 <code>signal-cli</code></li>
+<li><strong>iMessage</strong>：推荐用 BlueBubbles 方案</li>
+</ul>
+
+<p>我第一次选的是 Telegram，因为最简单——不需要公网 IP，不需要额外配置，几分钟就跑通了。
+</p>
+
+<p><strong>一个细节</strong>：私聊默认开启"配对模式"。第一次有人私聊你的 Bot，会收到一个验证码。你需要运行：
+</p>
+
+<pre><code class="language-bash">openclaw pairing approve telegram XXXXXX
+</code></pre>
+
+<p>这样别人就不能随便用你的 Bot 了。
+</p>
+
+<hr>
+
+<h2>第六步：Web 搜索（可选）</h2>
+
+<p>让 AI 能联网搜索。支持 Brave、DuckDuckGo、Perplexity 等。
+</p>
+
+<p>这一步可以跳过。如果你主要用它处理本地任务（写代码、整理文件），不搜网也行。
+</p>
+
+<hr>
+
+<h2>第七步：守护进程，让它 24 小时在线</h2>
+
+<p>这是很多人容易忽略的一步。
+</p>
+
+<p><code>onboard</code> 会问你要不要安装守护进程：
+</p>
+
+<ul>
+<li><strong>macOS</strong>：安装 LaunchAgent，开机自启</li>
+<li><strong>Linux</strong>：安装 systemd 用户单元，登出后继续运行</li>
+</ul>
+
+<p><strong>强烈建议安装。</strong>
+</p>
+
+<p>不装的话，每次用之前都要手动 <code>openclaw gateway start</code>，很麻烦。装了之后，开机就自动跑，你随时发消息，它随时回。
+</p>
+
+<hr>
+
+<h2>第八步：健康检查</h2>
+
+<p>最后会跑一次 <code>openclaw health</code>，检查所有配置是否正常。
+</p>
+
+<p>如果有问题，会直接告诉你怎么修。
+</p>
+
+<hr>
+
+<h2>非交互模式：脚本化安装</h2>
+
+<p>如果你要在服务器上批量部署，可以用非交互模式：
+</p>
+
+<pre><code class="language-bash">openclaw onboard --non-interactive \
+  --mode local \
+  --auth-choice apiKey \
+  --anthropic-api-key "$ANTHROPIC_API_KEY" \
+  --gateway-port 18789 \
+  --gateway-bind loopback \
+  --install-daemon \
+  --daemon-runtime node \
+  --skip-skills
+</code></pre>
+
+<p>一条命令，全自动跑完，适合 CI/CD 或服务器初始化。
+</p>
+
+<hr>
+
+<h2>我的建议</h2>
+
+<p>如果你刚装完 OpenClaw，不知道从哪开始：
+</p>
+
+<ol>
+<li>先跑 <code>openclaw onboard</code>，别自己改配置文件</li>
+<li>模型选 Codex 订阅（重度用户）或 API（轻度用户）</li>
+<li>渠道先接 Telegram，最简单</li>
+<li>守护进程一定要装</li>
+<li>跑完 <code>health</code> 检查，全绿就可以用了</li>
+</ol>
+
+<p>这一套走下来，大概 10 分钟。之后你就有了一个 24 小时在线、能帮你干活的 AI 助手。
+</p>
+
+<hr>
+
+<em>你跑 onboard 的时候卡在哪一步？欢迎评论区说说。</em>
+
+    </section>
+    
+<div class="giscus-comments">
+    <h3>💬 评论区</h3></div>
+
