@@ -1,0 +1,136 @@
+---
+layout: post
+title: "OpenClaw 默认 AGENTS.md：装了不会配？看这一篇就够了"
+date: 2026-04-10
+category: ai-tools/openclaw
+category_name: "AI工具/OpenClaw"
+---
+
+<p>刚装完 OpenClaw，打开设置界面，提示你配置 AGENTS.md。
+</p>
+
+<p>这时候有两个选择：直接用默认模板，或者自己写一套规则。
+</p>
+
+<p>我自己踩过坑——一开始觉得默认模板是"随便给的参考"，自己写了一套"更专业"的配置。结果没过两天就发现：文件散落在各处、记忆系统完全没用起来、想加新功能不知道往哪加。
+</p>
+
+<p>后来老老实实把默认模板研究了一遍，才发现它不是随便给的——每一条都是有原因的。
+</p>
+
+<hr>
+
+<h2>AGENTS.md 到底是什么</h2>
+
+<p>简单说，这是一个给 AI 助手看的"说明书"。你告诉它"你是谁""你的工作区在哪""遇到问题按什么流程处理"，它照着执行。
+</p>
+
+<p>OpenClaw 的默认模板在这里：<code>~/.openclaw/workspace/AGENTS.md</code>
+</p>
+
+<p>装完应用之后，这个文件不一定存在，需要手动创建：
+</p>
+
+<pre><code class="language-bash">mkdir -p ~/.openclaw/workspace
+</code></pre>
+
+<p>然后把模板复制进去：
+</p>
+
+<pre><code class="language-bash">cp docs/reference/templates/AGENTS.md ~/.openclaw/workspace/AGENTS.md
+</code></pre>
+
+<p>注意路径是 <code>~/.openclaw/workspace</code>，不是 <code>~/.qclaw/workspace</code>——这两个不一样，我之前就搞过错。
+</p>
+
+<hr>
+
+<h2>默认模板里最值得了解的三个模块</h2>
+
+<h3>1. 工作区配置</h3>
+
+<p>模板默认工作区是 <code>~/.openclaw/workspace</code>，但这个可以改。如果你想让不同项目用不同的配置，可以创建多个工作区目录，然后在设置里切换：
+</p>
+
+<pre><code class="language-json">{
+  agents: { defaults: { workspace: "~/.openclaw/workspace" } }
+}
+</code></pre>
+
+<p>这里有个细节：工作区目录里除了 AGENTS.md，还需要 SOUL.md（定义 AI 的性格和语气）和 TOOLS.md（存放环境相关的工具配置）。三个文件各司其职，不是随便堆一起的。
+</p>
+
+<h3>2. Memory 系统（我踩坑最多的地方）</h3>
+
+<p>默认模板里有一套记忆系统，分两层：
+</p>
+
+<ul>
+<li><strong>每日日志</strong>：<code>memory/YYYY-MM-DD.md</code>，记录当天发生的事</li>
+<li><strong>长期记忆</strong>：<code>MEMORY.md</code>，提炼持久的事实和偏好</li>
+</ul>
+
+<p>刚用的时候我以为这套系统是"自动的"，AI 会自动记住一切。后来发现不对——它只在会话开始时读取这些文件，内容需要我自己维护。
+</p>
+
+<p>所以现在我养成了一个习惯：<strong>重要决策做完就写进 MEMORY.md</strong>，不然下次开会话它完全不记得。
+</p>
+
+<h3>3. Skills 系统</h3>
+
+<p>Skills 是 OpenClaw 的扩展机制，每个 Skill 是一组工具和使用说明的集合。
+</p>
+
+<table>
+<tr><td>Skill</td><td>用途</td></tr>
+<tr><td>mcporter</td><td>管理外部工具后端</td></tr>
+<tr><td>imsg</td><td>发 iMessage</td></tr>
+<tr><td>wacli</td><td>WhatsApp 操作</td></tr>
+<tr><td>gog</td><td>Google 全家桶</td></tr>
+<tr><td>spotify-player</td><td>控制 Spotify</td></tr>
+</table>
+
+<p>不需要全部开启，用到什么开什么。默认模板的 Skills 列表挺全的，但实际用的时候我建议先装几个最常用的，其他等有需求再加——不然装一堆用不上的技能，维护成本就上去了。
+</p>
+
+<hr>
+
+<h2>默认模板够不够用</h2>
+
+<p>说实话，<strong>对大多数用户来说，默认模板够用了</strong>。
+</p>
+
+<p>安全规则、Memory 规范、会话启动流程，这些都已经配好了。直接用，边用边改，比一开始自己写一整套规则要省心得多。
+</p>
+
+<p>除非你有特殊需求——比如要给不同项目配不同的工作区、或者需要深度定制 AI 的行为——否则不建议从零重写。先把默认模板跑通，理解每一条规则的原因，再根据自己的情况删改。
+</p>
+
+<hr>
+
+<h2>一个我建议现在就去做的操作</h2>
+
+<p>打开终端，运行：
+</p>
+
+<pre><code class="language-bash">ls ~/.openclaw/workspace/
+</code></pre>
+
+<p>看看这个目录里有没有 AGENTS.md、SOUL.md、TOOLS.md 这三个文件。
+</p>
+
+<p>如果只有一个空的目录，那就按上面的步骤把模板复制进去，这是让 OpenClaw 真正跑起来的第一步。
+</p>
+
+<p>默认模板不是随便给的参考，是一套经过验证的基础配置。先用起来，再慢慢调，比自己重写要靠谱得多。
+</p>
+
+<hr>
+
+<em>你用 OpenClaw 的过程中踩过哪些坑？欢迎评论区说说。</em>
+
+    </section>
+    
+<div class="giscus-comments">
+    <h3>💬 评论区</h3></div>
+
