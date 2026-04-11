@@ -65,7 +65,7 @@
 <td>M2</td>
 <td><strong>Ultra</strong></td>
 <td>✅</td>
-<td><strong>192GB</strong></td>
+<td><strong>128GB / 192GB</strong></td>
 </tr>
 <tr>
 <td>M3</td>
@@ -77,7 +77,7 @@
 <td>M3</td>
 <td><strong>Ultra</strong></td>
 <td>✅</td>
-<td><strong>512GB</strong></td>
+<td><strong>256GB / 512GB</strong></td>
 </tr>
 <tr>
 <td>M4</td>
@@ -94,7 +94,7 @@
 </tbody>
 </table>
 
-<p>所以真正有资格上桌的，只有这五款：<strong>M1 Ultra 128GB、M2 Ultra 192GB、M3 Max 128GB、M3 Ultra 256GB/512GB、M4 Max 128GB、M5 Max 128GB</strong>。</p>
+<p>所以真正有资格上桌的，只有这几款：<strong>M1 Ultra 128GB、M2 Ultra 128GB / 192GB、M3 Max 128GB、M3 Ultra 256GB / 512GB、M4 Max 128GB、M5 Max 128GB</strong>。</p>
 
 <h2>参数横向对比（128GB 以上配置）</h2>
 
@@ -105,6 +105,7 @@
 <th>最大内存</th>
 <th>内存带宽</th>
 <th>Neural Engine</th>
+<th>GPU</th>
 <th>适合跑多大模型</th>
 </tr>
 </thead>
@@ -114,6 +115,15 @@
 <td>128GB</td>
 <td>~410 GB/s</td>
 <td>32核</td>
+<td>64核</td>
+<td>65B Q4</td>
+</tr>
+<tr>
+<td>M2 Ultra 128GB</td>
+<td>128GB</td>
+<td>~800 GB/s</td>
+<td>32核</td>
+<td>60核</td>
 <td>65B Q4</td>
 </tr>
 <tr>
@@ -121,6 +131,7 @@
 <td>192GB</td>
 <td>~800 GB/s</td>
 <td>32核</td>
+<td>76核</td>
 <td>103B Q4</td>
 </tr>
 <tr>
@@ -128,6 +139,7 @@
 <td>128GB</td>
 <td>~546 GB/s</td>
 <td>16核</td>
+<td>40核</td>
 <td>70B Q4</td>
 </tr>
 <tr>
@@ -135,6 +147,7 @@
 <td>256GB</td>
 <td>819 GB/s</td>
 <td>32核</td>
+<td>80核</td>
 <td>180B Q4</td>
 </tr>
 <tr>
@@ -142,6 +155,7 @@
 <td>512GB</td>
 <td>819 GB/s</td>
 <td>32核</td>
+<td>80核</td>
 <td>671B 满血 R1</td>
 </tr>
 <tr>
@@ -149,13 +163,23 @@
 <td>128GB</td>
 <td>546 GB/s</td>
 <td>16核</td>
+<td>40核</td>
 <td>70B Q4</td>
 </tr>
 <tr>
-<td>M5 Max 128GB</td>
+<td>M5 Max 128GB（32核GPU）</td>
 <td>128GB</td>
-<td>407 GB/s</td>
+<td>460 GB/s</td>
 <td>16核</td>
+<td>32核</td>
+<td>70B Q4</td>
+</tr>
+<tr>
+<td>M5 Max 128GB（40核GPU）</td>
+<td>128GB</td>
+<td>614 GB/s</td>
+<td>16核</td>
+<td>40核</td>
 <td>70B Q4</td>
 </tr>
 </tbody>
@@ -164,27 +188,32 @@
 <p>几个关键说明：</p>
 
 <ul>
-<li>M3 Ultra 的带宽 819 GB/s 是 8 通道 LPDDR5X 带来的，无论 256GB 还是 512GB 都是这个数，不缩水的。</li>
-<li>M5 Max 带宽 407 GB/s 反而比 M4 Max 更低——Apple 用了新的封装工艺但通道数减少了，这个要单独说一下。</li>
+<li>M3 Ultra 的带宽 819 GB/s 是 8 通道 LPDDR5X 带来的，无论 256GB 还是 512GB 都是这个数，不缩水。</li>
+<li>M5 Max 128GB 有两个版本：32核 GPU（460 GB/s）和 40核 GPU（614 GB/s），带宽差异明显，选购时要注意。</li>
 <li>Neural Engine 核数：Ultra 是 32 核，Max 是 16 核，这个差距在大模型推理时比数字看起来更大。</li>
+<li>M2 Ultra 的带宽数据参考了当时业界估算，如有更精确的官方数据欢迎指正。</li>
 </ul>
 
-<h2>M5 Max 带宽为什么开倒车？</h2>
+<h2>M5 Max 带宽实测对比</h2>
 
 <p>这是个值得单独说的事。</p>
 
-<p>M5 Pro 带宽 307 GB/s，M5 Max 带宽 407 GB/s。这个 407 GB/s 看起来比 M4 Max 128GB 的 546 GB/s 低了近 30%。</p>
-
-<p>Apple 官方没有解释原因。我的理解是：<strong>M5 系列换了新的 LPDDR5X 封装工艺，频率更高但通道数有所调整</strong>，导致大内存配置下带宽反而下降。</p>
-
-<p>但这不全是坏事：</p>
+<p>M5 Max 128GB 有两个版本：</p>
 <ul>
-<li>M5 系列的 Neural Engine 性能比 M4 强不少，ML 任务提升明显</li>
-<li>新工艺的能效比更好，发热更低</li>
-<li>带宽虽然低了，但内存频率更高，实际延迟更短</li>
+<li><strong>32 核 GPU 版本</strong>：460 GB/s</li>
+<li><strong>40 核 GPU 版本</strong>：614 GB/s</li>
 </ul>
 
-<p>所以 M5 Max 128GB 跑 70B Q4 模型，<strong>实际体验大概率不输 M4 Max 128GB</strong>——带宽差的那部分被新工艺追回来了。</p>
+<p>这两个版本带宽差了 154 GB/s，将近 34% 的差距。但 GPU 核心数差了 8 核（25%）。所以 <strong>40 核版本在 AI 推理场景下性价比更高</strong>，多花的钱换来的带宽提升比例大于 GPU 核心数提升。</p>
+
+<p>对比一下其他代：</p>
+<ul>
+<li>M4 Max 128GB：546 GB/s</li>
+<li>M5 Max 128GB（40核）：614 GB/s → 比 M4 Max 快了约 12%</li>
+<li>M5 Max 128GB（32核）：460 GB/s → 比 M4 Max 慢了约 16%</li>
+</ul>
+
+<p>所以 M5 Max 40核版本其实是 M4 Max 的升级，32核版本反而在带宽上开了倒车——但 M5 系列的 Neural Engine 性能确实比 M4 强不少，ML 任务综合来看还是领先的。</p>
 
 <h2>各代实际能跑多大模型？</h2>
 
@@ -213,6 +242,15 @@
 <td>❌</td>
 </tr>
 <tr>
+<td>M2 Ultra 128GB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
 <td>M2 Ultra 192GB</td>
 <td>✅</td>
 <td>✅</td>
@@ -258,7 +296,16 @@
 <td>❌</td>
 </tr>
 <tr>
-<td>M5 Max 128GB</td>
+<td>M5 Max 128GB（32核）</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>M5 Max 128GB（40核）</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
@@ -277,9 +324,9 @@
 
 <p>因为它是目前 Apple 统一内存路线上，<strong>唯一一个能跑 671B 满血模型的消费级桌面设备</strong>。</p>
 
-<p>隔壁的 M5 Max 128GB 带宽更高、芯片更新，但内存只有 128GB——671B 塞都塞不进去。</p>
+<p>隔壁的 M5 Max 128GB 带宽更高（40核版本 614 GB/s）、芯片更新，但内存只有 128GB——671B 塞都塞不进去。</p>
 
-<p>Apple 在 M3 Ultra 上用 UltraFusion 把两颗 M3 Max 拼起来，8 通道 819 GB/s，直接把统一内存容量推到了 512GB。这个策略 M5 Ultra 会不会继续？现在还不好说，但 M5 Max 128GB 的出现说明 Apple 暂时没有急着让 Mac Studio 跟进 M5。</p>
+<p>Apple 在 M3 Ultra 上用 UltraFusion 把两颗 M3 Max 拼起来，8 通道 819 GB/s，直接把统一内存容量推到了 512GB。这个策略 M5 Ultra 会不会继续？现在还不好说。</p>
 
 <h2>选哪一代？需求说了算</h2>
 
@@ -289,9 +336,9 @@
 
 <p><strong>追求天花板：</strong> M3 Ultra 512GB，671B 满血 R1，这是 Apple 桌面统一内存的天花板，M5 系列还没追上这个配置。</p>
 
-<p><strong>预算有限，尝鲜为主：</strong> M2 Ultra 192GB，二手市场价格已经下来了，192GB 跑 103B Q4，够研究用。</p>
+<p><strong>预算有限，尝鲜为主：</strong> M2 Ultra 128GB，二手市场价格已经下来了，128GB 跑 65B Q4，够研究用。</p>
 
-<p><strong>M5 Max：</strong> 暂时只有 MacBook Pro 版本，Mac Studio 还没上。如果你不着急，等 M5 Mac Studio 更新后再买是合理的——但不要期待 M5 Ultra 128GB 就能跑 671B，那还是 M3 Ultra 512GB 的专属。</p>
+<p><strong>M5 Max：</strong> 暂时只有 MacBook Pro 版本，Mac Studio 还没上。如果你不着急，等 M5 Mac Studio 更新后再买是合理的——但不要期待 M5 Ultra 128GB 就能跑 671B，那还是 M3 Ultra 512GB 的专属。如果选了 M5 Max，建议选 40 核 GPU 版本，带宽 614 GB/s 比 32 核版本强 34%。</p>
 
 <h2>一句话总结</h2>
 
