@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/github-dark.css" media="screen">
+    <title>128GB 以上统一内存的 Mac Studio，哪一代真正能跑大模型？ - halo的技术博客</title>
+  <script src="/javascripts/google-analytics.js"></script>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>128GB 以上统一内存的 Mac Studio，哪一代真正能跑大模型？</h1>
+        <h2>硬件选购指南</h2>
+    </div>
+</header>
+<nav>
+    <ul>
+        <li><a href="https://blog.halo26812.eu.org/">主页</a></li>
+        <li><a href="https://blog.halo26812.eu.org/posts/">文章</a></li>
+        <li><a href="../">数码硬件</a></li>
+        <li><a href="https://blog.halo26812.eu.org/about/">关于</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <section id="main_content">
+<p>上篇文章发了之后，有评论说"为什么不拿 Mac Studio M5 Max 来比"——这个问题很好，顺势逼我把这几代 Mac Studio 在 128GB 以上统一内存的配置全部捋一遍。</p>
+
+<p>因为这个话题本质上是：<strong>Apple 统一内存这条路线，到底哪一代才真正适合跑大模型？</strong></p>
+
+<h2>先说清楚哪些 Mac Studio 在讨论范围内</h2>
+
+<p>Mac Studio 不是每一代都有 128GB 以上的版本。Max 系列上限低，Ultra 系列上限高，分清楚：</p>
+
+<table>
+<thead>
+<tr>
+<th>代数</th>
+<th>芯片</th>
+<th>128GB+ 配置？</th>
+<th>最大统一内存</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1</td>
+<td>Max</td>
+<td>❌</td>
+<td>64GB</td>
+</tr>
+<tr>
+<td>M1</td>
+<td><strong>Ultra</strong></td>
+<td>✅</td>
+<td><strong>128GB</strong></td>
+</tr>
+<tr>
+<td>M2</td>
+<td>Max</td>
+<td>❌</td>
+<td>96GB</td>
+</tr>
+<tr>
+<td>M2</td>
+<td><strong>Ultra</strong></td>
+<td>✅</td>
+<td><strong>192GB</strong></td>
+</tr>
+<tr>
+<td>M3</td>
+<td>Max</td>
+<td>✅</td>
+<td>128GB</td>
+</tr>
+<tr>
+<td>M3</td>
+<td><strong>Ultra</strong></td>
+<td>✅</td>
+<td><strong>512GB</strong></td>
+</tr>
+<tr>
+<td>M4</td>
+<td>Max</td>
+<td>✅</td>
+<td>128GB</td>
+</tr>
+<tr>
+<td>M5</td>
+<td>Max</td>
+<td>✅</td>
+<td>128GB（MacBook Pro）</td>
+</tr>
+</tbody>
+</table>
+
+<p>所以真正有资格上桌的，只有这五款：<strong>M1 Ultra 128GB、M2 Ultra 192GB、M3 Max 128GB、M3 Ultra 256GB/512GB、M4 Max 128GB、M5 Max 128GB</strong>。</p>
+
+<h2>参数横向对比（128GB 以上配置）</h2>
+
+<table>
+<thead>
+<tr>
+<th>芯片</th>
+<th>最大内存</th>
+<th>内存带宽</th>
+<th>Neural Engine</th>
+<th>适合跑多大模型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1 Ultra 128GB</td>
+<td>128GB</td>
+<td>~410 GB/s</td>
+<td>32核</td>
+<td>65B Q4</td>
+</tr>
+<tr>
+<td>M2 Ultra 192GB</td>
+<td>192GB</td>
+<td>~800 GB/s</td>
+<td>32核</td>
+<td>103B Q4</td>
+</tr>
+<tr>
+<td>M3 Max 128GB</td>
+<td>128GB</td>
+<td>~546 GB/s</td>
+<td>16核</td>
+<td>70B Q4</td>
+</tr>
+<tr>
+<td>M3 Ultra 256GB</td>
+<td>256GB</td>
+<td>819 GB/s</td>
+<td>32核</td>
+<td>180B Q4</td>
+</tr>
+<tr>
+<td>M3 Ultra 512GB</td>
+<td>512GB</td>
+<td>819 GB/s</td>
+<td>32核</td>
+<td>671B 满血 R1</td>
+</tr>
+<tr>
+<td>M4 Max 128GB</td>
+<td>128GB</td>
+<td>546 GB/s</td>
+<td>16核</td>
+<td>70B Q4</td>
+</tr>
+<tr>
+<td>M5 Max 128GB</td>
+<td>128GB</td>
+<td>407 GB/s</td>
+<td>16核</td>
+<td>70B Q4</td>
+</tr>
+</tbody>
+</table>
+
+<p>几个关键说明：</p>
+
+<ul>
+<li>M3 Ultra 的带宽 819 GB/s 是 8 通道 LPDDR5X 带来的，无论 256GB 还是 512GB 都是这个数，不缩水的。</li>
+<li>M5 Max 带宽 407 GB/s 反而比 M4 Max 更低——Apple 用了新的封装工艺但通道数减少了，这个要单独说一下。</li>
+<li>Neural Engine 核数：Ultra 是 32 核，Max 是 16 核，这个差距在大模型推理时比数字看起来更大。</li>
+</ul>
+
+<h2>M5 Max 带宽为什么开倒车？</h2>
+
+<p>这是个值得单独说的事。</p>
+
+<p>M5 Pro 带宽 307 GB/s，M5 Max 带宽 407 GB/s。这个 407 GB/s 看起来比 M4 Max 128GB 的 546 GB/s 低了近 30%。</p>
+
+<p>Apple 官方没有解释原因。我的理解是：<strong>M5 系列换了新的 LPDDR5X 封装工艺，频率更高但通道数有所调整</strong>，导致大内存配置下带宽反而下降。</p>
+
+<p>但这不全是坏事：</p>
+<ul>
+<li>M5 系列的 Neural Engine 性能比 M4 强不少，ML 任务提升明显</li>
+<li>新工艺的能效比更好，发热更低</li>
+<li>带宽虽然低了，但内存频率更高，实际延迟更短</li>
+</ul>
+
+<p>所以 M5 Max 128GB 跑 70B Q4 模型，<strong>实际体验大概率不输 M4 Max 128GB</strong>——带宽差的那部分被新工艺追回来了。</p>
+
+<h2>各代实际能跑多大模型？</h2>
+
+<p>拿几个主流开源模型实测数据做参考（Q4 量化，非官方，综合多个来源）：</p>
+
+<table>
+<thead>
+<tr>
+<th>芯片</th>
+<th>7B Q4</th>
+<th>13B Q4</th>
+<th>33B Q4</th>
+<th>70B Q4</th>
+<th>180B Q4</th>
+<th>671B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1 Ultra 128GB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>M2 Ultra 192GB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>M3 Max 128GB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>M3 Ultra 256GB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>M3 Ultra 512GB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>M4 Max 128GB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>M5 Max 128GB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+
+<p>粗略估算：<strong>128GB 能跑 70B Q4，192GB 能跑 103B Q4，256GB 能跑 180B Q4，512GB 才能上 671B 满血 R1。</strong></p>
+
+<p>内存容量是硬限制，带宽决定速度，两者缺一不可。</p>
+
+<h2>M3 Ultra 512GB 为什么值得专门说？</h2>
+
+<p>因为它是目前 Apple 统一内存路线上，<strong>唯一一个能跑 671B 满血模型的消费级桌面设备</strong>。</p>
+
+<p>隔壁的 M5 Max 128GB 带宽更高、芯片更新，但内存只有 128GB——671B 塞都塞不进去。</p>
+
+<p>Apple 在 M3 Ultra 上用 UltraFusion 把两颗 M3 Max 拼起来，8 通道 819 GB/s，直接把统一内存容量推到了 512GB。这个策略 M5 Ultra 会不会继续？现在还不好说，但 M5 Max 128GB 的出现说明 Apple 暂时没有急着让 Mac Studio 跟进 M5。</p>
+
+<h2>选哪一代？需求说了算</h2>
+
+<p><strong>预算优先，只跑 70B 以内：</strong> M4 Max 128GB，2026 年买最划算，新芯片性能最强，Ollama、LM Studio 生态完善。</p>
+
+<p><strong>性价比最高：</strong> M3 Ultra 256GB，内存够大（180B），带宽够高（819 GB/s），价格比 M3 Ultra 512GB 便宜一大截，671B 跑不了但够用了。</p>
+
+<p><strong>追求天花板：</strong> M3 Ultra 512GB，671B 满血 R1，这是 Apple 桌面统一内存的天花板，M5 系列还没追上这个配置。</p>
+
+<p><strong>预算有限，尝鲜为主：</strong> M2 Ultra 192GB，二手市场价格已经下来了，192GB 跑 103B Q4，够研究用。</p>
+
+<p><strong>M5 Max：</strong> 暂时只有 MacBook Pro 版本，Mac Studio 还没上。如果你不着急，等 M5 Mac Studio 更新后再买是合理的——但不要期待 M5 Ultra 128GB 就能跑 671B，那还是 M3 Ultra 512GB 的专属。</p>
+
+<h2>一句话总结</h2>
+
+<p>Apple 统一内存这条路线，M1 Ultra 打开了 128GB 的门，M2 Ultra 翻倍到 192GB，M3 Ultra 直接推到 512GB——每一代的提升都是实打实的内存容量，不是跑分。</p>
+
+<p>对于大模型本地部署：<strong>买你能买得起的最大内存</strong>，带宽差一点在日常推理里感知不强，但内存不够是真的跑不动。</p>
+    </section>
+</div>
+</body>
+</html>
