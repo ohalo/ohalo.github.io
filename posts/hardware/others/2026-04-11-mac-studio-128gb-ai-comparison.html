@@ -94,7 +94,7 @@
 </tbody>
 </table>
 
-<p>所以真正有资格上桌的，只有这几款：<strong>M1 Ultra 128GB、M2 Ultra 128GB / 192GB、M3 Max 128GB、M3 Ultra 256GB / 512GB、M4 Max 128GB、M5 Max 128GB（40核GPU）</strong>。</p>
+<p>所以真正有资格上桌的，只有这几款：<strong>M1 Ultra 128GB、M2 Ultra 128GB / 192GB、M3 Max 128GB、M3 Ultra 256GB / 512GB、M4 Max 128GB、M5 Max 128GB</strong>。</p>
 
 <h2>参数横向对比（128GB 以上配置）</h2>
 
@@ -167,6 +167,14 @@
 <td>70B Q4</td>
 </tr>
 <tr>
+<td>M5 Max 128GB（32核GPU）</td>
+<td>128GB</td>
+<td>460 GB/s</td>
+<td>16核</td>
+<td>32核</td>
+<td>70B Q4</td>
+</tr>
+<tr>
 <td>M5 Max 128GB（40核GPU）</td>
 <td>128GB</td>
 <td>614 GB/s</td>
@@ -181,7 +189,7 @@
 
 <ul>
 <li>M3 Ultra 的带宽 819 GB/s 是 8 通道 LPDDR5X 带来的，无论 256GB 还是 512GB 都是这个数，不缩水。</li>
-<li>M5 Max 只有 <strong>40核 GPU 版本</strong>才能配 128GB 统一内存，32核 GPU 版本最大只到 64GB，两个版本带宽也不同（614 vs 460 GB/s）。</li>
+<li>M5 Max 128GB 有两个版本：32核 GPU（460 GB/s）和 40核 GPU（614 GB/s），带宽差异明显，选购时要注意。32核 GPU 理论上可以配 128GB，但目前苹果官网 32核版本暂不开放 128GB 选配，只在 40核 GPU 版本可选。</li>
 <li>Neural Engine 核数：Ultra 是 32 核，Max 是 16 核，这个差距在大模型推理时比数字看起来更大。</li>
 <li>M2 Ultra 的带宽数据参考了当时业界估算，如有更精确的官方数据欢迎指正。</li>
 </ul>
@@ -204,21 +212,21 @@
 <tr>
 <td>M5 Max 32核</td>
 <td>32核</td>
-<td>64GB</td>
+<td>64GB（官网）</td>
 <td>460 GB/s</td>
-<td>❌</td>
+<td>理论上可配，官网暂不开放</td>
 </tr>
 <tr>
 <td>M5 Max 40核</td>
 <td>40核</td>
 <td>128GB</td>
 <td>614 GB/s</td>
-<td>✅</td>
+<td>✅ 官网可选</td>
 </tr>
 </tbody>
 </table>
 
-<p>所以如果你要的是 <strong>128GB 统一内存的 M5 Max，只有 40核 GPU 版本这一个选项</strong>。</p>
+<p>所以如果你要的是 <strong>128GB 统一内存的 M5 Max，目前只有 40核 GPU 版本这一个官方可选的选项</strong>。</p>
 
 <p>40核版本比 32核版本带宽高出 154 GB/s（+34%），GPU 核心多 8 核（+25%），性价比明显更好。32核版本更适合不需要那么大内存、预算有限的场景。</p>
 
@@ -226,7 +234,7 @@
 <ul>
 <li>M4 Max 128GB：546 GB/s</li>
 <li>M5 Max 128GB（40核）：614 GB/s → 比 M4 Max 快了约 12%</li>
-<li>M5 Max 32核（最大64GB）：460 GB/s → 比 M4 Max 慢了约 16%</li>
+<li>M5 Max 128GB（32核）：460 GB/s → 比 M4 Max 慢了约 16%</li>
 </ul>
 
 <h2>各代实际能跑多大模型？</h2>
@@ -310,6 +318,15 @@
 <td>❌</td>
 </tr>
 <tr>
+<td>M5 Max 128GB（32核）</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
 <td>M5 Max 128GB（40核）</td>
 <td>✅</td>
 <td>✅</td>
@@ -329,7 +346,7 @@
 
 <p>因为它是目前 Apple 统一内存路线上，<strong>唯一一个能跑 671B 满血模型的消费级桌面设备</strong>。</p>
 
-<p>隔壁的 M5 Max 128GB 带宽更高（614 GB/s）、芯片更新，但内存只有 128GB——671B 塞都塞不进去。</p>
+<p>隔壁的 M5 Max 128GB 带宽更高（40核版本 614 GB/s）、芯片更新，但内存只有 128GB——671B 塞都塞不进去。</p>
 
 <p>Apple 在 M3 Ultra 上用 UltraFusion 把两颗 M3 Max 拼起来，8 通道 819 GB/s，直接把统一内存容量推到了 512GB。这个策略 M5 Ultra 会不会继续？现在还不好说。</p>
 
@@ -343,7 +360,7 @@
 
 <p><strong>预算有限，尝鲜为主：</strong> M2 Ultra 128GB，二手市场价格已经下来了，128GB 跑 65B Q4，够研究用。</p>
 
-<p><strong>M5 Max：</strong> 暂时只有 MacBook Pro 版本，Mac Studio 还没上。如果你不着急，等 M5 Mac Studio 更新后再买是合理的——但注意，<strong>只有 40核 GPU 版本才能配 128GB</strong>，32核版本最大只到 64GB，不要选错了。</p>
+<p><strong>M5 Max：</strong> 暂时只有 MacBook Pro 版本，Mac Studio 还没上。如果你不着急，等 M5 Mac Studio 更新后再买是合理的——如果选了 M5 Max，目前官方可选 128GB 的只有 40核 GPU 版本，带宽 614 GB/s，32核版本暂不开放 128GB 选配。</p>
 
 <h2>一句话总结</h2>
 
