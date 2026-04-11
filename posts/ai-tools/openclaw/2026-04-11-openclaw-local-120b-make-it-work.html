@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/github-dark.css" media="screen">
+    <title>接入本地 120B 大模型后，我发现它像个"听不懂人话"的同事 - halo的技术博客</title>
+  <script src="/javascripts/google-analytics.js"></script>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>接入本地 120B 大模型后，我发现它像个"听不懂人话"的同事</h1>
+        <h2>AI工具实操</h2>
+    </div>
+</header>
+<nav>
+    <ul>
+        <li><a href="https://blog.halo26812.eu.org/">主页</a></li>
+        <li><a href="https://blog.halo26812.eu.org/posts/">文章</a></li>
+        <li><a href="../">数码硬件</a></li>
+        <li><a href="https://blog.halo26812.eu.org/about/">关于</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <section id="main_content">
+<p>上周把 OpenClaw 接上了本地跑的 gpt-oss 120B，token 不要钱，感觉自己终于"配置了一套 AI 装备"。</p>
+
+<p>结果用了两天，心态崩了。</p>
+
+<p>让它写篇文章，它先问我"你想写什么主题"；让它用技能，它说"好的我来看看"然后没有然后；问它个技术问题，它能给你洋洋洒洒写一大段，看起来很专业，仔细一看——答非所问。</p>
+
+<p>这种感觉就像招了一个学历很高但不干活的实习生，你说东它做西，做了的还做一半。</p>
+
+<p>后来花了不少时间调教，总算让它"能用了"。这篇文章就是我踩的坑和找到的解法，不讲原理，只讲怎么解决。</p>
+
+<h2>为什么本地 120B 模型"不好用"？</h2>
+
+<p>先说清楚问题在哪。</p>
+
+<p>gpt-oss 120B 这种本地跑的模型，和云端 API 模型最大的区别不是"聪明不聪明"，而是<strong>指令跟随能力弱</strong>。</p>
+
+<p>什么叫指令跟随？就是你说"帮我写篇文章"，它能不能直接写，而不是先反问你三个问题。</p>
+
+<p>云端模型（Claude、GPT-4）在这个能力上被大量 RLHF（人类反馈强化学习）调教过，你随手写一句指令它基本能理解。本地模型没有经过这一层深度对齐，同样的指令扔过去，它大概率会"理解偏差"。</p>
+
+<p>具体表现：</p>
+
+<ul>
+<li><strong>爱问问题</strong>：你说"帮我做X"，它先说"好的！请问你有以下信息吗……"</li>
+<li><strong>跑偏</strong>：你问A，它回答B，看起来相关但不是你想要的</li>
+<li><strong>不执行</strong>：你说"执行这个技能"，它回复一段话，说它打算怎么做，然后没了</li>
+<li><strong>输出半吊子</strong>：说"我来给你写个脚本"，然后给你写了个框架，没有实际内容</li>
+</ul>
+
+<p>这不是模型"笨"，是它的对齐程度不够。你要"用它能听懂的方式说话"，而不是用跟人说话的方式。</p>
+
+<h2>解法一：把话说完整，不要让它猜</h2>
+
+<p>这是最简单、效果最明显的改变。</p>
+
+<p>❌ 低效指令：</p>
+
+<blockquote>
+<p>帮我写篇知乎文章</p>
+</blockquote>
+
+<p>✅ 高效指令：</p>
+
+<blockquote>
+<p>任务：写一篇知乎文章<br>
+主题：OpenClaw 接入本地大模型的优化方法<br>
+字数：800字以内<br>
+格式：Markdown<br>
+不要：不要在开头问问题，直接写</p>
+</blockquote>
+
+<p>弱模型对"不完整指令"极度敏感。你说"帮我写篇文章"，它不知道你是要教程还是要感想，要长要短，要什么格式——它就开始自己猜，猜的方向往往不对。</p>
+
+<p>把每条指令拆成"任务 + 输入 + 输出格式 + 排除项"，它能执行对的概率翻倍。</p>
+
+<h2>解法二：一次只做一件事，别一次扔一堆</h2>
+
+<p>本地模型上下文窗口一大，就容易"迷失"。</p>
+
+<p>❌ 低效：</p>
+
+<blockquote>
+<p>帮我搜索资料、整理成文章、发布到博客</p>
+</blockquote>
+
+<p>✅ 高效：</p>
+
+<blockquote>
+<p>第一步：搜索"OpenClaw system prompt 配置"的关键信息，列出5条<br>
+第二步：根据这5条信息写文章开头，100字<br>
+第三步：写文章主体第一段<br>
+……</p>
+</blockquote>
+
+<p>每个指令只包含一个动作，它执行成功率明显更高。做完了再给下一步。</p>
+
+<p>这也是为什么 OpenClaw 的 Skill（技能）设计是一个一个步骤的原因——设计者早就知道弱模型的这个特性。</p>
+
+<h2>解法三：给 OpenClaw 写一个"行为规范 System Prompt"</h2>
+
+<p>OpenClaw 支持配置 System Prompt，这是改善本地模型行为的终极手段。</p>
+
+<p>在 OpenClaw 配置里（通常是 <code>~/.openclaw/</code> 目录下的配置文件），找到 <code>systemPrompt</code> 字段，加入类似这样的约束：</p>
+
+<pre><code>你是一个执行助手，规则如下：
+1. 收到任务时，直接执行，不询问
+2. 不确定的地方，先做一个版本，再说"我做了X，你可以告诉我是否需要调整"
+3. 每次回复必须包含实际输出，不能只说"好的我来处理"
+4. 提到技能时，直接调用对应技能的 SKILL.md，不要说"我来查看"
+5. 如果任务复杂，把它拆成2-3个步骤，每次只执行一个
+</code></pre>
+
+<p>这个 System Prompt 等于给模型加了一层"行为准则"。本地模型虽然弱，但它会严格遵守 Prompt 里写的规则——这恰恰是它的优点，用规则弥补对齐不足。</p>
+
+<p>具体配置文件路径和字段名可以在 OpenClaw 文档里搜 <code>systemPrompt</code>，各个版本略有不同，但概念是一样的。</p>
+
+<h2>解法四：技能调用不稳定，怎么破？</h2>
+
+<p>让模型"调用技能"是 OpenClaw 最有价值的功能之一，但本地模型经常在这里掉链子——它知道有技能，但不知道什么时候该调、怎么调。</p>
+
+<p>几个办法：</p>
+
+<p><strong>1. 明确告诉它用哪个技能</strong></p>
+
+<p>❌：</p>
+
+<blockquote>
+<p>你会写知乎文章吗？</p>
+</blockquote>
+
+<p>✅：</p>
+
+<blockquote>
+<p>使用 zhihu-creator 技能写一篇关于"本地大模型优化"的文章</p>
+</blockquote>
+
+<p>把技能名直接写进指令，它就不需要自己判断了。</p>
+
+<p><strong>2. 把 Skill 的触发词写进 Prompt</strong></p>
+
+<p>在 OpenClaw 的 Skill 配置里，每个 Skill 有 <code>triggers</code> 字段，这是触发条件。可以把你的常用操作和对应的触发词记录下来，每次用触发词，模型更容易匹配正确。</p>
+
+<p><strong>3. 如果技能经常失败，手动调用</strong></p>
+
+<p>OpenClaw 支持直接用命令触发技能，不依赖模型判断：</p>
+
+<pre><code>openclaw skills run zhihu-creator
+</code></pre>
+
+<p>对于关键任务，与其等模型"正确调用"，不如直接发命令。模型负责思考，命令负责执行。</p>
+
+<h2>解法五：别让弱模型做所有事——多模型路由</h2>
+
+<p>这是最重要的一个思路。</p>
+
+<p>本地 120B 免费，但它的能力有上限。对于"执行任务"这种需要稳定输出的操作，云端模型往往更靠谱。</p>
+
+<p>OpenClaw 支持多模型配置，可以设定路由规则：</p>
+
+<ul>
+<li>简单问答 → 本地 gpt-oss（省 token）</li>
+<li>技能执行、复杂任务 → 云端 API（Claude/GPT-4）</li>
+</ul>
+
+<p>这样本地模型专门处理"不需要脑子"的重复任务，真正需要质量的工作交给强模型。</p>
+
+<p>省 token 是好事，但如果因为模型太弱导致任务要反复重做，那省下来的 token 全还回去了。</p>
+
+<h2>我现在怎么用</h2>
+
+<p>用了这套方法之后，gpt-oss 120B 在我的 OpenClaw 里变成一个"能用的工具"了，不是之前那个"看起来很厉害但用不上"的东西。</p>
+
+<p>具体分工：</p>
+
+<ul>
+<li><strong>它负责</strong>：搜索素材、整理信息、写文章草稿、执行简单脚本</li>
+<li><strong>云端模型负责</strong>：复杂推理、技能调用、最终审核</li>
+</ul>
+
+<p>本地模型跑在后台处理大批量任务，不直接面向最终输出，质量由云端兜底。</p>
+
+<p>如果你也有类似配置，不妨先从"把话说完整"和"一次只做一件事"这两件事开始试，效果是立竿见影的。</p>
+
+<p>剩下的配置属于锦上添花，先让模型能执行，再优化体验。</p>
+    </section>
+</div>
+</body>
+</html>
