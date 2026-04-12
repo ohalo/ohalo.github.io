@@ -37,7 +37,7 @@ permalink: /posts/hardware/2026-04-11-rtx-ai-gpu-comparison.html
 
 <p>RTX 3080 只有10GB，3080 Ti 加到12GB，看着够用了？实际跑起来，13B模型用Q4量化加载需要14-16GB显存，3080直接报OOM。3090的24GB才真正够用。</p>
 
-<p>RTX 4090 虽然是24GB，但带宽比3090高41%（1,008 vs 936 GB/s），跑相同模型速度快一大截。</p>
+<p>RTX 4090 虽然是24GB，但带宽比3090高约8%（1,008 vs 936 GB/s），加上Ada架构第四代Tensor Core效率更高，跑相同模型速度快一大截。</p>
 
 <p>RTX 8000 Ada 48GB 是个分水岭——70B Q4模型理论上可以跑起来，3090/4090都做不到。</p>
 
@@ -53,7 +53,7 @@ permalink: /posts/hardware/2026-04-11-rtx-ai-gpu-comparison.html
 
 <p>但TOPS只是理论峰值。实测跑LLM推理时，<strong>显存带宽才是瓶颈</strong>，不是算力。</p>
 
-<p>这也是为什么4090比3090快那么多——不是因为算力高30%，而是因为带宽高41%，模型加载和KV缓存都更顺畅。</p>
+<p>这也是为什么4090比3090快那么多——不是因为算力高30%，而是因为Ada架构第四代Tensor Core效率更高，带宽也高约8%，模型加载和KV缓存都更顺畅。</p>
 
 <p><strong>功耗</strong> — 容易被忽略。</p>
 
@@ -89,7 +89,7 @@ permalink: /posts/hardware/2026-04-11-rtx-ai-gpu-comparison.html
 
 <p><strong>"TOPS越高跑AI越快"</strong> — 错了。显存容量和带宽才是瓶颈。大模型推理不像打游戏，显存不够直接跑不了，TOPS再高也没用。</p>
 
-<p><strong>"3090 Ti比4090强因为显存一样"</strong> — 错了。4090的Ada架构比3090 Ti的Ampere新两代，带宽高41%，实际跑模型快一大截。</p>
+<p><strong>"3090 Ti比4090强因为显存一样"</strong> — 错了。4090的Ada架构比3090 Ti的Ampere新两代，Tensor Core效率更高，带宽也高约8%，实际跑模型快一大截。</p>
 
 <p><strong>"3080 Ti性价比比3090高"</strong> — 错了。显存少12GB，TOPS低，但功耗相近。同样的钱，不如买3090。</p>
 
