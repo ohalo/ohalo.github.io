@@ -1,0 +1,127 @@
+---
+layout: post
+title: "用了一个月 Hermes Agent，我决定回到 OpenClaw"
+date: 2026-04-12
+categories: [ai-tools]
+permalink: /posts/ai-tools/hermes-agent-openclaw-comparison.html
+---
+
+<article class="post-content">
+<h2>说清楚，不是因为 Hermes 不好。恰恰相反，它的核心创新非常吸引人。只是用下来发现，<strong>有些场景它真的不如 OpenClaw</strong>。</h2>
+
+<h2>Hermes 的核心创新到底是什么？</h2>
+
+<p>先说 Hermes 真正有意思的地方。</p>
+
+<p>它的 README 第一句话就是：<strong>"The agent that grows with you"</strong> —— 跟你一起成长的 Agent。</p>
+
+<p>这句话不是营销口号。它有一个具体的技术实现：</p>
+
+<p>每完成一个复杂任务，Hermes 会自动把解决路径整理成一个 <strong>Skill 文件</strong>（结构化的技能文档）。下次遇到类似任务，它会直接调用这个 Skill，而不是重新摸索。有用户报告，用了三个月后，重复性研究任务的耗时缩短了40%。</p>
+
+<p>这和 OpenClaw 的 Skill 机制完全不同。</p>
+
+<p><strong>OpenClaw 的 Skill 是"装上去"的</strong> —— 你去 SkillHub 搜索、安装、维护，能力来自外部供给。</p>
+
+<p><strong>Hermes 的 Skill 是"长出来"的</strong> —— 它根据你的使用习惯自动生成，能力来自内部积累。</p>
+
+<p>这个差异听起来很小，实际用起来感受很明显。OpenClaw 是你告诉它怎么干活；Hermes 是它观察你怎么干活，然后自己学会。</p>
+
+<p>这就是为什么 Hermes 在两个月内拿了5.1万 star。<strong>它解决了一个 OpenClaw 一直没解决好的问题：Agent 能不能自己学习？</strong></p>
+
+<img src="/images/hermes-agent/ai-agent-compare.jpg" alt="AI Agent" style="max-width:100%; border-radius:8px; margin:16px 0;">
+
+<h2>为什么我最后还是回到 OpenClaw</h2>
+
+<p>说两个具体场景。</p>
+
+<h3>场景一：快速任务</h3>
+
+<p>我想让 Agent 帮我搜一下今天的科技新闻，写个摘要。</p>
+
+<p>OpenClaw：打开会话，说完需求，30秒出结果。</p>
+
+<p>Hermes：启动常驻服务，等待连接，回答……但我今天就想查个东西，为什么要开一整套后台服务？</p>
+
+<p>Hermes 的设计哲学是"常驻 + 持续记忆"，这对需要长期跟踪的任务很有价值。但如果你只是偶尔问个问题，它的存在感太强了，流程比 OpenClaw 重。</p>
+
+<h3>场景二：平台接入</h3>
+
+<p>我想让 Agent 管理我的 Telegram、Slack 和邮件。</p>
+
+<p>OpenClaw：装三个插件，配置一下 token，完事。SkillHub 有现成的。</p>
+
+<p>Hermes：官方支持这些平台，但插件生态远不如 OpenClaw 丰富，配置文档也没那么完善。有几个平台我找了半天没找到对应的接入方式。</p>
+
+<h3>场景三：上下文成本</h3>
+
+<p>这是最实际的问题。</p>
+
+<p>OpenClaw 把所有历史都塞进上下文，长期运行下来 token 消耗会越来越高。Hermes 的解法是 SQLite 分层记忆 —— 高价值决策固化为 Skill，历史交互存在数据库，需要时再召回。</p>
+
+<p>这在理论上更经济。但实际用下来，Hermes 的召回机制还不够精准，有时候我问一个上周处理过的问题，它记忆里有，但召回出来的上下文不够完整，还是得重新解释一遍。</p>
+
+<h2>什么时候选 Hermes，什么时候选 OpenClaw</h2>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0;">
+<thead>
+<tr style="background:#f5f5f5;">
+<th style="padding:8px; border:1px solid #ddd;">场景</th>
+<th style="padding:8px; border:1px solid #ddd;">推荐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">长期项目跟踪、研究任务</td>
+<td style="padding:8px; border:1px solid #ddd;">Hermes ✅</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">重复性工作流（每周报告、自动化脚本）</td>
+<td style="padding:8px; border:1px solid #ddd;">Hermes ✅</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">多平台消息接入（Telegram/Discord/Slack）</td>
+<td style="padding:8px; border:1px solid #ddd;">OpenClaw ✅</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">偶尔用的临时任务</td>
+<td style="padding:8px; border:1px solid #ddd;">OpenClaw ✅</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">需要本地文件/浏览器深度控制</td>
+<td style="padding:8px; border:1px solid #ddd;">OpenClaw ✅</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">需要极低运行成本（5美元VPS）</td>
+<td style="padding:8px; border:1px solid #ddd;">Hermes ✅</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">注重数据隐私（无插件市场风险）</td>
+<td style="padding:8px; border:1px solid #ddd;">Hermes ✅</td>
+</tr>
+</tbody>
+</table>
+
+<p>说白了：<strong>Hermes 是给"让 Agent 帮我做长期项目"的人用的，OpenClaw 是给"让 Agent 帮我处理各种杂事"的人用的。</strong></p>
+
+<h2>一个有意思的信号</h2>
+
+<p>Hermes 专门做了一个 <code>hermes claw migrate</code> 命令，把 OpenClaw 的配置和数据迁移过去。</p>
+
+<p>这说明什么？</p>
+
+<p>开发者自己也承认，这两个东西在用户上有重叠。他们的策略是：<strong>不回避竞争，而是做无缝切换</strong> —— 你想试试 Hermes？一行命令迁移过来，配置都能带走。</p>
+
+<p>这反而让我觉得这个项目更靠谱。知道自己要什么，也知道对手在哪。</p>
+
+<hr>
+
+<p>所以我的结论是：<strong>两个都装，根据任务选工具。</strong></p>
+
+<p>需要长期跟踪、重复性高、想让它越用越聪明 → Hermes。</p>
+
+<p>需要快速执行、多平台接入、偶尔用一下 → OpenClaw。</p>
+
+<p>这不是非此即彼的选择。它们代表 AI Agent 的两条技术路线：<strong>一条是"装上去"，靠生态；一条是"长出来"，靠学习。</strong> 哪个更好？取决于你要解决什么问题。</p>
+
+</article>
