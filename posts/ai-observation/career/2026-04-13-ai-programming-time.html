@@ -1,0 +1,138 @@
+---
+layout: post
+title: "Cursor Composer + Claude Code 实测一个月：AI把单测写了，但我反而更慌了"
+date: 2026-04-13
+categories: [ai-observation, career]
+permalink: /posts/ai-observation/career/2026-04-13-ai-programming-time.html
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cursor Composer + Claude Code 实测一个月：AI把单测写了，但我反而更慌了</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.8; color: #333; }
+h1 { font-size: 1.5em; margin-bottom: 20px; }
+h2 { font-size: 1.2em; margin-top: 30px; }
+blockquote { border-left: 4px solid #ddd; padding-left: 16px; color: #666; margin: 20px 0; }
+strong { color: #111; }
+hr { border: none; border-top: 1px solid #eee; margin: 30px 0; }
+a { color: #0366d6; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<p>上个月，我用 Cursor Composer 跑完了一个内部工具的后端代码。</p>
+
+<p>全程我没写一行 Java——提需求、改需求、让它自测，最后我做的事情叫"复制粘贴粘贴复制粘贴复制"。</p>
+
+<p>然后我坐在那里，突然不知道该干嘛了。</p>
+
+<hr>
+
+<p>这种感觉我猜你们也遇到过：</p>
+
+<blockquote>
+<p>AI 把活干了，干完你却空落落的。</p>
+</blockquote>
+
+<p>这不是凡尔赛。是真的慌——效率是提升了，但好像哪里不对劲。</p>
+
+<p>所以今天这篇，我不去吹 AI 编程有多强。我就想聊一件事：</p>
+
+<p><strong>省下来的时间，程序员真正该拿去干嘛？</strong></p>
+
+<h2>先说清楚：AI 到底接管了什么</h2>
+
+<p>先上一个我自己的感受，不讲大道理，直接说我的工作流。</p>
+
+<p><strong>被接管了（或者说效率大幅提升）：</strong></p>
+
+<ul>
+<li>写单测：原来我写单测是硬着头皮写，现在丢给 Cursor，2小时出来一套可运行的。我只负责看覆盖率够不够</li>
+<li>简单 CRUD：增删改查这种，Claude Code 几乎可以一键生成，我做的只是确认逻辑</li>
+<li>代码格式化和简单重构：这个不用说了，基本上是零摩擦</li>
+<li>写文档注释：自动补全，一气呵成</li>
+</ul>
+
+<p><strong>没被接管（至少目前没有）：</strong></p>
+
+<ul>
+<li><strong>业务判断</strong>：这段逻辑为什么要这么写？谁会用？为什么这么设计？这事 AI 回答不了你</li>
+<li><strong>跨模块理解</strong>：这个改动会影响到哪几个服务？需要和产品对齐，需要你懂全局</li>
+<li><strong>代码审查中的取舍</strong>：这段代码能跑，但风格丑；这段性能好，但可读性差——取舍是人的活</li>
+<li><strong>和技术外行人沟通</strong>：解释技术债是什么，为什么修它比写新功能重要</li>
+</ul>
+
+<p>简单说：<strong>AI 接管了"输入→输出"明确的重复性工作，但没接管"为什么要做这个判断"的部分。</strong></p>
+
+<h2>一个反直觉的结论：效率越高，瓶颈越明显</h2>
+
+<p>你们有没有这种感觉——</p>
+
+<p>AI 帮你加速了，你反而更焦虑了。</p>
+
+<p>因为原来你的瓶颈是"写代码速度"。现在代码写得飞快，瓶颈直接暴露出来：<strong>你的产品判断力、架构理解力、业务敏感度</strong>。</p>
+
+<p>写代码反而不是最难的事了。</p>
+
+<p>最难的事变成了：</p>
+
+<ul>
+<li>这个需求到底值不值得做？</li>
+<li>这个技术债再不修会影响什么？</li>
+<li>这次重构的边界在哪，做到什么程度就够了？</li>
+</ul>
+
+<p>这些问题，AI 帮不了你。你只能靠积累和思考。</p>
+
+<h2>省下来的时间，我建议花在这三件事上</h2>
+
+<p>我自己的选择，不一定对，仅供参考：</p>
+
+<p><strong>第一件事：搞清楚你所在的业务在做什么</strong></p>
+
+<p>很多程序员（包括我自己）有个毛病——只管写代码，不管业务逻辑。产品说做什么就做什么，不问为什么。</p>
+
+<p>AI 帮你写了代码之后，你突然有时间可以问了。</p>
+
+<p>多问几句"为什么"，你会发现自己对产品的理解在加深。做决策的时候会开始有底气。</p>
+
+<p><strong>第二件事：学会和技术外行解释技术问题</strong></p>
+
+<p>这件事我觉得被严重低估了。</p>
+
+<p>你能把一个复杂的技术方案，用非技术人员能听懂的方式讲清楚，说明你真的理解了这件事。</p>
+
+<p>而且这件事 AI 做不了——你没法让 AI 去跟老板解释为什么不能省掉这个技术债。</p>
+
+<p><strong>第三件事：做减法，而不是加法</strong></p>
+
+<p>效率提升之后，最容易掉进去的坑是用省出来的时间做更多的事。</p>
+
+<p>但问题是：如果做的事情方向错了，做得越快亏得越多。</p>
+
+<p>省下来的时间，与其去卷更多的代码，不如用来想清楚"什么不值得做"。</p>
+
+<hr>
+
+<p>写到这里，我其实挺想知道你们的真实感受。</p>
+
+<p>AI 编程工具用了这段时间，你们的"省下来的时间"都花在哪了？是真的摸鱼了，还是花在了一些意想不到的地方？</p>
+
+<p><strong>评论区说说，我很想看看大家的情况。</strong></p>
+
+<hr>
+
+<p>好了，以上就是我这一个月的真实感受。</p>
+
+<p>效率提升是真实的，这一点不用讨论。但真正的问题从来不是"AI 能帮你做什么"，而是"你拿 AI 帮你省出来的时间去做什么"。</p>
+
+<p>这个问题，只有你自己能回答。</p>
+
+<p><em>本文首发于知乎，略有修改。</em></p>
+
+</body>
+</html>
