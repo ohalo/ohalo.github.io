@@ -1,0 +1,153 @@
+---
+layout: post
+title: "跑一个 AI Agent，每月成本从50块降到5块：Hermes 的部署指南"
+date: 2026-04-13
+categories: [ai-tools, openclaw]
+permalink: /posts/ai-tools/hermes-deploy-cost-guide.html
+---
+
+<article class="post-content">
+<h2>Hermes Agent 有个功能很少有人提，但它是我见过最实用的——<strong>Daytona 和 Modal 集成</strong>。</h2>
+
+<p>简单说：让你的 Agent 在没活干的时候自动休眠，有活来了再唤醒。闲置时的成本几乎为零。</p>
+
+<p>配合 $5 一月的 VPS，或者直接用 Daytona/Modal serverless，Hermes 的月账单可以压到十几块。而 OpenClaw 因为是常驻进程，跑一个月怎么也要四五十。</p>
+
+<p>这不是省小钱的问题，是改变了 AI Agent 的使用逻辑——以前总觉得"让 Agent 24 小时跑着"很贵，现在可以重新算这笔账。</p>
+
+<img src="/images/hermes-deploy/vps-cost.jpg" alt="服务器成本" style="max-width:100%; border-radius:8px; margin:16px 0;">
+
+<h2>一行命令装完，四个地方可以跑</h2>
+
+<p>Hermes 的安装是它最友好的地方：</p>
+
+<pre><code>curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+</code></pre>
+
+<p>Linux、macOS、WSL2、Android Termux 都支持。Windows 不行，需要装 WSL2。</p>
+
+<p>装完之后，命令行有完整工具集：</p>
+
+<pre><code>hermes              # 启动对话
+hermes model        # 选模型
+hermes tools        # 配置工具
+hermes config set   # 设置参数
+hermes setup        # 全配置向导
+hermes claw migrate # 从 OpenClaw 迁移（重点，后面说）
+hermes doctor        # 诊断问题
+hermes update       # 更新版本
+</code></pre>
+
+<p>消息平台支持 Telegram、Discord、Slack、WhatsApp、Signal，一套网关进程连接所有平台，会话统一管理。</p>
+
+<h2>六个后端：VPS、服务器集群、serverless</h2>
+
+<p>Hermes 支持六种终端后端，按需选：</p>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0;">
+<thead>
+<tr style="background:#f5f5f5;">
+<th style="padding:8px; border:1px solid #ddd;">后端</th>
+<th style="padding:8px; border:1px solid #ddd;">适合场景</th>
+<th style="padding:8px; border:1px solid #ddd;">成本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">Local</td>
+<td style="padding:8px; border:1px solid #ddd;">本地 macOS/Linux</td>
+<td style="padding:8px; border:1px solid #ddd;">设备成本</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">Docker</td>
+<td style="padding:8px; border:1px solid #ddd;">已有 Docker 环境</td>
+<td style="padding:8px; border:1px solid #ddd;">托管费</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">SSH</td>
+<td style="padding:8px; border:1px solid #ddd;">远程服务器</td>
+<td style="padding:8px; border:1px solid #ddd;">VPS 月费</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">Daytona</td>
+<td style="padding:8px; border:1px solid #ddd;">serverless 自动休眠</td>
+<td style="padding:8px; border:1px solid #ddd;">按调用计费，闲置接近 0</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">Singularity</td>
+<td style="padding:8px; border:1px solid #ddd;">HPC/学术场景</td>
+<td style="padding:8px; border:1px solid #ddd;">集群费</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">Modal</td>
+<td style="padding:8px; border:1px solid #ddd;">serverless + 持久化</td>
+<td style="padding:8px; border:1px solid #ddd;">按调用计费，闲置接近 0</td>
+</tr>
+</tbody>
+</table>
+
+<img src="/images/hermes-deploy/serverless.jpg" alt="serverless架构" style="max-width:100%; border-radius:8px; margin:16px 0;">
+
+<p><strong>Daytona 和 Modal 是最有意思的两个。</strong></p>
+
+<p>Daytona 是开源的 agent 环境管理平台，Hermes 跑在上面时，闲置自动休眠，有消息才唤醒。你不用管服务器，账单按实际调用算。</p>
+
+<p>Modal 也是类似逻辑，官方的说法是"costs nearly nothing when idle"。</p>
+
+<p>这对个人用户最有意义。以前我们总觉得"让 Agent 24 小时待命"是件奢侈的事，现在可以换个算法——<strong>只为你实际用到的部分付钱</strong>。</p>
+
+<h2>从 OpenClaw 迁移：一行命令，原有配置全部带走</h2>
+
+<p>如果你已经在用 OpenClaw，想试试 Hermes，迁移成本几乎为零。</p>
+
+<pre><code>hermes claw migrate    # 完整迁移（交互式）
+hermes claw migrate --dry-run    # 预览，不实际执行
+hermes claw migrate --preset user-data  # 不迁移密钥
+hermes claw migrate --overwrite  # 覆盖已有配置
+</code></pre>
+
+<p>官方会迁移这些东西：</p>
+
+<ul>
+<li><strong>SOUL.md</strong> — 你的 persona 配置</li>
+<li><strong>MEMORY.md / USER.md</strong> — 记忆文件</li>
+<li><strong>Skills</strong> — 你自己写的 Skills</li>
+<li><strong>API keys</strong> — Telegram、OpenRouter、OpenAI、Anthropic 等</li>
+<li><strong>消息平台配置</strong> — 接入平台、允许用户、工作目录</li>
+</ul>
+
+<p>说白了，装完 Hermes，跑一条 migrate 命令，你的 OpenClaw 配置基本都搬过去了。不用重配。</p>
+
+<h2>选模型：支持 200+ 模型，不想花脑子直接用 Nous Portal</h2>
+
+<p>Hermes 的模型接入是它另一个强项。支持：</p>
+
+<ul>
+<li><strong>Nous Portal</strong> — 官方订阅制，零配置即用</li>
+<li><strong>Anthropic Claude</strong> — API key 或 Claude Code 授权直连</li>
+<li><strong>OpenRouter</strong> — 200+ 模型随便切，<code>hermes model</code> 一条命令换模型</li>
+<li><strong>DeepSeek、阿里云 DashScope（Qwen）、小米 MiMo</strong>、GitHub Copilot</li>
+<li><strong>Ollama 本地模型</strong> — 纯本地，零 API 费用</li>
+</ul>
+
+<p>最近还有一条新闻：小米大模型 MiMo 已接入 Hermes，4月8日到22日限免两周。</p>
+
+<h3>怎么选？</h3>
+
+<p>如果不想折腾：Nous Portal 订阅制，直接用。</p>
+
+<p>如果想省 API 费用：OpenRouter 按量付费，选个性价比高的模型。</p>
+
+<p>如果完全不想花钱：Ollama 本地跑，token 成本为零。</p>
+
+<hr>
+
+<h2>我的结论</h2>
+
+<p>Hermes 的部署成本优势是真实的。$5 VPS + Daytona/Modal serverless，把月账单从四五十压到十几块，这个账很容易算。</p>
+
+<p>加上 <code>hermes claw migrate</code> 让迁移成本几乎为零——从 OpenClaw 过来，原有配置全部带走，不需要从头开始——这个切换门槛比我预期的低很多。</p>
+
+<p>下一篇，我会写一个更系统的对比：结合 36氪 的报道和官方文档，完整梳理 Hermes Agent 的核心创新。感兴趣可以关注。</p>
+
+</article>
