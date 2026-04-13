@@ -1,0 +1,141 @@
+---
+layout: post
+title: "Agent记不住事，是最大的痛点。Hermes用四层记忆给出了答案"
+date: 2026-04-13
+categories: [ai-tools, openclaw]
+permalink: /posts/ai-tools/hermes-memory-system.html
+---
+
+<article class="post-content">
+<h2>你用过OpenClaw吗？每次任务结束，它什么都不留下。下次遇到类似问题，还得重新教一遍。这不是"智能"，是"复读机"。</h2>
+
+<p>我用了三个月OpenClaw，最崩溃的不是它偶尔出错，而是它<strong>永远不长记性</strong>。</p>
+
+<img src="/images/hermes-memory/ai-brain.jpg" alt="AI记忆系统" style="max-width:100%; border-radius:8px; margin:16px 0;">
+
+<h2>OpenClaw的问题：记忆是静态的</h2>
+
+<p>OpenClaw的设计逻辑是这样的：</p>
+
+<p>我们把信息写进配置文件 → 它读取 → 会话结束 → 下次再读。</p>
+
+<p>它不会主动从执行过程里提炼什么。我们纠正过它一次，下次它照样犯错。</p>
+
+<p>所有的Skill都是我们手动装的。它像个被喂饭的孩子，只会吃我们给的东西，不会自己找食。</p>
+
+<p>这不是OpenClaw的bug，而是它架构的底层逻辑——<strong>它被设计成一个"执行工具"，而不是一个"学习伙伴"</strong>。</p>
+
+<h2>Hermes的创新：一个闭合的学习循环</h2>
+
+<p>HermesAgent不一样。</p>
+
+<p>每次任务完成后，它会自动检查：这次执行值不值得写下来？</p>
+
+<p>触发条件很具体：</p>
+<ul>
+<li>工具调用超过5次</li>
+<li>中途出过错然后自己修复了</li>
+<li>用户做过纠正</li>
+<li>走了一条不明显但有效的路径</li>
+</ul>
+
+<p>满足任何一条，它就会在 ~/.hermes/skills 目录里生成一个Skill文件。</p>
+
+<p>名称、描述、步骤、涉及的工具调用，全部写清楚。这份自动生成的文件，下次可以直接跟着走。</p>
+
+<p>而且Skill不是一次写死。Hermes在后续执行中发现更好的路径，会直接修改。修改优先用patch，只传旧字符串和替换内容，而不是整体重写。</p>
+
+<p>为什么用patch？因为全量覆写容易把原来好用的部分一起破坏掉，patch只碰有问题的地方，更安全，token消耗也更少。</p>
+
+<img src="/images/hermes-memory/learning-loop.jpg" alt="学习循环" style="max-width:100%; border-radius:8px; margin:16px 0;">
+
+<h2>四层记忆系统：Agent最难处理的问题</h2>
+
+<p>除了学习循环，Hermes还有一套专门设计的记忆系统，一共四层。</p>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0;">
+<thead>
+<tr style="background:#f5f5f5;">
+<th style="padding:8px; border:1px solid #ddd;">层级</th>
+<th style="padding:8px; border:1px solid #ddd;">名称</th>
+<th style="padding:8px; border:1px solid #ddd;">存什么</th>
+<th style="padding:8px; border:1px solid #ddd;">什么时候用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">第一层</td>
+<td style="padding:8px; border:1px solid #ddd;">常驻提示记忆</td>
+<td style="padding:8px; border:1px solid #ddd;">MEMORY.md + USER.md</td>
+<td style="padding:8px; border:1px solid #ddd;">每次会话自动加载</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">第二层</td>
+<td style="padding:8px; border:1px solid #ddd;">会话归档</td>
+<td style="padding:8px; border:1px solid #ddd;">SQLite数据库</td>
+<td style="padding:8px; border:1px solid #ddd;">需要历史上下文时检索</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">第三层</td>
+<td style="padding:8px; border:1px solid #ddd;">技能文件</td>
+<td style="padding:8px; border:1px solid #ddd;">自动生成的Skill</td>
+<td style="padding:8px; border:1px solid #ddd;">按需调入，只加载名称和描述</td>
+</tr>
+<tr>
+<td style="padding:8px; border:1px solid #ddd;">第四层</td>
+<td style="padding:8px; border:1px solid #ddd;">Honcho</td>
+<td style="padding:8px; border:1px solid #ddd;">用户画像/偏好</td>
+<td style="padding:8px; border:1px solid #ddd;">跨会话长期积累</td>
+</tr>
+</tbody>
+</table>
+
+<p>第一层故意收窄到3575字符，强迫我们筛选，而不是什么都塞进去。</p>
+
+<p>第二层用全文索引检索，检索结果经LLM摘要后注入——只把相关部分塞进上下文，不是全部历史。</p>
+
+<p>第三层的设计更巧妙：默认只加载技能名称和简短描述，全文按需调入。这意味着技能库可以从40个增长到200个，而上下文成本几乎不变。</p>
+
+<p>第四层是可选的用户建模层，适合把Hermes当日常助理长期使用的场景。</p>
+
+<p>这个分工原则很清晰：</p>
+<ul>
+<li>每次对话都要出现的 → 第一层</li>
+<li>特定话题才用到的 → 第二层等检索</li>
+<li>可复用操作流程 → 第三层</li>
+<li>用户长期画像 → 第四层</li>
+</ul>
+
+<h2>我用下来的感受</h2>
+
+<p>说实话，这套记忆系统听起来很美好，实际用下来还不够完美。</p>
+
+<p>最明显的短板是<strong>召回精度</strong>。</p>
+
+<p>有时候我问一个上周处理过的问题，它记忆里有，但召回出来的上下文不够完整，还是得重新解释一遍。</p>
+
+<p>而且学习循环生成的Skill质量参差不齐。有些自动生成的文件很实用，有些写的步骤不够清晰，需要我手动修改。</p>
+
+<p>所以我的结论是：Hermes的记忆系统<strong>方向是对的，但成熟度还不够</strong>。它给了Agent一个"记住"的框架，但"记什么""怎么记准"还在迭代。</p>
+
+<h2>两条路线的选择</h2>
+
+<p>OpenClaw和Hermes，代表了Agent的两条技术路线：</p>
+
+<p><strong>OpenClaw：装上去</strong> —— 能力来自外部供给，SkillHub搜索安装，我们告诉它怎么干活。</p>
+
+<p><strong>Hermes：长出来</strong> —— 能力来自内部积累，自动生成Skill，它观察我们怎么干活然后学会。</p>
+
+<p>哪个更好？</p>
+
+<p>如果你的任务是<strong>快速执行、偶尔用一下</strong>，OpenClaw更合适。</p>
+
+<p>如果你需要<strong>长期跟踪、重复性高、想让它越用越聪明</strong>，Hermes值得试试。</p>
+
+<p>这不是非此即彼的选择。两个都装，根据任务选工具。</p>
+
+<hr>
+
+<p>上一篇我写了《用了一个月HermesAgent，我决定回到OpenClaw》，这篇是补充——专门讲Hermes的记忆创新。两篇看完，你应该能判断哪个更适合你。</p>
+
+</article>
