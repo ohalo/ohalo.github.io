@@ -1,0 +1,379 @@
+---
+layout: post
+title: NAS网络设置与优化指南：链路聚合、SMB加速、榨干局域网带宽
+date: 2026-04-14
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 网络优化, 链路聚合, SMB, NFS, 局域网, 传输速度]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS网络设置与优化指南 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS网络设置与优化指南：链路聚合、SMB加速、榨干局域网带宽</h1>
+    <div class="meta">2026-04-14 · 数码硬件/NAS存储 · 🔖 NAS, 网络优化, 链路聚合, SMB, NFS, 局域网, 传输速度</div>
+
+    <p>千兆NAS实际速度只有100MB/s？多设备同时访问就卡？链路聚合怎么配置？SMB3多通道怎么开？</p>
+
+    <p>这篇指南从网线选择到链路聚合，从SMB3多通道到NFS优化，手把手教你榨干局域网带宽。</p>
+
+    <h2>一、先检查基础：网线和网络环境</h2>
+
+    <p>很多"速度慢"的问题，其实出在基础网络环节。先把这些排除。</p>
+
+    <h3>网线选择</h3>
+
+    <table>
+        <tr>
+            <th>网线类型</th>
+            <th>支持速率</th>
+            <th>适用场景</th>
+            <th>推荐度</th>
+        </tr>
+        <tr>
+            <td>Cat5（五类）</td>
+            <td>100Mbps</td>
+            <td>百兆网络（不推荐）</td>
+            <td>❌</td>
+        </tr>
+        <tr>
+            <td>Cat5e（超五类）</td>
+            <td>1Gbps</td>
+            <td>千兆网络</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Cat6（六类）</td>
+            <td>1Gbps / 10Gbps(55m内)</td>
+            <td>千兆/万兆网络</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Cat6a（超六类）</td>
+            <td>10Gbps</td>
+            <td>万兆网络</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>💡 判断方法</strong>：看网线上的标识。Cat5e会写"CAT5E"，Cat6写"CAT6"。没标识的杂牌线很可能虚标。
+    </div>
+
+    <h3>路由器/交换机检查</h3>
+
+    <ul>
+        <li><strong>确认网口速率</strong>：路由器所有网口都是千兆吗？有些低端路由器只有1个千兆口，其余是百兆</li>
+        <li><strong>检查协商速率</strong>：电脑连上NAS后，查看网络连接状态，确认是"1Gbps"而不是"100Mbps"</li>
+        <li><strong>避免级联过多</strong>：NAS→交换机→路由器→电脑，每多一级都增加延迟和故障点</li>
+    </ul>
+
+    <h3>基础速度测试</h3>
+
+    <p>正常千兆网络速度应该在<strong>100-115MB/s</strong>。如果低于80MB/s，说明有瓶颈。</p>
+
+    <h2>二、链路聚合：双网口变双倍带宽</h2>
+
+    <p>如果NAS有两个以上网口，链路聚合可以把带宽叠加，实现1+1=2的效果。</p>
+
+    <h3>链路聚合模式</h3>
+
+    <table>
+        <tr>
+            <th>模式</th>
+            <th>英文名</th>
+            <th>原理</th>
+            <th>适用场景</th>
+        </tr>
+        <tr>
+            <td>负载均衡</td>
+            <td>LACP / 802.3ad</td>
+            <td>智能分配流量到多网口</td>
+            <td>多设备同时访问（推荐）</td>
+        </tr>
+        <tr>
+            <td>主备模式</td>
+            <td>Active-Backup</td>
+            <td>一个工作，一个备份</td>
+            <td>冗余备份需求</td>
+        </tr>
+        <tr>
+            <td>轮询</td>
+            <td>Balance-RR</td>
+            <td>轮流向各网口发包</td>
+            <td>需要所有设备都支持</td>
+        </tr>
+    </table>
+
+    <h3>群晖设置链路聚合</h3>
+
+    <ol>
+        <li><strong>控制面板</strong> → <strong>网络</strong> → <strong>网络界面</strong></li>
+        <li>点击<strong>创建</strong> → <strong>创建Bond</strong></li>
+        <li>选择<strong>LACP（IEEE 802.3ad）</strong>模式</li>
+        <li>勾选要聚合的网口</li>
+        <li>交换机端也需创建LAG组并启用LACP</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：链路聚合需要两端（NAS+交换机）都配置正确，否则可能无法正常工作。
+    </div>
+
+    <h3>威联通设置链路聚合</h3>
+
+    <ol>
+        <li><strong>控制台</strong> → <strong>网络与虚拟交换机</strong></li>
+        <li>选择<strong>网络接口</strong></li>
+        <li>点击<strong>创建</strong> → <strong>Link Aggregation</strong></li>
+        <li>选择LACP模式，勾选网口</li>
+        <li>确认交换机端配置一致</li>
+    </ol>
+
+    <h2>三、SMB3多通道：零成本白嫖双倍速度</h2>
+
+    <p>SMB3多通道是SMB协议的黑科技，不需要特殊交换机，可以让单台电脑通过多条路径同时访问NAS，实现带宽叠加。</p>
+
+    <h3>前提条件</h3>
+
+    <ul>
+        <li>NAS支持SMB3（群晖DSM 7.x默认支持）</li>
+        <li>电脑支持SMB3（Windows 10/11默认支持）</li>
+        <li>NAS有两条及以上网络路径到电脑</li>
+    </ul>
+
+    <h3>群晖启用SMB3多通道</h3>
+
+    <ol>
+        <li><strong>控制面板</strong> → <strong>文件服务</strong> → <strong>SMB</strong></li>
+        <li>点击<strong>高级设置</strong></li>
+        <li>勾选<strong>启用SMB3多通道</strong></li>
+        <li>点击<strong>应用</strong></li>
+    </ol>
+
+    <h3>SMB3多通道的优势</h3>
+
+    <ul>
+        <li><strong>带宽叠加</strong>：双网口可达200-230MB/s</li>
+        <li><strong>故障冗余</strong>：一条路径断开，自动切换到另一条</li>
+        <li><strong>无需特殊交换机</strong>：普通交换机即可（不需要LACP）</li>
+    </ul>
+
+    <h2>四、NFS优化：Linux用户专属加速</h2>
+
+    <p>如果你是Linux用户或需要跑虚拟机，NFS通常比SMB更快、更稳定。</p>
+
+    <h3>群晖启用NFS</h3>
+
+    <ol>
+        <li><strong>控制面板</strong> → <strong>文件服务</strong> → <strong>NFS</strong></li>
+        <li>勾选<strong>启用NFS</strong>，协议版本选<strong>NFSv4.1</strong></li>
+    </ol>
+
+    <h3>配置文件夹NFS权限</h3>
+
+    <ol>
+        <li><strong>控制面板</strong> → <strong>共享文件夹</strong></li>
+        <li>选择文件夹 → <strong>编辑</strong> → <strong>NFS权限</strong></li>
+        <li>填写客户端IP（如<code>192.168.1.0/24</code>表示整个网段）</li>
+        <li>勾选<strong>允许来自非特权端口的连接</strong></li>
+        <li>勾选<strong>启用异步</strong>（提升性能）</li>
+    </ol>
+
+    <h3>客户端挂载NFS</h3>
+
+    <pre><code># 安装nfs工具
+sudo apt install nfs-common
+
+# 挂载
+sudo mount -t nfs4 192.168.1.100:/volume1/share /mnt/nas
+
+# 开机自动挂载（/etc/fstab）
+echo "192.168.1.100:/volume1/share /mnt/nas nfs4 defaults,_netdev 0 0" | sudo tee -a /etc/fstab</code></pre>
+
+    <h2>五、协议选择：SMB vs NFS vs AFP</h2>
+
+    <table>
+        <tr>
+            <th>协议</th>
+            <th>适用平台</th>
+            <th>速度</th>
+            <th>推荐场景</th>
+        </tr>
+        <tr>
+            <td>SMB3</td>
+            <td>Windows/macOS/Linux</td>
+            <td>快</td>
+            <td>主力协议，多平台通用</td>
+        </tr>
+        <tr>
+            <td>NFS</td>
+            <td>Linux/Unix</td>
+            <td>最快</td>
+            <td>Linux挂载、虚拟机、服务器</td>
+        </tr>
+        <tr>
+            <td>AFP</td>
+            <td>macOS（旧）</td>
+            <td>中等</td>
+            <td>macOS Time Machine备份</td>
+        </tr>
+        <tr>
+            <td>WebDAV</td>
+            <td>全平台</td>
+            <td>慢</td>
+            <td>远程访问、网页应用</td>
+        </tr>
+    </table>
+
+    <h3>速度实测参考</h3>
+
+    <ul>
+        <li>SMB3（单连接）：110-115MB/s</li>
+        <li>SMB3（多通道双网口）：200-230MB/s</li>
+        <li>NFS：115-120MB/s</li>
+    </ul>
+
+    <h2>六、常见问题排查</h2>
+
+    <table>
+        <tr>
+            <th>问题</th>
+            <th>原因</th>
+            <th>解决</th>
+        </tr>
+        <tr>
+            <td>速度只有100Mbps</td>
+            <td>网线/端口不支持千兆</td>
+            <td>换线、换端口、检查协商速率</td>
+        </tr>
+        <tr>
+            <td>链路聚合不生效</td>
+            <td>交换机未配置LACP</td>
+            <td>正确配置交换机LAG</td>
+        </tr>
+        <tr>
+            <td>SMB多通道不生效</td>
+            <td>只有一条网络路径</td>
+            <td>确保NAS有多条路径到电脑</td>
+        </tr>
+        <tr>
+            <td>NFS挂载失败</td>
+            <td>权限配置错误</td>
+            <td>检查NFS权限设置、客户端IP</td>
+        </tr>
+    </table>
+
+    <h2>七、WiFi连接优化</h2>
+
+    <p>虽然强烈不推荐用WiFi访问NAS（速度损失50%+），但如果迫不得已：</p>
+
+    <ul>
+        <li><strong>靠近路由器</strong>：减少无线跳转</li>
+        <li><strong>用5GHz不用2.4GHz</strong>：速度更快、干扰更少</li>
+        <li><strong>选WiFi6/6E</strong>：延迟更低、支持更多设备并发</li>
+    </ul>
+
+    <h2>八、万兆网络：未来升级方向</h2>
+
+    <p>如果你的NAS和电脑都支持万兆，可以考虑升级到10Gbps网络。</p>
+
+    <h3>需要的设备</h3>
+
+    <ul>
+        <li><strong>NAS</strong>：支持万兆网口（如群晖DS1621+可加万兆网卡）</li>
+        <li><strong>电脑</strong>：需要万兆网卡（如QNAP QNA-UC5G1T USB转万兆）</li>
+        <li><strong>交换机</strong>：万兆交换机（如MikroTik CRS305）</li>
+        <li><strong>网线</strong>：Cat6a或Cat7（必须支持10Gbps）</li>
+    </ul>
+
+    <h3>性价比推荐：2.5Gbps方案</h3>
+
+    <ul>
+        <li>很多新主板已内置2.5Gbps网口</li>
+        <li>只需买一个2.5Gbps交换机（200-300元）</li>
+        <li>现有Cat5e/Cat6网线即可支持</li>
+        <li>速度是千兆的2.5倍</li>
+    </ul>
+
+    <h2>九、优化检查清单</h2>
+
+    <ul>
+        <li>✅ 确认所有网线是Cat5e或Cat6以上</li>
+        <li>✅ 确认路由器/交换机所有端口都是千兆</li>
+        <li>✅ 确认NAS和电脑网络协商速率是1Gbps</li>
+        <li>✅ 有条件的开启链路聚合（LACP）</li>
+        <li>✅ 群晖/威联通启用SMB3多通道</li>
+        <li>✅ Linux用户使用NFS代替SMB</li>
+        <li>✅ 避免用WiFi访问NAS数据</li>
+        <li>✅ 定期测速，监控网络健康</li>
+    </ul>
+
+    <h2>总结</h2>
+
+    <p>NAS网络优化的核心：</p>
+
+    <ol>
+        <li><strong>基础先行</strong>：网线、端口、协商速率，先排除基础问题</li>
+        <li><strong>链路聚合</strong>：双网口+支持LACP的交换机=带宽翻倍</li>
+        <li><strong>SMB3多通道</strong>：零成本白嫖，速度提升70%+</li>
+        <li><strong>NFS优化</strong>：Linux用户的最佳选择</li>
+        <li><strong>按需升级</strong>：千兆够用，2.5Gbps性价比高，万兆按需</li>
+    </ol>
+
+    <blockquote>
+        网络是NAS的血管。血管通了，数据才能跑得欢。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：群晖/威联通官方文档、网络优化经验</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
