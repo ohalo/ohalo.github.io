@@ -1,0 +1,201 @@
+---
+layout: post
+title: "Spec-Kit 上手指南：GitHub官方的AI编程规范框架"
+date: 2026-04-15
+categories: [ai-tools, spec-kit]
+tags: [AI编程, Spec-Kit, SDD, GitHub, Claude Code]
+permalink: /posts/ai-tools/spec-kit/2026-04-15-spec-kit-usage-guide.html
+---
+
+<p>你有没有试过让AI写代码，结果它越写越偏，最后完全不是你想要的？</p>
+
+<p>你跟 Claude Code 说"给我加个用户登录功能"，它给你写了一堆，但你发现它没考虑密码加密、没考虑session管理、没考虑登录失败的处理。等你反应过来，它已经改了二十个文件。</p>
+
+<p>这不是AI的问题，是你俩没对齐。</p>
+
+<p><strong>Spec-Kit</strong> 是 GitHub 官方开源的工具包，用来解决这个问题。它的核心理念叫 <strong>Spec-Driven Development（规范驱动开发）</strong>——在让AI写代码之前，先把"要做什么、怎么做"写成可执行的规范，AI照着规范实现，而不是自由发挥。</p>
+
+<p><img src="/images/spec-kit-manual/spec-kit-logo.webp" alt="Spec-Kit Logo" style="max-width:200px;display:block;margin:24px auto;"></p>
+
+<h2>安装：两分钟搞定</h2>
+
+<p>Spec-Kit 基于 Python，用 <code>uv</code> 管理：</p>
+<pre><code># 安装 specify CLI
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+
+# 验证
+specify --version</code></pre>
+
+<p>然后进你的项目目录初始化：</p>
+<pre><code>cd your-project
+specify init . --ai claude</code></pre>
+
+<p><code>--ai claude</code> 告诉它你要用 Claude Code。支持 20 多个 AI 工具，包括 Cursor、Copilot、Gemini、Codex 等。</p>
+
+<p>初始化后，你的项目会多一个 <code>.specify/</code> 目录，里面放着配置文件和模板。</p>
+
+<h2>六阶段工作流：从想法到实现</h2>
+
+<p>Spec-Kit 把整个开发流程拆成六个阶段，每个阶段都有对应的斜杠命令：</p>
+
+<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+  <tr style="background:#f5f5f5;">
+    <th style="padding:10px;border:1px solid #ddd;text-align:left;">阶段</th>
+    <th style="padding:10px;border:1px solid #ddd;text-align:left;">命令</th>
+    <th style="padding:10px;border:1px solid #ddd;text-align:left;">干什么</th>
+  </tr>
+  <tr>
+    <td style="padding:10px;border:1px solid #ddd;">1. 定规矩</td>
+    <td style="padding:10px;border:1px solid #ddd;"><code>/speckit.constitution</code></td>
+    <td style="padding:10px;border:1px solid #ddd;">创建项目原则，比如"必须用TypeScript"、"必须写测试"</td>
+  </tr>
+  <tr>
+    <td style="padding:10px;border:1px solid #ddd;">2. 定需求</td>
+    <td style="padding:10px;border:1px solid #ddd;"><code>/speckit.specify</code></td>
+    <td style="padding:10px;border:1px solid #ddd;">描述你要做什么，只讲"做什么"，不讲"用什么技术"</td>
+  </tr>
+  <tr>
+    <td style="padding:10px;border:1px solid #ddd;">3. 定方案</td>
+    <td style="padding:10px;border:1px solid #ddd;"><code>/speckit.plan</code></td>
+    <td style="padding:10px;border:1px solid #ddd;">确定技术栈和实现方案</td>
+  </tr>
+  <tr>
+    <td style="padding:10px;border:1px solid #ddd;">4. 拆任务</td>
+    <td style="padding:10px;border:1px solid #ddd;"><code>/speckit.tasks</code></td>
+    <td style="padding:10px;border:1px solid #ddd;">把方案拆成可执行的任务清单</td>
+  </tr>
+  <tr>
+    <td style="padding:10px;border:1px solid #ddd;">5. 执行</td>
+    <td style="padding:10px;border:1px solid #ddd;"><code>/speckit.implement</code></td>
+    <td style="padding:10px;border:1px solid #ddd;">AI 按任务清单逐项实现</td>
+  </tr>
+</table>
+
+<p>看起来步骤很多，实际用起来很顺。我给你演示一遍：</p>
+
+<h3>第一步：定规矩</h3>
+<pre><code>你: /speckit.constitution
+
+AI: 已创建 .specify/CONSTITUTION.md
+
+项目原则：
+- 代码必须用 TypeScript
+- 所有功能必须有单元测试
+- 优先使用原生 API，减少依赖
+- 错误处理必须捕获并记录</code></pre>
+
+<p>这个文件是项目的"宪法"，以后所有的规范都要遵守这些原则。</p>
+
+<h3>第二步：定需求</h3>
+<pre><code>你: /speckit.specify 做一个照片相册应用，可以按日期分组，支持拖拽排序，相册不能嵌套
+
+AI: 已创建 .specify/features/001-photo-albums/spec.md
+
+## 需求：照片相册管理
+
+### 场景：创建相册
+- GIVEN 用户在主页面
+- WHEN 点击"新建相册"
+- THEN 弹出对话框输入相册名称
+- AND 创建空相册并显示在列表中
+
+### 场景：拖拽排序
+- GIVEN 用户有多个相册
+- WHEN 拖拽相册到目标位置
+- THEN 相册顺序更新
+- AND 新顺序持久化保存</code></pre>
+
+<p>注意这里完全没有提技术栈——没说用 React 还是 Vue，没说用 SQLite 还是 PostgreSQL。这是故意的，Spec-Kit 把"做什么"和"怎么做"分开。</p>
+
+<h3>第三步：定方案</h3>
+<pre><code>你: /speckit.plan 用 Vite + React，尽量减少第三方库。图片存在本地，元数据用 SQLite。
+
+AI: 已创建 .specify/features/001-photo-albums/plan.md
+
+技术方案：
+- 前端：Vite + React + TypeScript
+- 状态管理：React Context（不用 Redux）
+- 存储：SQLite（via sql.js 浏览器版）
+- 拖拽：HTML5 Drag and Drop API（不用库）</code></pre>
+
+<h3>第四步：拆任务</h3>
+<pre><code>你: /speckit.tasks
+
+AI: 已创建 .specify/features/001-photo-albums/tasks.md
+
+- [ ] 初始化 Vite 项目
+- [ ] 配置 SQLite 数据库
+- [ ] 实现相册列表组件
+- [ ] 实现拖拽排序功能
+- [ ] 实现新建相册对话框
+- [ ] 添加单元测试</code></pre>
+
+<h3>第五步：执行</h3>
+<pre><code>你: /speckit.implement
+
+AI: 开始执行任务...
+[1/6] 初始化 Vite 项目 ✓
+[2/6] 配置 SQLite 数据库 ✓
+[3/6] 实现相册列表组件 ✓
+...</code></pre>
+
+<p>AI 会逐项完成任务，每完成一项会告诉你。你可以随时中断，下次继续。</p>
+
+<h2>扩展生态：不止这五个命令</h2>
+
+<p>Spec-Kit 的核心只有五个命令，但社区贡献了 <strong>50 多个扩展</strong>，覆盖各种场景：</p>
+
+<ul>
+  <li><strong>Jira 集成</strong>：把 tasks 同步到 Jira</li>
+  <li><strong>代码审查</strong>：实现完后自动做代码 review</li>
+  <li><strong>GitHub Issues</strong>：从 issue 生成 spec</li>
+  <li><strong>测试生成</strong>：根据 spec 自动生成测试用例</li>
+  <li><strong>安全检查</strong>：实现完后做安全审计</li>
+</ul>
+
+<p>安装扩展很简单：</p>
+<pre><code>specify extension search    # 搜索可用扩展
+specify extension add jira  # 安装 Jira 集成</code></pre>
+
+<h2>我自己用下来的感受</h2>
+
+<p>用了大概一个月，说几个真实的感受：</p>
+
+<p><strong>好的地方：</strong></p>
+<ul>
+  <li><strong>AI 确实不乱跑了</strong>。constitution 和 spec 给它划了边界，它知道什么该做、什么不该做。</li>
+  <li><strong>需求变更有迹可循</strong>。如果中途想改需求，改 spec.md，AI 会自动同步到 plan 和 tasks。</li>
+  <li><strong>适合复杂功能</strong>。越复杂的功能，提前写 spec 的收益越大。</li>
+</ul>
+
+<p><strong>需要注意的地方：</strong></p>
+<ul>
+  <li><strong>前期确实要多一步</strong>。以前直接说"给我做个登录"，现在要先写 constitution、再写 spec、再写 plan。小功能可能觉得麻烦。</li>
+  <li><strong>constitution 要写清楚</strong>。如果 constitution 写得模糊，AI 还是会跑偏。比如"写测试"不够，要写"单元测试覆盖率必须 > 80%"。</li>
+  <li><strong>不是所有场景都适合</strong>。快速原型、验证想法的阶段，直接 vibe coding 更快。</li>
+</ul>
+
+<p><strong>适合谁？</strong></p>
+<ul>
+  <li>需要精细控制 AI 输出的场景</li>
+  <li>复杂功能开发（> 3 天的任务）</li>
+  <li>团队协作（spec 可以 code review）</li>
+</ul>
+
+<p><strong>不适合谁？</strong></p>
+<ul>
+  <li>快速验证想法（用 vibe coding 更快）</li>
+  <li>已经有严格开发流程的团队（Spec-Kit 可能和你们现有流程冲突）</li>
+</ul>
+
+<h2>最后</h2>
+
+<p>Spec-Kit 不是让 AI 写代码更快，而是让 AI 写代码<strong>更可预测</strong>。</p>
+
+<p>它的核心理念——"spec 先于 code"——其实和传统软件工程的做法是一致的。只是以前写 spec 是给程序员看的，现在写 spec 是给 AI 看的。</p>
+
+<p>如果你也被 AI "自由发挥"困扰过，可以试试这个框架。</p>
+
+<hr>
+
+<p>你现在用 AI 写代码是什么 workflow？直接聊还是也用什么框架？评论区说说。</p>
