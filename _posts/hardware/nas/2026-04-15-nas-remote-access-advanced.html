@@ -1,0 +1,506 @@
+---
+layout: post
+title: NAS远程访问进阶：Tailscale零配置VPN、WireGuard自建、frp内网穿透方案对比
+date: 2026-04-15
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 远程访问, Tailscale, WireGuard, VPN, 内网穿透, frp, Cloudflare Tunnel]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS远程访问进阶 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS远程访问进阶：Tailscale零配置VPN、WireGuard自建、frp内网穿透方案对比</h1>
+    <div class="meta">2026-04-15 · 数码硬件/NAS存储 · 🔖 NAS, 远程访问, Tailscale, WireGuard, VPN, 内网穿透, frp, Cloudflare Tunnel</div>
+
+    <p>在外面想访问家里的NAS，但没公网IP？QuickConnect太慢？</p>
+
+    <p>这篇文章介绍三种进阶远程访问方案：零配置的Tailscale、自建WireGuard VPN、灵活的frp内网穿透。总有一款适合你。</p>
+
+    <h2>一、方案对比</h2>
+
+    <table>
+        <tr>
+            <th>方案</th>
+            <th>难度</th>
+            <th>速度</th>
+            <th>费用</th>
+            <th>需要公网IP</th>
+            <th>适用场景</th>
+            <th>推荐度</th>
+        </tr>
+        <tr>
+            <td>Tailscale</td>
+            <td>⭐ 极简</td>
+            <td>P2P快，中继中等</td>
+            <td>免费（20设备）</td>
+            <td>不需要</td>
+            <td>日常远程访问，多设备互通</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>WireGuard自建</td>
+            <td>⭐⭐⭐ 中等</td>
+            <td>极快</td>
+            <td>需一台VPS</td>
+            <td>VPS需要</td>
+            <td>追求极致速度，有服务器</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>frp内网穿透</td>
+            <td>⭐⭐ 中等</td>
+            <td>取决于中继服务器</td>
+            <td>中继服务器费用</td>
+            <td>中继服务器需要</td>
+            <td>固定端口服务，多服务暴露</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Cloudflare Tunnel</td>
+            <td>⭐ 简单</td>
+            <td>快</td>
+            <td>免费</td>
+            <td>不需要</td>
+            <td>Web服务暴露，HTTPS</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>蒲公英/花生壳</td>
+            <td>⭐ 极简</td>
+            <td>一般</td>
+            <td>免费版限速</td>
+            <td>不需要</td>
+            <td>不想折腾，开箱即用</td>
+            <td>⭐⭐</td>
+        </tr>
+    </table>
+
+    <h2>二、Tailscale（强烈推荐）</h2>
+
+    <p>Tailscale是目前最推荐的远程访问方案。基于WireGuard协议，但完全零配置——不需要懂网络知识，装完就能用。</p>
+
+    <h3>核心特点</h3>
+
+    <ul>
+        <li><strong>零配置</strong>：不需要改路由器、不需要端口映射、不需要公网IP</li>
+        <li><strong>P2P直连</strong>：设备间直连，延迟低，速度等于带宽上限</li>
+        <li><strong>多平台支持</strong>：iOS、Android、Windows、Mac、Linux、NAS</li>
+        <li><strong>免费额度</strong>：个人用户最多20台设备，完全够用</li>
+        <li><strong>免费子域名+HTTPS</strong>：可以白嫖SSL证书</li>
+    </ul>
+
+    <h3>群晖安装步骤</h3>
+
+    <p><strong>方法一：套件中心（推荐DSM 7.x）</strong></p>
+
+    <ol>
+        <li>打开Tailscale官网（tailscale.com），用<strong>微软/谷歌/GitHub账号</strong>登录</li>
+        <li>进入管理后台 → Settings → Keys → Generate auth key，勾选<strong>Reusable</strong>后复制密钥</li>
+        <li>在群晖套件中心搜索并安装Tailscale（或从GitHub下载spk包手动安装）</li>
+        <li>打开Tailscale，输入auth key完成连接</li>
+        <li>管理后台看到NAS设备在线，获得一个<code>100.x.x.x</code>的虚拟IP</li>
+    </ol>
+
+    <p><strong>方法二：Docker（所有NAS通用）</strong></p>
+
+    <pre><code>docker run -d \
+  --name tailscale \
+  --network host \
+  --privileged \
+  -v /volume1/docker/tailscale:/var/lib/tailscale \
+  -e TS_AUTHKEY=your-auth-key-here \
+  ghcr.io/tailscale/tailscale:latest \
+  tailscaled</code></pre>
+
+    <p>启动后进入容器执行连接：</p>
+
+    <pre><code>docker exec -it tailscale tailscale up --accept-routes</code></pre>
+
+    <h3>威联通安装步骤</h3>
+
+    <ol>
+        <li>在QNAP Club应用商店搜索<strong>Tailscale</strong>，安装</li>
+        <li>打开Tailscale，用同一账号登录</li>
+        <li>获得虚拟IP，在管理后台确认设备在线</li>
+    </ol>
+
+    <h3>客户端使用</h3>
+
+    <p>在你需要远程访问NAS的设备上（手机、电脑）安装Tailscale客户端，用同一账号登录。</p>
+
+    <p>之后在外面想访问NAS时：</p>
+
+    <ul>
+        <li>打开Tailscale，确认已连接</li>
+        <li>在文件管理器/浏览器输入NAS的虚拟IP（如<code>100.92.18.50</code>）</li>
+        <li>就像在局域网一样访问NAS所有服务</li>
+    </ul>
+
+    <h3>白嫖HTTPS证书（进阶）</h3>
+
+    <p>Tailscale提供免费子域名 + HTTPS证书：</p>
+
+    <ol>
+        <li>管理后台 → DNS → 添加免费域名（如<code>my-nas.tailABCD.ts.net</code>）</li>
+        <li>SSH到NAS，执行：<code>sudo tailscale cert my-nas.tailABCD.ts.net</code></li>
+        <li>获得SSL证书，配置到Web服务</li>
+        <li>用域名访问，群晖DSM也可以开启HTTPS</li>
+    </ol>
+
+    <div class="tip">
+        <strong>💡 Tailscale免费版限制</strong>：最多20台设备，不支持自定义子网路由，不支持Exit Node（全局代理）。普通用户完全够用。
+    </div>
+
+    <h2>三、WireGuard自建VPN</h2>
+
+    <p>如果你有一台境外VPS，可以自建WireGuard VPN，速度更快，且可以科学上网。</p>
+
+    <h3>原理</h3>
+
+    <p>WireGuard是一个轻量级VPN协议，比OpenVPN快很多。你的设备和VPS之间建立加密隧道，所有流量通过VPS转发。</p>
+
+    <h3>VPS服务器配置</h3>
+
+    <pre><code># 安装WireGuard
+apt update && apt install -y wireguard
+
+# 生成密钥
+cd /etc/wireguard
+wg genkey | tee server_private.key | wg pubkey > server_public.key
+wg genkey | tee client_private.key | wg pubkey > client_public.key
+
+# 配置服务器
+cat > wg0.conf << 'EOF'
+[Interface]
+PrivateKey = $(cat server_private.key)
+Address = 10.0.0.1/24
+ListenPort = 51820
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer]
+PublicKey = $(cat client_public.key)
+AllowedIPs = 10.0.0.2/32
+EOF</code></pre>
+
+    <h3>NAS客户端配置</h3>
+
+    <pre><code># 群晖Docker运行WireGuard
+docker run -d \
+  --name wireguard \
+  --network host \
+  --privileged \
+  -v /volume1/docker/wireguard:/config \
+  -e PEERS=1 \
+  -e SERVERURL=你的VPS的IP \
+  -e SERVERPORT=51820 \
+  -e INTERNAL_SUBNET=10.0.0.0/24 \
+  -e PEERDNS=8.8.8.8 \
+  -e ALLOWEDIPS=0.0.0.0/0 \
+  --restart unless-stopped \
+  linuxserver/wireguard</code></pre>
+
+    <h3>启用IP转发（服务器）</h3>
+
+    <pre><code>echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+sysctl -p</code></pre>
+
+    <div class="warning">
+        <strong>⚠️ 注意</strong>：WireGuard需要一台始终在线的VPS。VPS建议选离你近的节点，速度更好。阿里云国际版、CloudCone、Vultr都是常见选择。
+    </div>
+
+    <h2>四、frp内网穿透</h2>
+
+    <p>frp（Fast Reverse Proxy）是一个开源的内网穿透工具，需要一台有公网IP的服务器（中继服务器）。</p>
+
+    <h3>适用场景</h3>
+
+    <ul>
+        <li>需要暴露固定端口给外部访问</li>
+        <li>有多台服务需要同时暴露</li>
+        <li>有可用的中继服务器（自己的VPS或免费frp服务）</li>
+    </ul>
+
+    <h3>群晖Docker部署（frpc客户端）</h3>
+
+    <p><strong>Step 1：准备配置文件</strong></p>
+
+    <pre><code>mkdir -p /volume1/docker/frpc
+cat > /volume1/docker/frpc/frpc.ini << 'EOF'
+[common]
+server_addr = 你的中继服务器IP
+server_port = 7000
+token = 你的密码
+
+[nas_dsm]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 5000
+remote_port = 15500
+
+[nas_file]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 5001
+remote_port = 15501
+EOF</code></pre>
+
+    <p><strong>Step 2：启动容器</strong></p>
+
+    <pre><code>docker run -d \
+  --name frpc \
+  --restart unless-stopped \
+  -v /volume1/docker/frpc/frpc.ini:/etc/frp/frpc.ini \
+  snowdreamtech/frpc</code></pre>
+
+    <h3>服务器部署（frps服务端）</h3>
+
+    <pre><code># VPS上安装frps
+wget https://github.com/fatedier/frp/releases/download/v0.58.0/frp_0.58.0_linux_amd64.tar.gz
+tar -xzf frp_0.58.0_linux_amd64.tar.gz
+cd frp_0.58.0_linux_amd64
+
+# 配置
+cat > frps.ini << 'EOF'
+[common]
+bind_port = 7000
+token = 你的密码
+dashboard_port = 7500
+dashboard_user = admin
+dashboard_pwd = 你的后台密码
+EOF
+
+# 启动
+./frps -c frps.ini</code></pre>
+
+    <h3>访问方式</h3>
+
+    <p>在外网访问<code>中继服务器IP:15500</code>即可连接到群晖DSM。</p>
+
+    <div class="tip">
+        <strong>💡 免费frp服务</strong>：网上有一些公益frp服务（如waiwang.men），可以直接用他们的服务器，省去自己搭建。但稳定性和速度不如自建。
+    </div>
+
+    <h2>五、Cloudflare Tunnel</h2>
+
+    <p>Cloudflare Tunnel（原frangipani）是目前最稳定的免费方案。不需要任何配置，流量经过Cloudflare全球CDN，速度快且稳定。</p>
+
+    <h3>部署步骤</h3>
+
+    <pre><code># 群晖Docker运行cloudflare tunnel
+docker run -d \
+  --name cloudflare-tunnel \
+  --network host \
+  -v /volume1/docker/cloudflare-tunnel:/etc/cloudflared \
+  cloudflare/cloudflared:latest \
+  tunnel run --token 你的token</code></pre>
+
+    <p>在Cloudflare Zero Trust后台创建Tunnel，获取token后填入即可。</p>
+
+    <h3>优势</h3>
+
+    <ul>
+        <li>免费</li>
+        <li>自动HTTPS</li>
+        <li>Cloudflare全球CDN加速</li>
+        <li>支持子域名绑定</li>
+        <li>稳定，不掉线</li>
+    </ul>
+
+    <h2>六、各服务远程访问端口汇总</h2>
+
+    <p>无论用哪种方案，你都需要知道NAS上各服务的端口：</p>
+
+    <table>
+        <tr>
+            <th>服务</th>
+            <th>群晖默认端口</th>
+            <th>威联通默认端口</th>
+        </tr>
+        <tr>
+            <td>DSM管理后台</td>
+            <td>5000 (HTTP) / 5001 (HTTPS)</td>
+            <td>8080</td>
+        </tr>
+        <tr>
+            <td>文件管理器</td>
+            <td>5000</td>
+            <td>8080</td>
+        </tr>
+        <tr>
+            <td>SMB文件共享</td>
+            <td>445</td>
+            <td>445</td>
+        </tr>
+        <tr>
+            <td>SFTP</td>
+            <td>22</td>
+            <td>22</td>
+        </tr>
+        <tr>
+            <td>Photo Station</td>
+            <td>5000/photo</td>
+            <td>8080/photo</td>
+        </tr>
+        <tr>
+            <td>Download Station</td>
+            <td>5000/download</td>
+            <td>8080/download</td>
+        </tr>
+        <tr>
+            <td>Video Station</td>
+            <td>5000/video</td>
+            <td>8080/video</td>
+        </tr>
+        <tr>
+            <td>Docker</td>
+            <td>需要单独配置</td>
+            <td>需要单独配置</td>
+        </tr>
+    </table>
+
+    <h2>七、进阶技巧</h2>
+
+    <h3>1. 多服务一键访问</h3>
+
+    <p>用Tailscale + 一个固定域名，可以通过一个入口访问所有服务：</p>
+
+    <pre><code># 在NAS上用Nginx反向代理
+server {
+    listen 80;
+    server_name nas.tailABCD.ts.net;
+    
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+    }
+    
+    location /files/ {
+        proxy_pass http://127.0.0.1:5001;
+    }
+}</code></pre>
+
+    <h3>2. 手机APP访问</h3>
+
+    <p>DS file、DS photo、DS video等APP都支持自定义服务器地址：</p>
+
+    <ol>
+        <li>打开APP → 设置 → 服务器</li>
+        <li>添加服务器，输入Tailscale虚拟IP或域名</li>
+        <li>勾选"使用HTTPS"（如果有SSL证书）</li>
+        <li>连接成功</li>
+    </ol>
+
+    <h3>3. 开机自启</h3>
+
+    <p>确保Tailscale在NAS启动后自动连接：</p>
+
+    <ul>
+        <li>Docker方式：容器设置中勾选"重启后自动启动"</li>
+        <li>套件方式：Tailscale套件设置中开启开机自启</li>
+    </ul>
+
+    <h2>八、常见问题</h2>
+
+    <table>
+        <tr>
+            <th>问题</th>
+            <th>解答</th>
+        </tr>
+        <tr>
+            <td>Tailscale连不上</td>
+            <td>检查客户端是否登录同一账号，NAT类型是否限制了P2P，切换到DERP中继模式</td>
+        </tr>
+        <tr>
+            <td>速度很慢</td>
+            <td>国内直连Tailscale中继服务器慢，可尝试换成 nearer DERP节点</td>
+        </tr>
+        <tr>
+            <td>frp中继慢</td>
+            <td>中继服务器位置决定速度，换一台近的VPS</td>
+        </tr>
+        <tr>
+            <td>端口被封了</td>
+            <td>WireGuard用UDP 51820，部分运营商会封锁，换端口或用Tailscale</td>
+        </tr>
+        <tr>
+            <td>Tailscale免费版限制</td>
+            <td>20台设备上限，够用；不支持Exit Node（需要付费版）</td>
+        </tr>
+        <tr>
+            <td>手机APP访问Tailscale IP</td>
+            <td>在DS file等APP中手动添加服务器，地址填Tailscale虚拟IP</td>
+        </tr>
+        <tr>
+            <td>多个设备都要连NAS</td>
+            <td>所有设备都装Tailscale，用同一账号，NAS只需一个虚拟IP</td>
+        </tr>
+    </table>
+
+    <h2>总结</h2>
+
+    <ol>
+        <li><strong>日常远程访问</strong>：Tailscale是最佳选择，零配置，够快，完全免费</li>
+        <li><strong>需要HTTPS + 自定义域名</strong>：Cloudflare Tunnel，稳定可靠</li>
+        <li><strong>有VPS，追求极速</strong>：WireGuard自建，速度等于VPS带宽</li>
+        <li><strong>多服务暴露</strong>：frp最灵活，需要中继服务器</li>
+        <li><strong>懒人方案</strong>：蒲公英/花生壳，开箱即用但有限速</li>
+    </ol>
+
+    <blockquote>
+        远程访问NAS，核心就一句话：Tailscale治百病。试过就知道，QuickConnect是什么垃圾。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：Tailscale官方文档、WireGuard官网、frp GitHub、群晖/威联通社区</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
