@@ -1,13 +1,14 @@
+---
 layout: post
 title: "Claude Code Token 烧钱实录：一个需求下来，几千万 token 是怎么没的？"
 date: 2026-04-15
-categories: [ai-tools, claude-code]
-permalink: /posts/ai-tools/claude-code/2026-04-15-claude-code-token-cost-analysis.html
+category: ai-tools/claude-code
+category_name: "AI工具/Claude Code"
 ---
 
-<h1>Claude Code Token 烧钱实录：一个需求下来，几千万 token 是怎么没的？</h1>
+<h2>先说结论</h2>
 
-<p><em>上周跟同事聊 Claude Code，我问他用得怎么样，他回了我一句："别提了，一个需求做下来，钱包瘦了三圈。"</em></p>
+<p>上周跟同事聊 Claude Code，我问他用得怎么样，他回了我一句："别提了，一个需求做下来，钱包瘦了三圈。"</p>
 
 <p>我以为是夸张，结果他把后台用量截图发给我看——单次会话，token 消耗量直接破亿。这不是开玩笑，这是真金白银往外烧。</p>
 
@@ -28,7 +29,7 @@ permalink: /posts/ai-tools/claude-code/2026-04-15-claude-code-token-cost-analysi
 <li>发现不对，修正（又是一轮）</li>
 </ul>
 
-<p>一个看似简单的需求，实际触发了十几轮甚至几十轮循环。每轮循环少则几千 token，多则几万 token。积少成多，一个需求下来轻松破亿。</p>
+<p>一个看似简单的需求，实际触发了十几轮甚至几十轮循环。每轮循环少则几千 token，多则几万 token。积少成多，一个需求下来轻松破千万。</p>
 
 <h3>2. 上下文窗口的"甜蜜陷阱"</h3>
 
@@ -44,7 +45,7 @@ permalink: /posts/ai-tools/claude-code/2026-04-15-claude-code-token-cost-analysi
 
 <h3>4. Web Search：每次搜索都是钱</h3>
 
-<p>Claude Code 可以联网搜索来获取信息。每次 Web Search 搜索+读取结果页面，都会产生 token 消耗。如果你的需求涉及查文档、找最佳实践、对接第三方 API，搜索次数一多，消耗非常可观。</p>
+<p>Claude Code 可以联网搜索来获取信息。每次搜索加读取结果页面，都会产生 token 消耗。如果你的需求涉及查文档、找最佳实践、对接第三方 API，搜索次数一多，消耗非常可观。</p>
 
 <h3>5. 对话历史：越聊越重</h3>
 
@@ -63,40 +64,38 @@ permalink: /posts/ai-tools/claude-code/2026-04-15-claude-code-token-cost-analysi
 <li>超出部分用订阅内额度抵扣</li>
 </ul>
 
-<p><strong>方式二：API 按量付费</strong></p>
-<p>直接调 Anthropic API，用多少付多少。价格透明，但如果没有用量意识，容易失控。</p>
+<p><strong>方式二：API 按量付费</strong><br>
+直接调 Anthropic API，用多少付多少。价格透明，但如果没有用量意识，容易失控。</p>
 
-<h3>各大模型 API 价格对比（编码场景）</h3>
+<h3>各大模型 API 价格对比</h3>
 
-<p>下面是几个主流编程模型的 API 价格对比（以输入 100 万 token、输出 100 万 token 为例）：</p>
+<p>以输入 100 万 token、输出 100 万 token 为例：</p>
 
 <table>
 <thead>
-<tr><th>模型</th><th>输入价格/百万token</th><th>输出价格/百万token</th><th>100万输入+100万输出</th><th>编码能力评分</th><th>适合场景</th></tr>
+<tr><th>模型</th><th>输入/百万token</th><th>输出/百万token</th><th>100万+100万</th><th>编码能力</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Claude Sonnet 4.5</strong></td><td>约 $3（$0.003/千token）</td><td>约 $15（$0.015/千token）</td><td><strong>约 $18</strong></td><td>⭐⭐⭐⭐⭐</td><td>中高难度开发</td></tr>
-<tr><td><strong>Claude Opus 4.6</strong></td><td>约 $15（$0.015/千token）</td><td>约 $75（$0.075/千token）</td><td><strong>约 $90</strong></td><td>⭐⭐⭐⭐⭐</td><td>高复杂度架构设计</td></tr>
-<tr><td><strong>DeepSeek Coder V3</strong></td><td>约 ¥1（极低价）</td><td>约 ¥2</td><td><strong>约 ¥3</strong></td><td>⭐⭐⭐⭐</td><td>简单/中等难度</td></tr>
-<tr><td><strong>Qwen-Coder-Plus</strong></td><td>约 ¥8</td><td>约 ¥16</td><td><strong>约 ¥24</strong></td><td>⭐⭐⭐⭐</td><td>中文项目开发</td></tr>
-<tr><td><strong>Kimi Coder</strong></td><td>约 ¥10</td><td>约 ¥20</td><td><strong>约 ¥30</strong></td><td>⭐⭐⭐⭐</td><td>长上下文项目</td></tr>
+<tr><td><strong>Claude Sonnet 4.5</strong></td><td>$3</td><td>$15</td><td><strong>约$18（¥130）</strong></td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td><strong>Claude Opus 4.6</strong></td><td>$15</td><td>$75</td><td><strong>约$90（¥660）</strong></td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td><strong>DeepSeek Coder V3</strong></td><td>¥1</td><td>¥2</td><td><strong>约¥3</strong></td><td>⭐⭐⭐⭐</td></tr>
+<tr><td><strong>Qwen-Coder-Plus</strong></td><td>¥8</td><td>¥16</td><td><strong>约¥24</strong></td><td>⭐⭐⭐⭐</td></tr>
+<tr><td><strong>Kimi Coder</strong></td><td>¥10</td><td>¥20</td><td><strong>约¥30</strong></td><td>⭐⭐⭐⭐</td></tr>
 </tbody>
 </table>
 
-<p><em>注：DeepSeek/Qwen/Kimi 价格参考阿里云百炼、硅基流动等平台公开定价（2026年4月）；Anthropic 价格参考官方 API 定价页，美元换算按 1 USD ≈ 7.3 CNY。</em></p>
-
-<p><strong>结论：Claude Sonnet 4.5 性价比最优，DeepSeek Coder 最便宜但能力有差距。</strong></p>
+<p><em>注：DeepSeek/Qwen/Kimi 价格参考阿里云百炼、硅基流动等平台公开定价（2026年4月）；Anthropic 价格参考官方 API 定价页，1 USD ≈ 7.3 CNY。</em></p>
 
 <h3>实际消耗估算</h3>
 
 <table>
 <thead>
-<tr><th>需求类型</th><th>Claude Code 消耗估算</th><th>对应 API 费用</th><th>DeepSeek 估算费用</th></tr>
+<tr><th>需求类型</th><th>Claude Code 消耗</th><th>API 费用</th><th>DeepSeek 费用</th></tr>
 </thead>
 <tbody>
-<tr><td>简单 CRUD 接口（~10轮循环）</td><td>约 500万 token</td><td>约 <strong>¥80</strong></td><td>约 <strong>¥2</strong></td></tr>
-<tr><td>中等复杂度页面（~30轮循环）</td><td>约 2000万 token</td><td>约 <strong>¥300</strong></td><td>约 <strong>¥10</strong></td></tr>
-<tr><td>高复杂度模块重构（~100轮循环）</td><td>约 8000万 token</td><td>约 <strong>¥1200</strong></td><td>约 <strong>¥40</strong></td></tr>
+<tr><td>简单 CRUD（~10轮）</td><td>~500万 token</td><td>~¥80</td><td>~¥2</td></tr>
+<tr><td>中等复杂度页面（~30轮）</td><td>~2000万 token</td><td>~¥300</td><td>~¥10</td></tr>
+<tr><td>高复杂度重构（~100轮）</td><td>~8000万 token</td><td>~¥1200</td><td>~¥40</td></tr>
 </tbody>
 </table>
 
@@ -108,10 +107,10 @@ permalink: /posts/ai-tools/claude-code/2026-04-15-claude-code-token-cost-analysi
 
 <p>DeepSeek Coder V3 的价格大概是 Claude Sonnet 的 <strong>1/50</strong>，这是真实差距。</p>
 
-<p>优势：价格极低、中文支持好、部署灵活（可本地可云端）<br/>
+<p>优势：价格极低、中文支持好、部署灵活（可本地可云端）<br>
 劣势：复杂架构设计能力弱、复杂 bug 定位容易出错、长对话上下文保持不如 Claude</p>
 
-<p><strong>适合场景：简单脚本、辅助学习、中等复杂度中小项目（前提是你能接受反复修正的时间成本）</strong></p>
+<p><strong>适合：简单脚本、辅助学习、中小项目（前提是你能接受反复修正的时间成本）</strong></p>
 
 <h3>质量和效率优先：Claude Sonnet 4.5</h3>
 
@@ -119,7 +118,7 @@ permalink: /posts/ai-tools/claude-code/2026-04-15-claude-code-token-cost-analysi
 
 <p>用 DeepSeek 省的是钱，亏的是时间。用 Claude Sonnet 买的是效率。</p>
 
-<p>建议的策略：<strong>用 DeepSeek 做探索性任务（省钱），用 Claude Sonnet 做核心模块（保质量）</strong>。</p>
+<p>建议策略：<strong>DeepSeek 做探索性任务（省钱），Claude Sonnet 做核心模块（保质量）</strong>。</p>
 
 <h3>不差钱直接上：Claude Opus 4.6</h3>
 
