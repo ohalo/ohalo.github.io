@@ -1,0 +1,491 @@
+---
+layout: post
+title: NAS跑AI大模型指南：Ollama部署DeepSeek/Qwen/ Llama3，NAS变身本地ChatGPT
+date: 2026-04-15
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, AI大模型, Ollama, DeepSeek, 本地AI, 本地LLM, ChatGPT, 私有AI]
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAS跑AI大模型指南 - Halo Blog</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.8; background: #151515; color: #b5b5b5; }
+        h1 { color: #b5e853; font-size: 1.8em; margin-top: 30px; }
+        h2 { color: #b5e853; font-size: 1.4em; margin-top: 25px; }
+        h3 { color: #e0e0e0; font-size: 1.2em; }
+        a { color: #63c0f5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        blockquote { border-left: 3px solid #b5e853; padding-left: 15px; margin: 20px 0; color: #888; }
+        code { background: #252525; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #252525; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; color: #b5e853; }
+        .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .nav { margin-bottom: 30px; }
+        .nav a { margin-right: 15px; }
+        hr { border: none; border-top: 1px solid #333; margin: 30px 0; }
+        .warning { background: #3d2a1a; border-left: 3px solid #e07020; padding: 10px 15px; margin: 15px 0; }
+        .tip { background: #1a3d2a; border-left: 3px solid #20e070; padding: 10px 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">← 主页</a>
+        <a href="/posts/">所有文章</a>
+        <a href="/posts/hardware/nas/">NAS存储</a>
+    </div>
+
+    <h1>NAS跑AI大模型指南：Ollama部署DeepSeek/Qwen/Llama3，NAS变身本地ChatGPT</h1>
+    <div class="meta">2026-04-15 · 数码硬件/NAS存储 · 🔖 NAS, AI大模型, Ollama, DeepSeek, 本地AI, 本地LLM, ChatGPT, 私有AI</div>
+
+    <p>DeepSeek火了一整年，想在本地跑个AI助手，但电脑带不动？</p>
+
+    <p>你的NAS完全可以。只要内存够（8GB以上），就能在NAS上跑DeepSeek、Qwen、LLaMA等大模型，数据不离开局域网，隐私安全，响应飞快。</p>
+
+    <h2>一、为什么在NAS上跑AI</h2>
+
+    <p>云端API（OpenAI、Claude、DeepSeek官方API）虽然方便，但有几个问题：</p>
+
+    <ul>
+        <li><strong>隐私风险</strong>：你的对话数据存在别人服务器上</li>
+        <li><strong>网络依赖</strong>：断网就用不了</li>
+        <li><strong>费用累积</strong>：用多了账单吓人</li>
+        <li><strong>延迟波动</strong>：高峰期响应慢</li>
+    </ul>
+
+    <p>NAS跑本地AI的优势：</p>
+
+    <ul>
+        <li><strong>数据完全私有</strong>：所有对话存在本地，家人照片、文档、工作内容不外传</li>
+        <li><strong>7x24在线</strong>：NAS本来就是一直开着的，随时响应</li>
+        <li><strong>零使用成本</strong>：一次部署，无限使用</li>
+        <li><strong>局域网延迟</strong>：毫秒级响应，体验流畅</li>
+    </ul>
+
+    <h2>二、Ollama是什么</h2>
+
+    <p>本地跑大模型，绕不开<strong>Ollama</strong>这个工具。</p>
+
+    <p>Ollama是一个开源的本地大模型运行框架，核心特点：</p>
+
+    <ul>
+        <li><strong>一键部署</strong>：一条命令下载并运行模型，不需要配置环境</li>
+        <li><strong>模型库丰富</strong>：DeepSeek、Qwen、LLaMA、Mistral、Gemma等主流模型一键获取</li>
+        <li><strong>API兼容</strong>：提供OpenAI兼容API，现有应用可以直接接入</li>
+        <li><strong>跨平台</strong>：支持macOS/Linux/Windows，NAS上用Docker运行</li>
+        <li><strong>资源优化</strong>：智能管理CPU/GPU资源，NAS也能跑得动</li>
+    </ul>
+
+    <h2>三、群晖Docker部署Ollama</h2>
+
+    <h3>方案一：Docker直接部署（推荐）</h3>
+
+    <p><strong>Step 1：SSH连接到群晖</strong></p>
+
+    <pre><code># 在终端输入
+ssh admin@192.168.1.100
+# 输入密码后切换到root
+sudo -i</code></pre>
+
+    <p><strong>Step 2：创建文件夹</strong></p>
+
+    <pre><code>mkdir -p /volume1/docker/ollama</code></pre>
+
+    <p><strong>Step 3：创建docker-compose.yml</strong></p>
+
+    <pre><code>cat > /volume1/docker/ollama/docker-compose.yml << 'EOF'
+version: '3.8'
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+EOF</code></pre>
+
+    <p><strong>Step 4：启动</strong></p>
+
+    <pre><code>cd /volume1/docker/ollama
+docker-compose up -d</code></pre>
+
+    <p><strong>Step 5：下载模型</strong></p>
+
+    <pre><code># 进入容器
+docker exec -it ollama ollama run deepseek-r1:1.5b
+
+# 其他常用模型
+docker exec -it ollama ollama run qwen2.5:7b
+docker exec -it ollama ollama run llama3.2:3b
+docker exec -it ollama ollama run mistral:7b</code></pre>
+
+    <h3>方案二：Open WebUI（图形界面）</h3>
+
+    <p>纯命令行的ollama不好用？装个Web界面——<strong>Open WebUI</strong>，体验和ChatGPT几乎一样。</p>
+
+    <p><strong>Step 1：部署Open WebUI</strong></p>
+
+    <pre><code>docker run -d \
+  --name open-webui \
+  --network host \
+  -v ./open-webui/data:/app/backend/data \
+  -e OLLAMA_BASE_URL=http://127.0.0.1:11434 \
+  --restart unless-stopped \
+  ghcr.io/open-webui/open-webui:main</code></pre>
+
+    <p><strong>Step 2：访问</strong></p>
+
+    <p>浏览器打开<code>http://NAS的IP:8080</code>，注册账号后就能用了。</p>
+
+    <div class="tip">
+        <strong>💡 推荐组合</strong>：Ollama（后端）+ Open WebUI（前端），这是目前最流行的本地AI方案，体验接近官方ChatGPT。
+    </div>
+
+    <h2>四、威联通Container Station部署</h2>
+
+    <p><strong>Step 1：安装Container Station</strong></p>
+
+    <p>App Center搜索并安装Container Station。</p>
+
+    <p><strong>Step 2：创建容器</strong></p>
+
+    <ol>
+        <li>打开Container Station，点击<strong>创建</strong></li>
+        <li>镜像名称填：<code>ollama/ollama:latest</code></li>
+        <li>网络模式选择<strong>桥接（Bridge）</strong>，端口映射<strong>11434:11434</strong></li>
+        <li>存储空间挂载：新建一个<code>ollama</code>文件夹，挂载到<code>/root/.ollama</code></li>
+        <li>创建并启动</li>
+    </ol>
+
+    <p><strong>Step 3：下载模型</strong></p>
+
+    <pre><code># SSH到威联通
+ssh admin@NAS的IP
+
+# 进入容器
+docker exec -it ollama ollama run deepseek-r1:1.5b</code></pre>
+
+    <h2>五、推荐模型</h2>
+
+    <p>不是所有模型都能在NAS上跑。参数越大，能力越强，但对硬件要求也越高。</p>
+
+    <h3>模型选择指南</h3>
+
+    <table>
+        <tr>
+            <th>模型</th>
+            <th>参数量</th>
+            <th>推荐内存</th>
+            <th>适用场景</th>
+            <th>推荐度</th>
+        </tr>
+        <tr>
+            <td>DeepSeek-R1</td>
+            <td>1.5B</td>
+            <td>4GB</td>
+            <td>日常问答、快速响应</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>DeepSeek-R1</td>
+            <td>7B</td>
+            <td>8GB</td>
+            <td>文档处理、代码编写</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Qwen2.5</td>
+            <td>3B</td>
+            <td>6GB</td>
+            <td>中文对话、轻量任务</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Qwen2.5</td>
+            <td>7B</td>
+            <td>8GB</td>
+            <td>复杂推理、中文创作</td>
+            <td>⭐⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>LLaMA3.2</td>
+            <td>3B</td>
+            <td>6GB</td>
+            <td>英文为主的任务</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Mistral</td>
+            <td>7B</td>
+            <td>8GB</td>
+            <td>通用任务、代码</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <td>Phi-3.5</td>
+            <td>3.8B</td>
+            <td>6GB</td>
+            <td>轻量级、快速响应</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+
+    <div class="warning">
+        <strong>⚠️ 内存是瓶颈</strong>：NAS跑大模型，内存决定上限。建议至少8GB，16GB体验更好。如果只有4GB，只能跑1.5B参数模型。
+    </div>
+
+    <h3>我的推荐</h3>
+
+    <ul>
+        <li><strong>入门首选</strong>：DeepSeek-R1 1.5B，体积小、速度快、中文好</li>
+        <li><strong>主力使用</strong>：DeepSeek-R1 7B或Qwen2.5 7B，能力均衡</li>
+        <li><strong>NAS内存16GB+</strong>：可以跑14B参数的模型，效果接近GPT-3.5</li>
+    </ul>
+
+    <h2>六、进阶：本地知识库（RAG）</h2>
+
+    <p>光跑模型还不够？接上你的文档，让AI读你的笔记、合同、代码——这就是RAG（检索增强生成）。</p>
+
+    <h3>AnythingLLM（最简单）</h3>
+
+    <ol>
+        <li>部署AnythingLLM容器</li>
+        <li>连接Ollama作为模型</li>
+        <li>上传PDF、Word、Markdown文档</li>
+        <li>AI就能回答关于你文档的问题</li>
+    </ol>
+
+    <pre><code>docker run -d \
+  --name anythingllm \
+  -p 3001:3001 \
+  -v anythingllm:/app/storage \
+  -e OLLAMA_BASE_URL=http://NAS的IP:11434 \
+  mintplexlabs/anythingllm:latest</code></pre>
+
+    <h3>配合Dify（更强大）</h3>
+
+    <p>Dify是一个AI应用编排平台，可以：</p>
+
+    <ul>
+        <li>连接Ollama模型</li>
+        <li>构建知识库</li>
+        <li>创建AI工作流</li>
+        <li>开发智能客服、助手类应用</li>
+    </ul>
+
+    <h2>七、API调用（开发者向け）</h2>
+
+    <p>Ollama提供OpenAI兼容的API，可以直接替换你的AI应用后端地址。</p>
+
+    <h3>API地址</h3>
+
+    <pre><code># Ollama API地址
+http://NAS的IP:11434
+
+# 模型列表
+curl http://NAS的IP:11434/api/tags
+
+# 对话请求（OpenAI兼容格式）
+curl http://NAS的IP:11434/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "deepseek-r1:1.5b",
+    "messages": [{"role": "user", "content": "你好"}]
+  }'</code></pre>
+
+    <h3>支持OpenAI SDK</h3>
+
+    <p>如果你的代码用的是OpenAI SDK，只需改一行配置：</p>
+
+    <pre><code># Python OpenAI SDK示例
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="ollama",  # 任意字符串
+    base_url="http://NAS的IP:11434/v1"  # Ollama地址
+)
+
+response = client.chat.completions.create(
+    model="deepseek-r1:1.5b",
+    messages=[{"role": "user", "content": "用Python写一个快速排序"}]
+)
+print(response.choices[0].message.content)</code></pre>
+
+    <h2>八、硬件要求</h2>
+
+    <table>
+        <tr>
+            <th>模型参数</th>
+            <th>最低内存</th>
+            <th>推荐内存</th>
+            <th>CPU要求</th>
+            <th>推理速度参考</th>
+        </tr>
+        <tr>
+            <td>1.5B</td>
+            <td>4GB</td>
+            <td>6GB</td>
+            <td>任意x86</td>
+            <td>20-50 tokens/s</td>
+        </tr>
+        <tr>
+            <td>3B</td>
+            <td>6GB</td>
+            <td>8GB</td>
+            <td>四核以上</td>
+            <td>10-30 tokens/s</td>
+        </tr>
+        <tr>
+            <td>7B</td>
+            <td>8GB</td>
+            <td>16GB</td>
+            <td>四核以上</td>
+            <td>5-15 tokens/s</td>
+        </tr>
+        <tr>
+            <td>14B</td>
+            <td>16GB</td>
+            <td>32GB</td>
+            <td>六核以上</td>
+            <td>2-8 tokens/s</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>💡 没有GPU也能跑</strong>：NAS的CPU跑纯CPU推理是可行的，只是比GPU慢一些。日常使用足够，等人不耐烦就不行。
+    </div>
+
+    <h2>九、实际应用场景</h2>
+
+    <h3>场景1：本地AI助手</h3>
+
+    <p>用Open WebUI搭一个私有ChatGPT：</p>
+
+    <ul>
+        <li>可以问任何问题，不担心隐私泄露</li>
+        <li>帮写邮件、总结文档、翻译文章</li>
+        <li>全家人共用，每人独立对话记录</li>
+    </ul>
+
+    <h3>场景2：代码助手</h3>
+
+    <p>让AI帮你写代码、调试：</p>
+
+    <ul>
+        <li>扔一段报错代码，让AI帮你分析</li>
+        <li>描述需求，AI生成代码</li>
+        <li>代码审查和优化建议</li>
+    </ul>
+
+    <h3>场景3：文档处理</h3>
+
+    <p>接上AnythingLLM，让AI读你的PDF：</p>
+
+    <ul>
+        <li>合同风险点识别</li>
+        <li>技术文档总结</li>
+        <li>会议记录整理</li>
+    </ul>
+
+    <h3>场景4：NAS管理助手</h3>
+
+    <p>用AI接口做NAS管理：</p>
+
+    <ul>
+        <li>自然语言查询NAS状态</li>
+        <li>自动生成备份脚本</li>
+        <li>故障诊断和建议</li>
+    </ul>
+
+    <h2>十、常见问题</h2>
+
+    <table>
+        <tr>
+            <th>问题</th>
+            <th>原因</th>
+            <th>解决</th>
+        </tr>
+        <tr>
+            <td>模型下载很慢</td>
+            <td>默认从境外下载</td>
+            <td>挂梯子，或使用镜像站（如魔搭）</td>
+        </tr>
+        <tr>
+            <td>内存不足报错</td>
+            <td>模型太大</td>
+            <td>换更小的模型，或关闭其他容器释放内存</td>
+        </tr>
+        <tr>
+            <td>响应很慢</td>
+            <td>CPU性能不足</td>
+            <td>这是正常现象，没有GPU就是这样</td>
+        </tr>
+        <tr>
+            <td>Open WebUI连不上Ollama</td>
+            <td>网络模式不对</td>
+            <td>使用host网络模式，或检查端口映射</td>
+        </tr>
+        <tr>
+            <td>模型回答乱码</td>
+            <td>编码问题</td>
+            <td>在OLLAMA_HOST环境变量后加LANG=C.UTF-8</td>
+        </tr>
+        <tr>
+            <td>模型选择列表为空</td>
+            <td>还没下载模型</td>
+            <td>先执行docker exec -it ollama ollama run deepseek-r1:1.5b</td>
+        </tr>
+    </table>
+
+    <h2>总结</h2>
+
+    <p>NAS跑AI大模型，已经非常成熟了：</p>
+
+    <ol>
+        <li><strong>Ollama</strong>：一条命令跑模型，最简单</li>
+        <li><strong>Open WebUI</strong>：图形界面，体验接近ChatGPT</li>
+        <li><strong>AnythingLLM</strong>：接知识库，读你的文档</li>
+        <li><strong>内存决定上限</strong>：8GB跑7B，16GB跑14B</li>
+        <li><strong>纯CPU可用</strong>：没有GPU也能跑，就是慢点</li>
+    </ol>
+
+    <blockquote>
+        别让NAS只存文件。让它成为你的私有AI大脑，24小时在线，永不疲倦。
+    </blockquote>
+
+    <hr>
+
+    <p><em>数据来源：Ollama官网、群晖/威联通社区、Open WebUI文档</em></p>
+
+    <!-- giscus 评论 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="ohalo/ohalo.github.io"
+            data-repo-id="R_kgDOM9tYvQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOM9tYvc4Ckvhg"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+</body>
+</html>
