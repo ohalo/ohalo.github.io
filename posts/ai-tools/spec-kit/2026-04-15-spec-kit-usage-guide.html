@@ -19,6 +19,8 @@ permalink: /posts/ai-tools/spec-kit/2026-04-15-spec-kit-usage-guide.html
 
 <h2>安装：两分钟搞定</h2>
 
+<p><strong>前置要求</strong>：已安装 Python 3.11+、Git 和 uv（Python 包管理工具）。</p>
+
 <p>Spec-Kit 基于 Python，用 <code>uv</code> 管理：</p>
 <pre><code># 安装 specify CLI
 uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
@@ -26,17 +28,27 @@ uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 # 验证
 specify --version</code></pre>
 
-<p>然后进你的项目目录初始化：</p>
-<pre><code>cd your-project
+<p>然后初始化项目：</p>
+<pre><code># 新建项目目录并初始化
+specify init my-project --ai claude
+cd my-project
+
+# 或在现有目录初始化
 specify init . --ai claude</code></pre>
 
 <p><code>--ai claude</code> 告诉它你要用 Claude Code。支持 20 多个 AI 工具，包括 Cursor、Copilot、Gemini、Codex 等。</p>
 
-<p>初始化后，你的项目会多一个 <code>.specify/</code> 目录，里面放着配置文件和模板。</p>
+<p>初始化后，你的项目会多一个 <code>.specify/</code> 目录，里面有四个核心文件夹：</p>
+<ul>
+  <li><code>memory/</code> - 项目记忆和上下文</li>
+  <li><code>scripts/</code> - 自动化脚本</li>
+  <li><code>specs/</code> - 规范文件存放处</li>
+  <li><code>templates/</code> - 模板文件</li>
+</ul>
 
-<h2>六阶段工作流：从想法到实现</h2>
+<h2>五阶段工作流：从想法到实现</h2>
 
-<p>Spec-Kit 把整个开发流程拆成六个阶段，每个阶段都有对应的斜杠命令：</p>
+<p>Spec-Kit 把整个开发流程拆成五个阶段，每个阶段都有对应的斜杠命令（需在 AI agent 如 Claude Code 中执行）：</p>
 
 <table style="width:100%;border-collapse:collapse;margin:16px 0;">
   <tr style="background:#f5f5f5;">
@@ -71,7 +83,9 @@ specify init . --ai claude</code></pre>
   </tr>
 </table>
 
-<p>看起来步骤很多，实际用起来很顺。我给你演示一遍：</p>
+<p><strong>可选核心命令</strong>：<code>/speckit.taskstoissues</code> - 将任务清单转为 GitHub Issues 跟踪。</p>
+
+<p>看起来步骤很多，实际用起来很顺。我给你演示一遍（基于 Spec-Kit v0.7.0）：</p>
 
 <h3>第一步：定规矩</h3>
 <pre><code>你: /speckit.constitution
@@ -143,7 +157,7 @@ AI: 开始执行任务...
 
 <h2>扩展生态：不止这五个命令</h2>
 
-<p>Spec-Kit 的核心只有五个命令，但社区贡献了 <strong>50 多个扩展</strong>，覆盖各种场景：</p>
+<p>Spec-Kit 的核心只有五个命令，但社区贡献了近 <strong>50 个扩展</strong>，覆盖各种场景：</p>
 
 <ul>
   <li><strong>Jira 集成</strong>：把 tasks 同步到 Jira</li>
@@ -154,12 +168,12 @@ AI: 开始执行任务...
 </ul>
 
 <p>安装扩展很简单：</p>
-<pre><code>specify extension search    # 搜索可用扩展
-specify extension add jira  # 安装 Jira 集成</code></pre>
+<pre><code>specify extension search jira    # 搜索扩展，确认正确名称
+specify extension add spec-kit-jira  # 安装 Jira 集成（扩展名需与官方列表一致）</code></pre>
 
 <h2>我自己用下来的感受</h2>
 
-<p>用了大概一个月，说几个真实的感受：</p>
+<p>基于 Spec-Kit v0.7.0（2026年4月15日发布）用了大概一个月，说几个真实的感受：</p>
 
 <p><strong>好的地方：</strong></p>
 <ul>
@@ -171,7 +185,7 @@ specify extension add jira  # 安装 Jira 集成</code></pre>
 <p><strong>需要注意的地方：</strong></p>
 <ul>
   <li><strong>前期确实要多一步</strong>。以前直接说"给我做个登录"，现在要先写 constitution、再写 spec、再写 plan。小功能可能觉得麻烦。</li>
-  <li><strong>constitution 要写清楚</strong>。如果 constitution 写得模糊，AI 还是会跑偏。比如"写测试"不够，要写"单元测试覆盖率必须 > 80%"。</li>
+  <li><strong>constitution 要写清楚</strong>。如果 constitution 写得模糊，AI 还是会跑偏。比如"写测试"不够，要写"单元测试覆盖率必须≥80%"。</li>
   <li><strong>不是所有场景都适合</strong>。快速原型、验证想法的阶段，直接 vibe coding 更快。</li>
 </ul>
 
