@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "五款AI编程工作流横评：Spec-Kit、OpenSpec、Superpowers、HAFW、ASDM选哪个"
+title: "三款AI编程工作流横评：Spec-Kit、OpenSpec、Superpowers选哪个"
 date: 2026-04-15
 categories: [ai-observation, career]
 tags: [AI编程, 工作流框架, Spec-Kit, OpenSpec, Superpowers]
@@ -10,17 +10,10 @@ permalink: /posts/ai-observation/career/2026-04-15-spec-openspec-superpowers-haf
 <p>2026年了，AI编程工具早就不是"Copilot写代码补全"那个阶段了。</p>
 <p>现在大家拼的不是谁生成的代码更好，而是——<strong>谁的开发流程更能管住AI，让它不乱来</strong>。</p>
 <p>于是冒出了一批"AI编程工作流框架"，目标都是同一个：给AI代理一套结构化的约束，让它按你的规矩干活。</p>
-<p>但这些框架的思路完全不一样，有的讲规范，有的讲技能，有的讲变更，有的讲全链路。</p>
-<p>今天我把五个主流框架放在一起横评，不吹不黑，说清楚每个的适用场景。</p>
+<p>但思路完全不一样，有的讲规范，有的讲技能，有的讲变更。</p>
+<p>今天把三个最主流的框架放在一起横评，不吹不黑，说清楚每个的适用场景。</p>
 
-<h2>先说结论，怕你等不及</h2>
-<ul>
-  <li><strong>Spec-Kit</strong>：大厂团队用，流程最严格，质量可控性最高。</li>
-  <li><strong>OpenSpec</strong>：轻量灵活，适合快速迭代的小团队和个人开发者。</li>
-  <li><strong>Superpowers</strong>：强制TDD，质量门控最硬，但上手需要适应。</li>
-  <li><strong>HAFW</strong>：全链路技能编排，适合复杂多角色协作场景（需补充官方资料）。</li>
-  <li><strong>ASDM</strong>：自主驱动，适合完全信任AI执行力的场景（需补充官方资料）。</li>
-</ul>
+<p><img src="/images/ai-workflow-comparison/speckit-logo.webp" alt="Spec-Kit Logo" style="width:120px;float:right;margin-left:16px;"></p>
 
 <h2>一、Spec-Kit：GitHub官方出品，阶段门控最严格</h2>
 <p><strong>背景</strong>：GitHub官方2025年初推出，Den Delimarsky和John Lam主导开发，82.5K Star。</p>
@@ -28,7 +21,10 @@ permalink: /posts/ai-observation/career/2026-04-15-spec-openspec-superpowers-haf
 <p>它的7个阶段是一道道"门"：</p>
 <pre>constitution（项目宪法）→ specify（定义需求）→ clarify（澄清模糊）
 → plan（技术计划）→ tasks（任务分解）→ analyze（一致性检查）→ implement（执行实现）</pre>
-<p>每道门必须关好才能进下一道。好消息是质量可控，坏消息是不够灵活，适合大型项目。</p>
+<p>每道门必须关好才能进下一道。好消息是质量可控，坏消息是不够灵活。</p>
+
+<p><img src="/images/ai-workflow-comparison/speckit-specify-cli.gif" alt="Spec-Kit Specify CLI 演示" style="max-width:100%;border-radius:8px;margin:12px 0;"></p>
+
 <p><strong>技术栈</strong>：Python（需要uv包管理器）</p>
 <p><strong>AI支持</strong>：11+工具（Claude Code、Copilot、Cursor等）</p>
 <p><strong>特点</strong>：</p>
@@ -41,11 +37,16 @@ permalink: /posts/ai-observation/career/2026-04-15-spec-openspec-superpowers-haf
 <p><strong>适合谁</strong>：多人协作的企业级项目，需要严格质量管控的团队。</p>
 <p><strong>不适合谁</strong>：想快速跑通一个Demo的独立开发者（流程太重了）。</p>
 
+<p><img src="/images/ai-workflow-comparison/openspec-bg.png" alt="OpenSpec Logo" style="width:120px;float:right;margin-left:16px;"></p>
+
 <h2>二、OpenSpec：轻量级规范层，变更驱动</h2>
 <p><strong>背景</strong>：Fission-AI团队开发，34.5K Star，TypeScript实现。</p>
 <p><strong>核心思路</strong>：不做"规范生成代码"，而是做一层轻量规范管理，通过提案→执行→归档的循环，让规范成为活文档。</p>
 <pre>/opsx:propose（创建提案）→ /opsx:continue（逐步实施）→ /opsx:apply（执行）→ /opsx:archive（归档）</pre>
 <p>每个功能变更是一个独立目录，包含proposal.md、design.md、tasks.md和specs/。完成后归档到知识库，成为项目的"记忆"。</p>
+
+<p><img src="/images/ai-workflow-comparison/openspec-dashboard.png" alt="OpenSpec Dashboard 预览" style="max-width:100%;border-radius:8px;margin:12px 0;"></p>
+
 <p><strong>技术栈</strong>：TypeScript（npm安装）</p>
 <p><strong>AI支持</strong>：20+工具（覆盖最广，包括Claude Code、Cursor、Windsurf、Codex等）</p>
 <p><strong>特点</strong>：</p>
@@ -62,60 +63,54 @@ permalink: /posts/ai-observation/career/2026-04-15-spec-openspec-superpowers-haf
 <p><strong>核心思路</strong>：不是规范驱动，而是技能驱动——通过一组可组合的"技能"来约束AI代理行为。核心是Hook触发系统：不是手动调用命令，而是根据上下文自动激活相关技能。</p>
 <pre>写代码前 → 自动触发TDD技能
 写完后 → 自动触发code-review技能</pre>
+<p>它的工作方式很直觉：</p>
+<ol>
+  <li>你一开干，它不急着写代码，先退一步问你"你到底想做什么"</li>
+  <li>把需求拆成你能消化的规格，一段一段给你看</li>
+  <li>你点头之后，它出一份执行计划——写得连"热情但品味差、不爱写测试的初级工程师"都能照着做</li>
+  <li>你说"开搞"，它启动子代理分工干活，自己巡检、review、推进</li>
+</ol>
+<p>而且技能都是自动触发的，你不用特意做什么，你的coding agent就自动有了Superpowers。</p>
 <p><strong>技术栈</strong>：Shell/JavaScript</p>
 <p><strong>AI支持</strong>：主要针对Claude Code优化（5+工具）</p>
 <p><strong>特点</strong>：</p>
 <ul>
-  <li>强制RED-GREEN-REFACTOR TDD循环——这是三家里唯一强制TDD的</li>
+  <li>强制RED-GREEN-REFACTOR TDD循环——三家里唯一强制TDD的</li>
   <li>核心技能包括：test-driven-development、systematic-debugging、brainstorming、subagent-driven-development</li>
   <li>基于Git Worktrees管理变更状态</li>
 </ul>
 <p><strong>适合谁</strong>：对测试有硬性要求的团队，想让AI自动走TDD流程。</p>
 <p><strong>不适合谁</strong>：不习惯TDD的开发者，或者只用Cursor/Windsurf不用Claude Code的人。</p>
 
-<h2>四、HAFW：全链路技能编排</h2>
-<p><strong>背景</strong>：HAFW（推测为"Harness-AI Framework Workflow"或类似全链路编排框架），主要面向复杂协作场景的技能系统。</p>
-<p><strong>核心思路</strong>：强调从需求到交付的全链路技能编排，适合多角色协作。</p>
-<p>HAFW的设计理念更接近"全链路AI工程化"——不只是约束AI的行为，而是覆盖从需求分析、架构设计、编码、测试到部署的完整环节。</p>
-<p><strong>适合谁</strong>：需要AI深度参与全流程的中大型团队。</p>
-<p><strong>⚠️ 待补充</strong>：HAFW的GitHub仓库、安装方式、AI支持范围等，请补充官方链接后更新。</p>
-
-<h2>五、ASDM：自主驱动开发</h2>
-<p><strong>背景</strong>：ASDM（推测为"Autonomous Software Development Method"），强调AI自主决策和执行。</p>
-<p><strong>核心思路</strong>：区别于"规范驱动"和"技能触发"，ASDM更像是给AI一个高层目标，让它自主规划执行路径。</p>
-<p>ASDM与当前流行的"Agentic Engineering"概念接近——多AI协同、自主分解任务、自我验证结果。</p>
-<p><strong>适合谁</strong>：完全信任AI执行力的团队，想让AI做更多自主决策。</p>
-<p><strong>⚠️ 待补充</strong>：ASDM的官方定义和使用方式，请补充官方链接后更新。</p>
-
-<h2>六、横向对比一览</h2>
+<h2>四、横向对比一览</h2>
 <table>
   <thead>
-    <tr><th>维度</th><th>Spec-Kit</th><th>OpenSpec</th><th>Superpowers</th><th>HAFW</th><th>ASDM</th></tr>
+    <tr><th>维度</th><th>Spec-Kit</th><th>OpenSpec</th><th>Superpowers</th></tr>
   </thead>
   <tbody>
-    <tr><td><strong>核心范式</strong></td><td>规范可执行化</td><td>轻量规范层</td><td>技能触发</td><td>全链路编排</td><td>自主驱动</td></tr>
-    <tr><td><strong>技术栈</strong></td><td>Python</td><td>TypeScript</td><td>Shell/JS</td><td>待确认</td><td>待确认</td></tr>
-    <tr><td><strong>Star数</strong></td><td>82.5K</td><td>34.5K</td><td>115K</td><td>—</td><td>—</td></tr>
-    <tr><td><strong>AI工具支持</strong></td><td>11+</td><td>20+</td><td>5+</td><td>待确认</td><td>待确认</td></tr>
-    <tr><td><strong>TDD强制</strong></td><td>❌</td><td>❌</td><td>✅</td><td>待确认</td><td>待确认</td></tr>
-    <tr><td><strong>团队协作</strong></td><td>✅ 企业级</td><td>🚧 开发中</td><td>✅ Discord</td><td>待确认</td><td>待确认</td></tr>
-    <tr><td><strong>Brownfield支持</strong></td><td>✅</td><td>✅ 优先</td><td>✅</td><td>待确认</td><td>待确认</td></tr>
-    <tr><td><strong>学习曲线</strong></td><td>中等</td><td>平缓</td><td>平缓</td><td>待确认</td><td>待确认</td></tr>
-    <tr><td><strong>工作流风格</strong></td><td>阶段门控</td><td>流畅迭代</td><td>技能自动触发</td><td>全链路编排</td><td>自主规划</td></tr>
+    <tr><td><strong>核心范式</strong></td><td>规范可执行化</td><td>轻量规范层</td><td>技能触发</td></tr>
+    <tr><td><strong>技术栈</strong></td><td>Python</td><td>TypeScript</td><td>Shell/JS</td></tr>
+    <tr><td><strong>Star数</strong></td><td>82.5K</td><td>34.5K</td><td>115K</td></tr>
+    <tr><td><strong>AI工具支持</strong></td><td>11+</td><td>20+</td><td>5+</td></tr>
+    <tr><td><strong>TDD强制</strong></td><td>❌</td><td>❌</td><td>✅</td></tr>
+    <tr><td><strong>团队协作</strong></td><td>✅ 企业级</td><td>🚧 开发中</td><td>✅ Discord社区</td></tr>
+    <tr><td><strong>Brownfield支持</strong></td><td>✅</td><td>✅ 优先</td><td>✅</td></tr>
+    <tr><td><strong>学习曲线</strong></td><td>中等</td><td>平缓</td><td>平缓</td></tr>
+    <tr><td><strong>工作流风格</strong></td><td>阶段门控</td><td>流畅迭代</td><td>技能自动触发</td></tr>
+    <tr><td><strong>哲学</strong></td><td>结构胜过混乱</td><td>迭代胜过瀑布</td><td>流程胜过猜测</td></tr>
   </tbody>
 </table>
 
-<h2>七、我的选择建议</h2>
+<h2>五、我的选择建议</h2>
 <p>说白了就一个问题：<strong>你更担心什么？</strong></p>
 <ul>
-  <li><strong>如果你担心AI乱来、不按规范走</strong> → Spec-Kit（阶段门控最严格）</li>
-  <li><strong>如果你担心流程太重、拖慢速度</strong> → OpenSpec（轻量灵活）</li>
-  <li><strong>如果你担心代码质量、想要强制TDD</strong> → Superpowers（TDD唯一强制）</li>
-  <li><strong>如果你要管一个多角色协作的全流程</strong> → HAFW（等资料补全后再判断）</li>
-  <li><strong>如果你想让AI完全自主决策</strong> → ASDM（等资料补全后再判断）</li>
+  <li><strong>担心AI乱来、不按规范走</strong> → Spec-Kit（阶段门控最严格）</li>
+  <li><strong>担心流程太重、拖慢速度</strong> → OpenSpec（轻量灵活）</li>
+  <li><strong>担心代码质量、想要强制TDD</strong> → Superpowers（TDD唯一强制）</li>
 </ul>
+<p>如果你非要我给一个推荐——<strong>个人开发者先试OpenSpec</strong>，上手快、通用性强，用一个月你就知道自己缺什么了。</p>
 
-<h2>八、最后一句</h2>
+<h2>六、最后一句</h2>
 <p>这些框架本质上解决的是同一个问题：<strong>怎么让AI不只是个写代码的工具，而是个听话的合作伙伴</strong>。</p>
 <p>选哪个不重要，重要的是——<strong>先用一个跑起来</strong>。</p>
 <p>用了一个月，你自然知道它哪里不够用，再换也不迟。最怕的是永远在对比，永远不开始。</p>
