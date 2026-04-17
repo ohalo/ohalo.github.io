@@ -42,6 +42,7 @@
             <p>第一眼看过去，这玩意也太好骗了吧？就几个 Markdown 文件？</p>
             <p>但仔细想想，这个设计有个极其聪明的地方：<strong>所有记忆都是人可读的</strong>。用任何文本编辑器打开就能看、能改、能删。Agent 记错了什么，你直接改文件就行，不用调 API、不用查数据库。</p>
             <p>更关键的是，MEMORY.md 只在私聊会话中加载，永远不会在群组对话里注入。这意味着你在私聊里告诉它的私人信息（比如工资、项目细节），不会在你拉它进一个百人群时泄露出去。这个安全设计是在架构层面做死，不是靠"提示词叮嘱"。</p>
+            <p><img src="../../../images/openclaw-memory-system/01-file-structure.png" alt="OpenClaw 记忆文件结构" style="max-width:100%; border-radius:8px;"></p>
             <p>我自己用了几个月，感触最深的一点是：它的记忆文件可以直接放进 Git 仓库。<code>git diff</code> 就能看到 Agent 的"认知"发生了什么变化。这在需要审计和回溯的场景里，价值非常大。</p>
 
             <h2>SQLite 只是索引层，真正的创新在检索</h2>
@@ -55,6 +56,7 @@
             <p>有意思的是，OpenClaw 选了加权融合而不是 RRF（Reciprocal Rank Fusion）。RRF 会把分数拉平成序数排名——一个 0.98 的强语义匹配和 0.71 的弱匹配在 RRF 里差距会被稀释。加权融合保留了绝对值信息，强匹配就是强匹配。</p>
             <p>内容分块用的是 400 token 滑动窗口，重叠 80 token。这个参数选择挺有讲究的：块太大搜索不精准，块太小上下文断裂。400 token 大约 1600 个中文字符，刚好是一两个自然段。</p>
             <p>嵌入服务支持四种：本地 node-llama-cpp（零成本、离线）、OpenAI、Gemini、Voyage。如果全都挂了，系统降级到纯 BM25 搜索，不会崩。嵌入缓存用 SHA-256 去重，默认上限 50000 条——相同文本只嵌入一次。</p>
+            <p><img src="../../../images/openclaw-memory-system/02-retrieval-architecture.png" alt="OpenClaw 双引擎检索架构" style="max-width:100%; border-radius:8px;"></p>
 
             <h2>嵌入服务对比：够用就行</h2>
             <p>OpenClaw 支持的几种嵌入方案各有适用场景：</p>
@@ -82,6 +84,7 @@
             <p>45 小时。想想看，几乎一周的工作量。</p>
             <p>压缩本身的设计也有取舍：它只保留最近 20000 tokens 的原始对话，更早的消息被替换成 LLM 生成的摘要。摘要保留大意，但细节——文件路径、精确命令、配置值、决策推理过程——全丢了。</p>
             <p>预压缩冲刷机制在一定程度上缓解了这个问题，但它不是一个完美方案。你没法保证 Agent 每次都能准确判断什么值得记住。</p>
+            <p><img src="../../../images/openclaw-memory-system/03-flush-mechanism.png" alt="预压缩记忆冲刷机制" style="max-width:100%; border-radius:8px;"></p>
 
             <h2>横向看一圈，Markdown-first 方案真的特别</h2>
             <p>把 OpenClaw 放到更大的格局里看，你会发现它的记忆设计代表了 AI Agent 领域的一种"UNIX 哲学"——文本文件、可组合、可检查、可版本控制。</p>
