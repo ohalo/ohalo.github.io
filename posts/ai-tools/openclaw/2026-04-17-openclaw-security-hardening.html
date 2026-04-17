@@ -27,9 +27,11 @@
     <section id="main_content">
         <article>
             <p>今年 3 月，<strong>GhostClaw</strong> 出现了——一个伪装成 OpenClaw 增强插件的恶意软件，通过 GitHub 传播，专门窃取开发者设备上的配置文件和密钥。</p>
+            <p><img src="../../../images/openclaw-security-hardening/02-ghostclaw-attack-chain.png" alt="GhostClaw 攻击链分析" style="max-width:100%; border-radius:8px;"></p>
             <p>同月，CNCERT（中国国家计算机网络应急技术处理协调中心）联合中国网络空间安全协会发布了官方安全使用指南。再叠加上 OpenClaw 2026.3.x 版本开始引入零信任默认拒绝策略——这一切都在说同一件事：<strong>开源 AI 助手的安全性，不能靠"相信它不会出问题"来维持。</strong></p>
             <p>如果你在 VPS 或生产力环境里跑 OpenClaw，默认情况下它几乎什么都允许：读写文件、执行命令、访问网络。装一个"看起来有用"的 Skill，它可能正在把你的 <code>.env</code> 传出去。</p>
             <p>本文从实际出发，介绍一套五层防御体系，其中有些是 OpenClaw 内置功能，有些需要安装配套 Skill。我会标注清楚哪些是<strong>真的能跑的命令</strong>，哪些是<strong>需要额外安装的</strong>。</p>
+            <p><img src="../../../images/openclaw-security-hardening/01-five-layer-defense.png" alt="OpenClaw 五层纵深防御体系" style="max-width:100%; border-radius:8px;"></p>
 
             <h2>先做最容易的一步：打开异常检测</h2>
             <p>不管你现在用的是哪个版本，异常检测都是<strong>投入最小、效果最快</strong>的一层。</p>
@@ -109,6 +111,7 @@ tail -F ~/.openclaw/security/audit/$(date +%Y-%m-%d).jsonl | \
 
             <h2>Layer 3：权限分级——这个是 OpenClaw 内置的</h2>
             <p>这一层是<strong>真的内置</strong>，从 2026.3.2 开始默认收紧，现在已经可以直接用。</p>
+            <p><img src="../../../images/openclaw-security-hardening/03-permission-levels.png" alt="OpenClaw 权限分级体系" style="max-width:100%; border-radius:8px;"></p>
             <p>OpenClaw 提供了四个权限级别，按信任度递减：</p>
             <table>
                 <thead>
