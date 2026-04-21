@@ -1,0 +1,226 @@
+---
+permalink: /posts/hardware/others/2026-04-21-deepseek-local-deploy.html
+layout: post
+title: "把DeepSeek部署到本地后，我再也没打开过官网"
+date: 2026-04-21
+category: hardware/others
+category_name: "数码硬件/其他"
+tags: [DeepSeek, Ollama, 本地部署, AI工具, 大模型]
+---
+
+<p>上周五下午，正要给甲方演示一个方案，DeepSeek 网页版崩了。</p>
+
+<p>刷新、重试、换节点……折腾了二十分钟，最后只能对着甲方说"服务器有点问题"。那一刻我下定决心：<strong>把 DeepSeek 部署到自己电脑上</strong>。</p>
+
+<p>部署完用了一周，发现本地版本有几个隐藏优势，官网还真没有。</p>
+
+<h2>为什么我放弃 DeepSeek 官网</h2>
+
+<p>官方服务的问题不是能力差，是<strong>不稳定</strong>。</p>
+
+<p>高峰期响应慢、偶尔宕机、回答到一半突然断掉——这些我都遇到过。更重要的是，官网版本没法针对我的私有数据做定制。问它我公司的业务流程，它只能瞎编。</p>
+
+<p>本地部署解决了这些问题：</p>
+
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>DeepSeek 官网</th>
+<th>本地部署</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>稳定性</td>
+<td>高峰期可能崩</td>
+<td>完全自己掌控</td>
+</tr>
+<tr>
+<td>次数限制</td>
+<td>有</td>
+<td>无，完全免费</td>
+</tr>
+<tr>
+<td>数据隐私</td>
+<td>上传即共享</td>
+<td>数据不离本地</td>
+</tr>
+<tr>
+<td>定制能力</td>
+<td>通用模型</td>
+<td>可以投喂私有数据</td>
+</tr>
+</tbody>
+</table>
+
+<p>关键是，部署门槛没有想象中那么高。</p>
+
+<h2>两步搞定：Ollama + AnythingLLM</h2>
+
+<h3>第一步：安装 Ollama（模型运行环境）</h3>
+
+<p>Ollama 是一个本地大模型运行工具，类似于"大模型的安卓系统"。</p>
+
+<p><strong>Mac 用户</strong>：</p>
+
+<ol>
+<li>去 ollama.com 下载安装包</li>
+<li>双击安装，选择【Move to Applications】</li>
+<li>打开终端，输入命令下载模型：</li>
+</ol>
+
+<pre><code># 下载 DeepSeek-R1 模型（根据电脑配置选一个）
+ollama run deepseek-r1:7b    # 7B模型，约4GB显存能跑
+ollama run deepseek-r1:14b   # 14B模型，12GB显存能跑
+
+# 下载 embedding 模型（投喂数据需要）
+ollama pull nomic-embed-text</code></pre>
+
+<p><strong>Windows 用户</strong>：</p>
+
+<ol>
+<li>下载 Ollama 安装包，右键以管理员身份运行</li>
+<li>建议把模型存储路径改到 D 盘（避免占 C 盘空间）：<ul>
+<li>新建文件夹 <code>D:\OllamaAI</code></li>
+<li>设置环境变量 <code>OLLAMA_MODELS=D:\OllamaAI</code></li>
+</ul>
+</li>
+<li>重启电脑，打开 Ollama（右下角会出现羊驼图标）</li>
+<li>终端输入下载命令（同 Mac）</li>
+</ol>
+
+<h3>第二步：安装 AnythingLLM（可视化界面 + 数据投喂）</h3>
+
+<p>Ollama 只是命令行工具，AnythingLLM 给你一个图形界面，还能投喂自己的数据。</p>
+
+<ol>
+<li>下载 AnythingLLM（支持 Mac 和 Windows）</li>
+<li>安装完成后打开，在设置里：<ul>
+<li>LLM 提供商选择 <strong>Ollama</strong></li>
+<li>模型选择 <strong>deepseek-r1</strong>（你下载的版本）</li>
+<li>Embedder 选择 <strong>nomic-embed-text</strong>（投喂数据需要）</li>
+</ul>
+</li>
+</ol>
+
+<h2>重点：如何投喂私有数据</h2>
+
+<p>这是本地部署最有价值的部分。</p>
+
+<p><strong>投喂步骤</strong>：</p>
+
+<ol>
+<li>在 AnythingLLM 里新建一个工作区</li>
+<li>点击【上传】，支持 PDF、TXT、Word、Excel、PPT 等格式</li>
+<li>勾选上传的文件，点击【Move to Workspace】</li>
+<li>点击【Save and Embed】</li>
+</ol>
+
+<p>投喂完成后，这个工作区里的 DeepSeek 就"认识"你的数据了。</p>
+
+<p><strong>举个例子</strong>：</p>
+
+<ul>
+<li>投喂前：问"我们公司的报销流程是什么"，DeepSeek 瞎编一通</li>
+<li>投喂后：基于你上传的制度文档，给出准确回答</li>
+</ul>
+
+<p><strong>效果对比</strong>：</p>
+
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>投喂前</th>
+<th>投喂后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"伙伴神公众号是干嘛的"</td>
+<td>不知道/瞎编</td>
+<td>准确回答</td>
+</tr>
+<tr>
+<td>"我们公司的报销流程"</td>
+<td>瞎编</td>
+<td>基于文档回答</td>
+</tr>
+<tr>
+<td>"这份合同有哪些风险点"</td>
+<td>泛泛而谈</td>
+<td>分析具体内容</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>⚠️ <strong>注意</strong>：AnythingLLM 只是可视化工具，实际的"投喂"是向量检索（RAG）技术，不是真正的模型训练。模型不会永久记住你的数据，每次新建对话都是独立的，但同一工作区内可以持续使用。</p>
+</blockquote>
+
+<h2>硬件要求一览</h2>
+
+<p>根据你选择的模型大小：</p>
+
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>显存要求</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.5B</td>
+<td>4GB</td>
+<td>轻度使用，Mac 日常办公</td>
+</tr>
+<tr>
+<td>7B</td>
+<td>8GB</td>
+<td>主流选择，大多数人够用</td>
+</tr>
+<tr>
+<td>14B</td>
+<td>12GB</td>
+<td>效果更好，RTX 3060+</td>
+</tr>
+<tr>
+<td>32B</td>
+<td>24GB</td>
+<td>接近官网效果，RTX 4090</td>
+</tr>
+</tbody>
+</table>
+
+<p>我自己的 MacBook Pro M3 跑 7B 模型完全流畅，没有任何风扇声。</p>
+
+<h2>什么人不适合本地部署</h2>
+
+<p>说完了优点，也要说缺点：</p>
+
+<ul>
+<li><strong>轻度用户</strong>：偶尔问个问题，官网就够了，没必要折腾</li>
+<li><strong>没有独显的 Windows 用户</strong>：7B 模型勉强能跑，但体验一般</li>
+<li><strong>追求最新模型</strong>：本地部署主要是开源模型，能力上限不如最新付费版</li>
+</ul>
+
+<p>如果你需要：</p>
+
+<ul>
+<li>✅ 稳定可用的 AI（不受服务器影响）</li>
+<li>✅ 数据隐私（不想上传到云端）</li>
+<li>✅ 私有知识库（让 AI 读懂你的文档）</li>
+</ul>
+
+<p>本地部署值得一试。</p>
+
+<hr>
+
+<p>你部署过本地大模型吗？遇到了什么问题？评论区聊聊。</p>
+
+<p><!-- 好物推荐：Ollama 官方教程（免费资源） --></p>
+
+<p><!-- 好物推荐：机械革命蛟龙16 Pro 笔记本电脑 RTX 4060（适合本地部署） --></p>
