@@ -1,0 +1,288 @@
+---
+permalink: /posts/ai-tools/openclaw/2026-04-21-skill-creator-design-principles.html
+layout: post
+title: "写给AI的指令，和给人写的完全不同——skill-creator教会我的事"
+date: 2026-04-21
+category: ai-tools/openclaw
+category_name: "AI工具/OpenClaw"
+tags: [AI工具, Agent, LLM, 智能体, skill]
+---
+
+<p>最近在调试一个"AI内容创作助手"，废了九牛二虎之力写了一份详细的技能文档，结果AI用起来跟没看过一样——让它写技术文章，它开始跟我聊人生；让它生成代码，它先给我讲五分钟原理。</p>
+
+<p>我一度怀疑是模型太笨。直到我看到了Anthropic官方发布的skill-creator——一个专门教你怎么给AI写指令的skill——才恍然大悟：<strong>问题不在AI，在指令本身。</strong></p>
+
+<p>skill-creator的设计原则，让我重新理解了什么叫"给AI写指令"。</p>
+
+<h2>先说结论：你可能一直在给AI写"人类文档"</h2>
+
+<p>看看下面这段"技能说明"，眼熟吗？</p>
+
+<pre><code>## 代码审查技能
+
+### 背景
+本技能基于团队多年的代码审查经验总结而成，旨在提升代码质量和团队协作效率。
+
+### 审查原则
+- 保持专业、建设性的语气
+- 关注代码质量而非个人风格
+- 平衡严格性和灵活性
+
+### 使用方式
+当用户提交代码时，对代码进行全面审查，给出改进建议。</code></pre>
+
+<p>这份文档写给人类看，没问题。有背景、有原则、有使用说明，甚至还体贴地加了版本记录。</p>
+
+<p>但AI看了会怎样？</p>
+
+<ul>
+<li>"保持专业、建设性的语气" → AI把"专业"展开成一百种组合，每次输出都不一样</li>
+<li>"平衡严格性和灵活性" → 人类知道什么时候该严什么时候该松，AI没有这个直觉</li>
+<li>"全面审查，给出改进建议" → AI需要的是：先检查什么？再检查什么？什么问题必须指出？</li>
+</ul>
+
+<p><strong>skill-creator的核心洞察：Skill是给AI写的指令，不是给人写的文档。读者不同，写法就完全不同。</strong></p>
+
+<h2>原则一：上下文窗口是公共资源，每句话都要值得占用的token</h2>
+
+<p>AI的上下文窗口就像一张工作台——同一时间能摊开的资料是有限的。你的系统提示、对话历史、所有已安装技能都在上面抢位置。</p>
+
+<p>skill-creator的第一原则就是：<strong>每一句话都要值得它占用的token。</strong></p>
+
+<p>基于这个原则，它设计了一个三级分层架构：</p>
+
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>内容</th>
+<th>加载时机</th>
+<th>Token成本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>L1</strong></td>
+<td>frontmatter（name+description）</td>
+<td>始终在上下文</td>
+<td>~100词</td>
+</tr>
+<tr>
+<td><strong>L2</strong></td>
+<td>SKILL.md body</td>
+<td>触发后加载</td>
+<td>&lt;5k词</td>
+</tr>
+<tr>
+<td><strong>L3</strong></td>
+<td>scripts/references/assets</td>
+<td>按需加载</td>
+<td><strong>零</strong>（执行不读入）</td>
+</tr>
+</tbody>
+</table>
+
+<p>这本质上是一个信息熵管理系统——<strong>不是所有信息都需要一开始就加载</strong>。</p>
+
+<p>L1是过滤器，让AI从几十个技能中选出该激活哪个；L2是操作手册，触发后才加载；L3是工具箱，只在需要时调用，而且scripts/执行而不读入，零token成本。</p>
+
+<p>对比我之前写的那个44k字节的技能文档，恨不得把所有细节都塞进去，AI每次激活都要读完——这不是在教AI，这是在折磨AI。</p>
+
+<h2>原则二："不做什么"比"做什么"更精确</h2>
+
+<p>skill-creator在写约束时，用了很大篇幅说"什么不该做"，而不是泛泛地说"该怎么写"。</p>
+
+<p>它没有写：</p>
+
+<pre><code>请用温暖、克制、有洞察力的语气写作。</code></pre>
+
+<p>它做的是写了一份反模式清单：</p>
+
+<table>
+<thead>
+<tr>
+<th>不这样做</th>
+<th>症状</th>
+<th>怎么改</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>角色堆砌</td>
+<td>连续出现多个名字和对白</td>
+<td>保留一个冲突场景，补抽象提炼</td>
+</tr>
+<tr>
+<td>只有鸡汤没有动作</td>
+<td>全文"要坚持、要努力"</td>
+<td>改为今天可做的一小步</td>
+</tr>
+<tr>
+<td>直接大道理</td>
+<td>开头就讲规律</td>
+<td>先铺生活场景</td>
+</tr>
+<tr>
+<td>过度绝对化</td>
+<td>"永远""一定"</td>
+<td>加限定词"多数时候""往往"</td>
+</tr>
+</tbody>
+</table>
+
+<p>背后的原理很朴素：</p>
+
+<ul>
+<li>"做什么" → 描述一个无限大的可行域 → AI在里面随机游走</li>
+<li>"不做什么" → 在可行域上画边界 → AI的行为空间被收窄到你想要的范围</li>
+</ul>
+
+<p>我把这个原则用到了我的知乎创作技能优化上。原来的SKILL.md写的是"应该怎么写好文章"，改成"写文章时不能做什么"之后，AI的输出质量明显稳定了。</p>
+
+<h2>原则三：给AI多大自由度？取决于任务有多"脆弱"</h2>
+
+<p>skill-creator引入了一个自由度光谱：</p>
+
+<table>
+<thead>
+<tr>
+<th>自由度</th>
+<th>适用场景</th>
+<th>实现方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>高</strong></td>
+<td>创意写作、多解法任务</td>
+<td>文字引导，启发式</td>
+</tr>
+<tr>
+<td><strong>中</strong></td>
+<td>有最佳实践但允许变通</td>
+<td>伪代码+参数配置</td>
+</tr>
+<tr>
+<td><strong>低</strong></td>
+<td>格式控制、精确输出、命名规范</td>
+<td><strong>脚本锁死</strong></td>
+</tr>
+</tbody>
+</table>
+
+<p>关键判断标准只有两个：</p>
+
+<ol>
+<li><strong>做错了后果多严重？</strong> — 越严重 → 越低自由度</li>
+<li><strong>有多少种"正确"的做法？</strong> — 越多 → 越高自由度</li>
+</ol>
+
+<p>举个例子：让AI写一篇技术博客，十个人写出十种风格都可以，你只需要给方向——这是高自由度。</p>
+
+<p>但让AI生成一个YAML配置文件，里面有个<code>short_description</code>字段要求25-64个字符、首字母大写、不能有引号。差一个字符就出问题——这是低自由度，<strong>必须用脚本锁死</strong>。</p>
+
+<p>skill-creator自己就是这么做的。它有三个脚本：</p>
+
+<ul>
+<li><code>init_skill.py</code> — 初始化目录结构（低自由度，脚本保证合规）</li>
+<li><code>generate_openai_yaml.py</code> — 生成配置文件（低自由度，格式约束）</li>
+<li><code>quick_validate.py</code> — 校验输出（低自由度，格式校验）</li>
+</ul>
+
+<p>中间夹着的"编辑技能内容"才是AI的发挥空间（高自由度），前后两端都是脚本保障（低自由度）。</p>
+
+<p><strong>这叫"质量保障链"——脚本夹住创造性的中间步骤，确保起点正确、终点合规。</strong></p>
+
+<h2>落地：六步创建流程</h2>
+
+<p>有了原则，skill-creator还给出了一个可执行的六步流程：</p>
+
+<ol>
+<li><strong>理解</strong> — 用具体例子建立共识（不要一次问太多问题）</li>
+<li><strong>规划</strong> — 分析哪些东西会被反复使用，封装成scripts/references/assets</li>
+<li><strong>初始化</strong> — <strong>always</strong>用脚本，不要手建目录（低自由度操作）</li>
+<li><strong>编辑</strong> — 先实现可复用资源，再写SKILL.md</li>
+<li><strong>校验</strong> — 跑<code>quick_validate.py</code>检查格式</li>
+<li><strong>迭代</strong> — 在真实任务上测试，发现问题再改</li>
+</ol>
+
+<p>重点说第三步"初始化"——skill-creator用了"always"这个词，不是"建议"，是"必须"。</p>
+
+<p>因为初始化是一个脆弱操作：目录结构对不对、文件命名规范不规范、手一抖就出错。用脚本执行，消除出错的可能。</p>
+
+<h2>三个月后，我用这个原则优化了知乎创作技能</h2>
+
+<p>回头看我原来写的那个知乎创作技能（v8.7.0），SKILL.md有44,830字节，恨不得把每个细节都写进去。</p>
+
+<p>按skill-creator的原则重构后：</p>
+
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>优化前</th>
+<th>优化后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SKILL.md</td>
+<td>44,830字节</td>
+<td>10,132字节（-77%）</td>
+</tr>
+<tr>
+<td>详细流程</td>
+<td>全部塞在SKILL.md</td>
+<td>拆到references/workflow.md</td>
+</tr>
+<tr>
+<td>反模式清单</td>
+<td>散落各处</td>
+<td>独立references/anti-patterns.md</td>
+</tr>
+<tr>
+<td>格式校验</td>
+<td>靠人工</td>
+<td>新增scripts/validate.py</td>
+</tr>
+</tbody>
+</table>
+
+<p>优化后的技能结构：</p>
+
+<pre><code>zhihu-creator/
+├── SKILL.md                    # L2: 核心指令（&lt;5k词）
+├── references/
+│   ├── anti-patterns.md       # "不做什么"清单
+│   ├── workflow.md            # 详细流程参考
+│   └── ...
+└── scripts/
+    ├── validate.py            # 输出校验
+    └── ...</code></pre>
+
+<p>SKILL.md只保留最核心的操作指令（约2500词），按需加载的内容放到references/，scripts/执行而不读入上下文窗口。</p>
+
+<h2>你也可以试试</h2>
+
+<p>skill-creator的设计原则，用一句话总结就是：</p>
+
+<blockquote>
+<p><strong>用最少的token，在正确的层级，给AI最精准的约束，让它在边界内自由发挥。</strong></p>
+</blockquote>
+
+<p>具体操作：</p>
+
+<ol>
+<li><strong>精简frontmatter的description</strong> — 写清楚"什么时候用"，不要写"是什么"</li>
+<li><strong>拆分SKILL.md</strong> — 核心指令&lt;5k词，详细流程放到references/</li>
+<li><strong>加反模式清单</strong> — 用"不做什么"画边界，比"做什么"更精确</li>
+<li><strong>关键操作用脚本</strong> — 初始化、格式校验这类脆弱操作，不要手做</li>
+</ol>
+
+<p>这套方法不限于Claude Code或OpenClaw。任何支持Skill/插件体系的AI产品，本质上都是一样的——<strong>你给AI的约束，决定了AI输出的上限</strong>。</p>
+
+<p>你有哪些AI技能优化的心得？欢迎评论区聊聊。</p>
+
+<p><!-- 好物推荐：AI大模型应用开发实战（知乎自营） --></p>
+
+<p><!-- 好物推荐：Python编程：从入门到实践（知乎自营） --></p>
