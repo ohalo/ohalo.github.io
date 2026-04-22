@@ -1,32 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/github-dark.css" media="screen">
-    <title>OpenClaw 记忆系统源码拆解：为什么它能记住你三个月前聊过什么 - halo的技术博客</title>
-    <script src="/javascripts/google-analytics.js"></script>
-</head>
-<body>
-<header>
-    <div class="container">
-        <h1>OpenClaw 记忆系统源码拆解：为什么它能记住你三个月前聊过什么</h1>
-        <h2>2026-04-17 · OpenClaw · 记忆系统架构</h2>
-    </div>
-</header>
-<nav>
-    <ul>
-        <li><a href="https://blog.halo26812.eu.org/">主页</a></li>
-        <li><a href="https://blog.halo26812.eu.org/posts/">文章</a></li>
-        <li><a href="index.html">OpenClaw</a></li>
-        <li><a href="https://blog.halo26812.eu.org/about/">关于</a></li>
-    </ul>
-</nav>
-<div class="container">
-    <section id="main_content">
-        <article>
-            <p>你有没有发现，OpenClaw 有个特别"犯规"的能力——每次新对话，它好像都记得你之前聊过什么。你说"用那个之前讨论的方案"，它真的知道你说的是哪个。</p>
+---
+permalink: /posts/ai-tools/openclaw/2026-04-17-openclaw-memory-system-deep-dive.html
+layout: post
+title: "OpenClaw 记忆系统源码拆解：为什么它能记住你三个月前聊过什么"
+date: 2026-04-17
+category: ai-tools/openclaw
+category_name: "AI工具/OpenClaw"
+tags: [随笔]
+---
+
+<p>你有没有发现，OpenClaw 有个特别"犯规"的能力——每次新对话，它好像都记得你之前聊过什么。你说"用那个之前讨论的方案"，它真的知道你说的是哪个。</p>
             <p>这在 AI Agent 圈子里其实是个稀罕事。大多数 Agent 每次启动都是"失忆"状态，你得重新交代背景。而 OpenClaw 只是一个开源项目，没有专有云服务，没有复杂的基础设施，它是怎么做到的？</p>
             <p>最近花了一周时间把它的记忆模块源码读了一遍（主要是 memory-schema.ts、hybrid.ts、internal.ts 这几个核心文件），发现答案出乎意料地朴素。</p>
 
@@ -108,8 +90,3 @@
 
             <hr>
             <p>你用 AI Agent 时，最在意的是记住你的偏好，还是保护你的隐私？评论区说说你的优先级。</p>
-        </article>
-    </section>
-</div>
-</body>
-</html>

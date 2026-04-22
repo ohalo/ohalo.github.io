@@ -1,32 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="https://blog.halo26812.eu.org/stylesheets/github-dark.css" media="screen">
-    <title>OpenClaw 安全加固完全指南（2026）：防御 GhostClaw 与权限控制 - halo的技术博客</title>
-    <script src="/javascripts/google-analytics.js"></script>
-</head>
-<body>
-<header>
-    <div class="container">
-        <h1>OpenClaw 安全加固完全指南（2026）：防御 GhostClaw 与权限控制</h1>
-        <h2>2026-04-17 · OpenClaw · 安全加固</h2>
-    </div>
-</header>
-<nav>
-    <ul>
-        <li><a href="https://blog.halo26812.eu.org/">主页</a></li>
-        <li><a href="https://blog.halo26812.eu.org/posts/">文章</a></li>
-        <li><a href="index.html">OpenClaw</a></li>
-        <li><a href="https://blog.halo26812.eu.org/about/">关于</a></li>
-    </ul>
-</nav>
-<div class="container">
-    <section id="main_content">
-        <article>
-            <p>今年 3 月，<strong>GhostClaw</strong> 出现了——一个伪装成 OpenClaw 增强插件的恶意软件，通过 GitHub 传播，专门窃取开发者设备上的配置文件和密钥。</p>
+---
+permalink: /posts/ai-tools/openclaw/2026-04-17-openclaw-security-hardening.html
+layout: post
+title: "OpenClaw 安全加固完全指南（2026）：防御 GhostClaw 与权限控制"
+date: 2026-04-17
+category: ai-tools/openclaw
+category_name: "AI工具/OpenClaw"
+tags: [数据安全]
+---
+
+<p>今年 3 月，<strong>GhostClaw</strong> 出现了——一个伪装成 OpenClaw 增强插件的恶意软件，通过 GitHub 传播，专门窃取开发者设备上的配置文件和密钥。</p>
             <p><img src="../../../images/openclaw-security-hardening/02-ghostclaw-attack-chain.png" alt="GhostClaw 攻击链分析" style="max-width:100%; border-radius:8px;"></p>
             <p>同月，CNCERT（中国国家计算机网络应急技术处理协调中心）联合中国网络空间安全协会发布了官方安全使用指南。再叠加上 OpenClaw 2026.3.x 版本开始引入零信任默认拒绝策略——这一切都在说同一件事：<strong>开源 AI 助手的安全性，不能靠"相信它不会出问题"来维持。</strong></p>
             <p>如果你在 VPS 或生产力环境里跑 OpenClaw，默认情况下它几乎什么都允许：读写文件、执行命令、访问网络。装一个"看起来有用"的 Skill，它可能正在把你的 <code>.env</code> 传出去。</p>
@@ -200,8 +182,3 @@ jq -r '.target' ~/.openclaw/security/audit/$(date +%Y-%m-%d).jsonl | \
             <blockquote>
                 <p>⚠️ 本文涉及的部分高级安全特性（沙箱隔离、数字签名）需要安装配套 Skill 实现，非 OpenClaw 内置功能。官方内置的安全能力以 2026.3.x 及以上版本的 release notes 为准。</p>
             </blockquote>
-        </article>
-    </section>
-</div>
-</body>
-</html>
