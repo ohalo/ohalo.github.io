@@ -1,0 +1,186 @@
+---
+permalink: /posts/hardware/nas/2026-04-08-nas-log-monitoring.html
+layout: post
+title: "NAS日志监控与告警：半夜硬盘快满了你都不知道？"
+date: 2026-04-08
+category: hardware/nas
+category_name: "数码硬件/NAS存储"
+tags: [NAS, 日志监控, SMART, 硬盘健康, 告警系统]
+---
+
+<p>去年有一天，我的群晖 NAS 突然发不出通知了。登录一看，硬盘空间已经用完，所有服务都挂了。日志显示，某个 Docker 容器把日志写满了整个磁盘，而这台 NAS 没有设置任何容量告警。</p>
+
+<p>从那之后我开始认真研究 NAS 监控。现在我的 NAS 有完整的告警体系：硬盘健康、空间容量、Docker 日志、异常登录，任何异常都会在 5 分钟内推送到我手机。这篇文章说说我怎么搭的这套系统。</p>
+
+<img src="https://blog.halo26812.eu.org/images/nas-log-monitoring/dashboard.jpg" alt="监控面板" style="max-width:100%; border-radius:8px; margin: 20px 0;" />
+
+<h2>NAS 自带日志系统</h2>
+
+<h3>群晖日志中心（Log Center）</h3>
+
+<p>群晖 DSM 7 自带 Log Center，可以集中管理系统日志、SMB 访问日志、SSH 登录日志、防火墙日志等。在"控制面板 → 日志中心"里可以查看和配置日志规则。</p>
+
+<p>设置日志推送：点击"存档设置"→ 启用"系统事件通过邮件发送"，填入你的邮箱地址。群晖支持 SMTP 直接发邮件，不需要额外配置。</p>
+
+<h3>威联通 Log Center</h3>
+
+<p>威联通 QTS 的 Log Center 功能类似，支持日志集中收集和告警规则设置。可以把 Syslog 转发到其他服务器做集中分析。</p>
+
+<h3>飞牛OS / 绿联</h3>
+
+<p>这类系统目前没有专门的日志中心，但可以通过 SSH 登录查看 /var/log 目录下的系统日志，或者用 Docker 部署专门的日志收集工具（如 rsyslog）。</p>
+
+<h2>SMART 监控：硬盘健康数据解读</h2>
+
+<p>硬盘是 NAS 最脆弱的环节，提前知道硬盘要坏比数据丢了再恢复重要得多。SMART（Self-Monitoring, Analysis and Reporting Technology）是硬盘自带的健康监控系统。</p>
+
+<p>群晖 NAS 在"存储管理器"→ "HDD/SSD"里能看到每块硬盘的 SMART 信息。如果看到警告图标，说明硬盘有问题。</p>
+
+<img src="https://blog.halo26812.eu.org/images/nas-log-monitoring/server.jpg" alt="服务器监控" style="max-width:100%; border-radius:8px; margin: 20px 0;" />
+
+<h3>关键 SMART 参数解读</h3>
+
+<table>
+<tr><th>参数</th><th>含义</th><th>正常值</th><th>警告值</th></tr>
+<tr><td>Reallocated Sectors Count (05)</td><td>已重映射的坏扇区数</td><td>0</td><td>>0 → 硬盘即将故障</td></tr>
+<tr><td>Current Pending Sector Count (C7)</td><td>等待重映射的不稳定扇区</td><td>0</td><td>>0 → 扇区正在恶化</td></tr>
+<tr><td>Power-On Hours (09)</td><td>硬盘累计工作时间</td><td>—</td><td>>30000小时需关注</td></tr>
+<tr><td>Temperature (194)</td><td>当前温度</td><td>30-45°C</td><td>>55°C 需降温</td></tr>
+<tr><td>Wear Leveling Count (177)</td><td>SSD 磨损程度</td><td>—</td><td>接近 100% → 寿命将尽</td></tr>
+</table>
+
+<p>我自己用 HD Tune Pro 在电脑上跑过全盘扫描，检查是否有坏道。群晖自带的 SMART 检测只是表面扫描，要做全盘扫描需要用专门的工具。</p>
+
+<h3>推荐工具：smartctl 命令</h3>
+
+<p>通过 SSH 连接 NAS，直接运行 smartctl 查看详细数据：</p>
+
+<pre><code>smartctl -a /dev/sda   # 查看 sda 硬盘完整 SMART 数据
+smartctl -H /dev/sda   # 健康状态快速检查（Passed/Failed）
+smartctl -t short /dev/sda  # 快速自检（几分钟）
+smartctl -t long /dev/sda   # 完整自检（可能需要数小时）
+</code></pre>
+
+<p>建议每周跑一次 short 检测，每月跑一次 long 检测，结果记录到日志里。</p>
+
+<h2>告警方式：邮件 / PushPlus / 钉钉机器人</h2>
+
+<p>告警的精髓是：消息要能及时看到，否则告警没有意义。</p>
+
+<h3>邮件告警</h3>
+
+<p>最基础的方案，群晖内置的邮件告警配置最简单：控制面板 → 通知中心 → 电子邮件，设置 SMTP 服务器（QQ 邮箱、163 邮箱都行，注意开启 SMTP 服务并生成专用密码）。</p>
+
+<p>缺点：邮件可能进垃圾箱，或者半夜看到手机亮了一下点开又睡了。</p>
+
+<h3>PushPlus 微信推送</h3>
+
+<p>PushPlus（pushplus.plus）是一个免费的微信消息推送服务，注册后得到一个 Token，通过 HTTP 请求就能往微信发消息。</p>
+
+<p>在群晖里用 Python 脚本或者 Docker 的 watchtower 配合 PushPlus，可以把告警消息直接推送到微信，比邮件更及时。</p>
+
+<h3>钉钉机器人告警</h3>
+
+<p>钉钉群可以创建自定义机器人，获取 Webhook 地址后，用 curl 就能发告警消息：</p>
+
+<pre><code>curl -X POST 'https://oapi.dingtalk.com/robot/send?access_token=你的Token' \
+  -H 'Content-Type: application/json' \
+  -d '{"msgtype": "text", "text": {"content": "NAS告警：硬盘温度超过60°C"}}'
+</code></pre>
+
+<p>钉钉的好处是可以附带手机震动，半夜也能叫醒你。</p>
+
+<img src="https://blog.halo26812.eu.org/images/nas-log-monitoring/alert.jpg" alt="告警通知" style="max-width:100%; border-radius:8px; margin: 20px 0;" />
+
+<h2>存储容量预警：设定阈值自动告警</h2>
+
+<p>这是最容易被忽视的告警。我的群晖设置了三个容量告警阈值：</p>
+
+<ul>
+<li><strong>80% 告警</strong>：发邮件提醒整理空间</li>
+<li><strong>90% 告警</strong>：微信推送，提醒立即处理</li>
+<li><strong>95% 告警</strong>：钉钉推送 + 短信，硬盘几乎满了</li>
+</ul>
+
+<p>群晖自带的"存储空间通知"在控制面板 → 通知中心 → 存储空间里设置，填入阈值百分比和通知邮箱即可。</p>
+
+<p>另外我设置了定时任务（每天早上 9 点），用 df 命令检查各存储池的占用情况，输出到一个日志文件，这样能看出容量的历史变化趋势。</p>
+
+<h2>Docker 日志管理：容器日志自动清理</h2>
+
+<p>开头说的那个磁盘被 Docker 日志写满的事，教会了我必须管好容器日志。</p>
+
+<p>Docker 容器运行时会持续写入日志到 /var/lib/docker/containers/ 目录，默认不清理，大容器几天就能写满整个磁盘。</p>
+
+<p>解决方法：在 docker-compose.yml 里加上日志限制：</p>
+
+<pre><code>services:
+  your-app:
+    image: xxx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+</code></pre>
+
+<p>这会把每个容器的日志文件限制在 10MB，最多保留 3 个文件，超过就自动轮转。</p>
+
+<p>如果是已经跑着的容器，可以执行：</p>
+
+<pre><code>docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+  sane/docker-log-options \
+  your-container-name --log-opt max-size=10m --log-opt max-file=3
+</code></pre>
+
+<h2>异常访问检测：SSH 暴力破解告警</h2>
+
+<p>公网 IP 的 NAS，每天都会被扫描和暴力破解。SSH 22 端口如果暴露在公网，一定会有大量登录尝试。</p>
+
+<p>我的处理方式：</p>
+
+<ol>
+<li><strong>改变 SSH 端口</strong>：把 22 改成高位端口（如 2222），减少 90% 的自动扫描</li>
+<li><strong>禁用密码登录</strong>：只允许 SSH Key 登录，完全杜绝暴力破解<br/><code>PasswordAuthentication no</code></li>
+<li><strong>安装 Fail2Ban</strong>：自动封禁连续登录失败的 IP<br/>群晖可以通过 SSH 安装 fail2ban，或者用 Docker 运行</li>
+<li><strong>登录成功 / 失败通知</strong>：在 /etc/pam.d/sshd 或者 .bashrc 里加一句，当有人 SSH 登录成功时给手机发消息</li>
+</ol>
+
+<p>设置 Fail2Ban 后，系统会自动封禁 10 分钟内登录失败超过 3 次的 IP。我查日志看到被封禁的 IP 列表，每次都有几十个，说明这套机制确实在工作。</p>
+
+<h2>推荐工具：WatchYourLAN（局域网设备监控）</h2>
+
+<p>WatchYourLAN 是一个轻量级的局域网设备监控工具，扫描局域网内的设备，发现新设备接入或者设备离线时发送通知。</p>
+
+<p>用途：监控家里有没有陌生设备接入 WiFi，及时发现蹭网或者被入侵的情况。</p>
+
+<p>部署方法（Docker）：</p>
+
+<pre><code>services:
+  watchyourlan:
+    image: aceberg/watchyourlan
+    container_name: watchyourlan
+    network_mode: host
+    ports:
+      - 8080:8080
+    volumes:
+      - ./data:/data
+</code></pre>
+
+<p>界面很简洁，可以看到所有在线设备的 IP、MAC 地址、hostname。如果某个设备突然出现（比如陌生 MAC），就发告警。</p>
+
+<h2>我的监控体系总结</h2>
+
+<p>目前我的 NAS 监控包括：</p>
+
+<ul>
+<li>硬盘 SMART 健康状态（每周自动检测）</li>
+<li>存储空间使用率（阈值告警）</li>
+<li>Docker 容器日志（自动轮转清理）</li>
+<li>SSH 登录（Fail2Ban + 登录通知）</li>
+<li>局域网设备变化（WatchYourLAN）</li>
+</ul>
+
+<p>整套体系搭起来花了半天时间，现在能睡安稳觉了。NAS 上跑的所有服务我都能远程掌控，有什么问题 5 分钟内知道。</p>
+
+<p>最关键的一点：不要相信 NAS 永远不会出问题，要假设它随时可能出问题。监控和告警不是为了让它不出问题，而是为了出了问题能第一时间发现、最小化损失。</p>
