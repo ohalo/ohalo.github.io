@@ -46,6 +46,83 @@ body {
     color: #fff;
 }
 
+/* 回到顶部按钮 */
+.back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    background: rgba(30, 30, 30, 0.9);
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    color: #b5e853;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: rgba(50, 50, 50, 0.95);
+    border-color: #b5e853;
+    transform: translateY(-2px);
+}
+
+/* 文章导航（上一篇/下一篇） */
+.article-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 48px 0 32px;
+    padding-top: 24px;
+    border-top: 1px solid #2a2a2a;
+}
+
+.article-nav-item {
+    padding: 16px;
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.article-nav-item:hover {
+    background: rgba(40, 40, 40, 0.7);
+    border-color: #3a3a3a;
+    transform: translateY(-1px);
+}
+
+.article-nav-item.next {
+    text-align: right;
+}
+
+.article-nav-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.article-nav-title {
+    font-size: 14px;
+    color: #b5e853;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
 /* 文章标题区域 */
 .article-header {
     margin-bottom: 40px;
