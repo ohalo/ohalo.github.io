@@ -1,0 +1,236 @@
+---
+permalink: /posts/ai-tools/hafw/2026-04-26-ai-coding-tools-missing-review.html
+layout: post
+title: "OpenSpec 很香，但代码跑不通"
+date: 2026-04-26
+category: ai-tools/hafw
+tags: [AI编码, OpenSpec, SpecKit, HAFW, 代码评审]
+---
+
+<p>上周试了 OpenSpec，三分钟出了个原型，我差点信了。</p>
+
+<p>然后跑了一下——</p>
+
+<p>接口报错，数据库字段对不上，单元测试根本没写。</p>
+
+<hr />
+
+<img src="https://blog.halo26812.eu.org/images/ai-coding-tools-missing-review/flow-comparison.png" alt="国外工具 vs 完整流程对比" style="max-width: 100%; height: auto;" />
+
+<h2>一、AI 编码工具的"假爽"</h2>
+
+<p>国外这波 AI 编码工具很火：OpenSpec、SpecKit、SuperPower。</p>
+
+<p>它们都能做到：</p>
+
+<ul>
+  <li>你说"我要个登录功能"</li>
+  <li>它生成需求文档</li>
+  <li>它生成开发计划</li>
+  <li>它开始写代码</li>
+</ul>
+
+<p>听起来很完美。</p>
+
+<p><strong>但实际用下来，最大的问题是：没有评审。</strong></p>
+
+<p>需求文档出来之后，直接就给你 plan，中间没有"等人确认"这个环节。</p>
+
+<p>你不知道它是不是理解错了你的需求，也不知道它给出的技术方案是不是最优的。</p>
+
+<p>等你发现不对，代码已经写了一半。</p>
+
+<h2>二、国外工具缺了什么</h2>
+
+<p>我对比了一下国外主流 AI 编码工具和国内实际开发流程：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>环节</th>
+      <th>OpenSpec</th>
+      <th>SpecKit</th>
+      <th>SuperPower</th>
+      <th>国内实际流程</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>需求分析</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>需求评审</strong></td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>⚠️（交互式确认）</td>
+      <td>✅ 必须</td>
+    </tr>
+    <tr>
+      <td>架构设计</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>设计评审</strong></td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>✅ 必须</td>
+    </tr>
+    <tr>
+      <td>代码生成</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>单元测试</strong></td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>✅ 必须</td>
+    </tr>
+    <tr>
+      <td><strong>代码评审</strong></td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>✅ 必须</td>
+    </tr>
+    <tr>
+      <td>质量检测</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>✅</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>你可以看到，国外工具在"生成"这个环节做得很好，但"评审"和"测试"基本缺失。</p>
+
+<p>SuperPower 稍微好一点，它会一步步问你"要不要加这个功能"，但这种交互式确认不是正式评审。</p>
+
+<p><strong>正式评审是什么？</strong></p>
+
+<ul>
+  <li>需求评审：架构师、开发、产品一起看需求文档，补齐遗漏的点</li>
+  <li>设计评审：技术负责人看数据库设计、接口设计，挑出潜在问题</li>
+  <li>代码评审：同行看你的代码，指出不规范的地方</li>
+</ul>
+
+<p>这些环节在国外工具里是空的。</p>
+
+<h2>三、为什么国内必须有评审</h2>
+
+<p>国内软件开发有个特点：<strong>流程标准化程度高。</strong></p>
+
+<p>一个需求从提出到上线，至少要过三道评审：需求评审、设计评审、代码评审。</p>
+
+<p>每一道评审都是为了<strong>降低返工成本</strong>。</p>
+
+<ul>
+  <li>需求没评好 → 开发做到一半发现理解错了 → 重写</li>
+  <li>设计没评好 → 代码写完了发现架构有问题 → 重构</li>
+  <li>测试没写好 → 上线后出 bug → 紧急修复</li>
+</ul>
+
+<p>国外工具直接跳过这些环节，AI 自己闷头写，写完给你一个"看起来没问题"的代码。</p>
+
+<p>但实际上，<strong>没经过评审的代码，就是一颗定时炸弹。</strong></p>
+
+<h2>四、我自己做了一套</h2>
+
+<p>因为受不了这种"假爽"，我自己做了个技能包：HAFW。</p>
+
+<p>核心思路很简单：<strong>把评审环节加回去。</strong></p>
+
+<p>完整流程是这样的：</p>
+
+<pre><code>需求调研 → 需求评审 → 原型设计 → 架构设计 → 设计评审
+→ 数据库设计 → 接口设计 → 任务拆分 → 开发
+→ 单元测试 → 代码评审 → 质量检测 → 运维部署
+</code></pre>
+
+<p>每一步都可以单独执行，也可以跳过。</p>
+
+<p>比如你只想让它帮你写代码，可以直接从"开发"开始。</p>
+
+<p>但如果你想做一个完整的项目，按流程走一遍，每一步都有评审。</p>
+
+<h2>五、和国外工具比，HAFW 强在哪</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>OpenSpec</th>
+      <th>HAFW</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>需求评审</td>
+      <td>❌</td>
+      <td>✅ 多角色模拟评审</td>
+    </tr>
+    <tr>
+      <td>设计评审</td>
+      <td>❌</td>
+      <td>✅ 架构师视角检查</td>
+    </tr>
+    <tr>
+      <td>单元测试</td>
+      <td>❌</td>
+      <td>✅ 自动生成测试用例</td>
+    </tr>
+    <tr>
+      <td>代码评审</td>
+      <td>❌</td>
+      <td>✅ 代码规范检查</td>
+    </tr>
+    <tr>
+      <td>语言</td>
+      <td>英文</td>
+      <td>中文</td>
+    </tr>
+    <tr>
+      <td>修改难度</td>
+      <td>改英文文档</td>
+      <td>直接改中文文档</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>不是说 HAFW 比 OpenSpec 强——单看代码生成质量，OpenSpec 可能更好。</p>
+
+<p>但 HAFW 管了 OpenSpec 不管的事：<strong>评审、测试、流程管理。</strong></p>
+
+<h2>六、适合什么人用</h2>
+
+<p>如果你只是想快速做个原型，验证想法，OpenSpec 足够了。</p>
+
+<p>但如果你要：</p>
+
+<ul>
+  <li>做一个要上线的项目</li>
+  <li>团队协作开发</li>
+  <li>符合公司的开发流程规范</li>
+</ul>
+
+<p>那评审环节是绕不过去的。</p>
+
+<p>HAFW 就是把这块补上了。</p>
+
+<hr />
+
+<p><strong>国外工具好用，但别拿来当生产流水线。</strong></p>
+
+<p>至少，先把评审加上。</p>
