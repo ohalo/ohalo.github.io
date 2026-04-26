@@ -1,17 +1,64 @@
-/* 公共样式 - 优化可读性 */
+/* 文章详情页样式 - 优化可读性 */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 17px;
     line-height: 1.9;
     max-width: 780px;
     margin: 0 auto;
-    padding: 40px 24px;
+    padding: 40px 24px 80px;
     background-color: #0d0d0d;
     color: #c4c4c4;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* 文章标题区域 */
+.article-header {
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.article-header h1 {
+    font-size: 2.2em;
+    line-height: 1.3;
+    margin: 0 0 20px 0;
+    color: #e0e0e0;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    font-size: 14px;
+    color: #777;
+}
+
+.article-meta .date {
+    color: #999;
+}
+
+.article-meta .category {
+    background: rgba(181, 232, 83, 0.1);
+    color: #b5e853;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.article-meta a {
+    color: #777;
+}
+
+.article-meta a:hover {
+    color: #b5e853;
+}
+
+/* 标题层级 */
 h1, h2, h3, h4, h5, h6 {
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     color: #b5e853;
@@ -39,15 +86,33 @@ h3 {
     color: #d0d0d0;
 }
 
+h4 {
+    font-size: 1em;
+    color: #c8c8c8;
+    margin: 24px 0 12px 0;
+}
+
+/* 段落与文本 */
 p {
     margin: 0 0 24px 0;
 }
 
+strong {
+    color: #e0e0e0;
+    font-weight: 600;
+}
+
+em {
+    color: #b0b0b0;
+    font-style: italic;
+}
+
+/* 链接 */
 a {
     color: #5ba3f0;
     text-decoration: none;
     border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease, color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 a:hover {
@@ -56,6 +121,20 @@ a:hover {
     text-decoration: none;
 }
 
+/* 文章内容中的链接样式 */
+.article-content a {
+    color: #5ba3f0;
+    text-decoration: none;
+    padding-bottom: 1px;
+    border-bottom: 1px dashed #5ba3f0;
+}
+
+.article-content a:hover {
+    border-bottom-style: solid;
+    color: #8fc1f5;
+}
+
+/* 代码 */
 code {
     background-color: #1a1a1a;
     padding: 3px 8px;
@@ -66,14 +145,16 @@ code {
     border: 1px solid #2a2a2a;
 }
 
+/* 代码块 */
 pre {
+    position: relative;
     background-color: #0a0a0a;
     padding: 20px 24px;
     border-radius: 8px;
     overflow-x: auto;
     border: 1px solid #2a2a2a;
-    margin: 24px 0;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    margin: 28px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 pre code {
@@ -81,32 +162,60 @@ pre code {
     padding: 0;
     border: none;
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.7;
     color: #c8e6a0;
 }
 
+/* 行内代码高亮 */
+code .hljs-keyword { color: #c792ea; }
+code .hljs-string { color: #c8e6a0; }
+code .hljs-number { color: #f78c6c; }
+code .hljs-comment { color: #616161; font-style: italic; }
+code .hljs-function { color: #82aaff; }
+code .hljs-title { color: #82aaff; }
+code .hljs-params { color: #d0d0d0; }
+code .hljs-built_in { color: #ffcb6b; }
+
+/* 引用块 */
 blockquote {
     position: relative;
     border-left: 3px solid #b5e853;
-    margin: 28px 0;
-    padding: 16px 24px;
-    background: rgba(181, 232, 83, 0.05);
+    margin: 32px 0;
+    padding: 20px 24px;
+    background: rgba(181, 232, 83, 0.04);
     border-radius: 0 8px 8px 0;
     color: #999;
     font-style: italic;
+}
+
+blockquote::before {
+    content: '"';
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 32px;
+    color: rgba(181, 232, 83, 0.2);
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+blockquote p {
+    margin: 0;
+    padding-left: 16px;
 }
 
 blockquote p:last-child {
     margin-bottom: 0;
 }
 
+/* 列表 */
 ul, ol {
     margin: 20px 0;
     padding-left: 24px;
 }
 
 li {
-    margin: 8px 0;
+    margin: 10px 0;
     list-style: disc;
 }
 
@@ -114,15 +223,36 @@ li::marker {
     color: #b5e853;
 }
 
+ol li {
+    list-style: decimal;
+}
+
+ol li::marker {
+    color: #b5e853;
+}
+
+/* 嵌套列表 */
+ul ul, ol ul {
+    margin: 8px 0;
+}
+
+ul ul li::marker {
+    color: #666;
+}
+
+/* 表格 */
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 28px 0;
     font-size: 0.95em;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #2a2a2a;
 }
 
 th, td {
-    border: 1px solid #2a2a2a;
+    border: none;
     padding: 12px 16px;
     text-align: left;
 }
@@ -131,12 +261,54 @@ th {
     background-color: #141414;
     color: #b5e853;
     font-weight: 600;
+    border-bottom: 2px solid #2a2a2a;
+}
+
+td {
+    border-bottom: 1px solid #1f1f1f;
+}
+
+tr:last-child td {
+    border-bottom: none;
 }
 
 tr:nth-child(even) {
     background-color: #111;
 }
 
+tr:hover {
+    background: rgba(181, 232, 83, 0.03);
+}
+
+/* 图片 */
+.article-content img,
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 28px auto;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+img + em {
+    display: block;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-top: -20px;
+    margin-bottom: 28px;
+}
+
+/* 分割线 */
+hr {
+    border: none;
+    border-top: 1px solid #2a2a2a;
+    margin: 48px 0;
+}
+
+/* 元信息 */
 .meta {
     color: #777;
     font-size: 14px;
@@ -160,19 +332,41 @@ tr:nth-child(even) {
     color: #b5e853;
 }
 
-strong {
-    color: #e0e0e0;
-    font-weight: 600;
+/* 导航返回 */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 24px;
+    transition: color 0.2s ease;
 }
 
-hr {
-    border: none;
-    border-top: 1px solid #2a2a2a;
-    margin: 48px 0;
+.back-link:hover {
+    color: #b5e853;
 }
 
+/* Giscus 评论 */
 .giscus {
     margin-top: 56px;
     padding-top: 40px;
     border-top: 1px solid #2a2a2a;
+}
+
+/* 打印样式 */
+@media print {
+    body {
+        background: white;
+        color: #333;
+    }
+
+    pre, blockquote, code {
+        border-color: #ddd;
+    }
+
+    a {
+        color: #333;
+        border-bottom: none;
+    }
 }
