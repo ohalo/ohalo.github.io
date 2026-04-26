@@ -60,6 +60,7 @@ header h1 {
 header h1:before {
   content: "./ ";
   font-size: 24px;
+  opacity: 0.7;
 }
 
 header h2 {
@@ -130,37 +131,47 @@ dt {
 }
 
 ul li {
-  list-style: none;
+  list-style: disc;
+  margin: 10px 0;
 }
 
-ul li:before {
-  content: ">>";
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  font-size: 13px;
+ul li::marker {
   color: #b5e853;
-  margin-left: -37px;
-  margin-right: 21px;
-  line-height: 16px;
+}
+
+ol li {
+  list-style: decimal;
+  margin: 10px 0;
+}
+
+ol li::marker {
+  color: #b5e853;
 }
 
 blockquote {
-  color: #aaa;
-  padding-left: 10px;
-  border-left: 1px dotted #666;
+  color: #999;
+  padding: 12px 20px;
+  border-left: 3px solid #b5e853;
+  background: rgba(181, 232, 83, 0.05);
+  border-radius: 0 6px 6px 0;
+  margin: 20px 0;
+  font-style: italic;
 }
 
 pre {
-  background: rgba(0, 0, 0, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 10px;
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  padding: 16px 20px;
   font-size: 14px;
-  color: #b5e853;
-  border-radius: 2px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
+  color: #c8e6a0;
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
   text-wrap: normal;
   overflow: auto;
   overflow-y: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+  margin: 20px 0;
 }
 
 table {
@@ -227,8 +238,15 @@ hr {
 */
 
 a {
-  color: #63c0f5;
-  text-shadow: 0 0 5px rgba(104, 182, 255, 0.5);
+  color: #5ba3f0;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+a:hover {
+  color: #8fc1f5;
+  border-bottom-color: #5ba3f0;
 }
 
 /* Clearfix */
