@@ -38,3 +38,7 @@ markdown: kramdown
 kramdown:
   parse_block_html: true
   parse_span_html: true
+
+# 时区设置
+timezone: Asia/Shanghai
+future: true
