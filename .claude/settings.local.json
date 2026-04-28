@@ -3,7 +3,23 @@
     "allow": [
       "Bash(git add:*)",
       "Bash(git commit -m ':*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebFetch(domain:blog.halo26812.eu.org)",
+      "Bash(ls /Users/halo/.qclaw/workspace/blog-repo/posts/ai-tools/claude-code/*.html)",
+      "Bash(bundle exec:*)",
+      "Bash(gem list:*)",
+      "Bash(ls /Users/halo/.qclaw/workspace/blog-repo/Gemfile*)",
+      "Bash(bundle init:*)",
+      "Bash(bundle install:*)",
+      "Bash(ruby --version)",
+      "Bash(docker --version)",
+      "Bash(docker run:*)",
+      "Bash(ls posts/ai-observation/industry/*.html)",
+      "Bash(ls posts/ai-observation/career/*.html)",
+      "Bash(ls posts/hardware/nas/*.html)",
+      "Bash(ls posts/hardware/others/*.html)",
+      "Bash(git commit -m 'fix: 修正posts/index.html中的文章数量统计:*)",
+      "Bash(git commit -m 'fix: 修正首页index.html中的文章数量统计:*)"
     ]
   }
 }
