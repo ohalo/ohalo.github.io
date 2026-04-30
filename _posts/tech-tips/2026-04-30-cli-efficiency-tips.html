@@ -1,0 +1,165 @@
+---
+layout: post
+title: "终端效率翻倍：7个我每天都在用的CLI技巧"
+date: 2026-04-30
+categories: tech-tips
+permalink: /posts/tech-tips/cli-efficiency-tips.html
+---
+
+<p>上周同事看我操作终端，问我：你怎么敲得这么快？</p>
+
+<p>我说：不是手速快，是技巧省时间。</p>
+
+<p>这篇文章分享7个我每天都在用的终端技巧。每个都很简单，但叠加起来，效率提升肉眼可见。</p>
+
+<h2>技巧一：Ctrl+R 搜索历史命令</h2>
+
+<p>这是我用得最多的技巧。以前敲过一条命令，下次要再用，不用重新输入，按Ctrl+R，输入关键词，自动匹配历史命令。</p>
+
+<p>比如昨天我运行过：</p>
+
+<pre><code class="language-bash">docker exec -it mycontainer bash
+</code></pre>
+
+<p>今天再要进入容器，不需要重新敲。按Ctrl+R，输入"dock exec"，自动补全出来。回车，完事。</p>
+
+<p>更进一步，按Ctrl+R可以连续匹配多个结果，按上下键在匹配结果中切换。</p>
+
+<p>这个技巧让我省了大量重复敲命令的时间。</p>
+
+<h2>技巧二：!! 和 !$ 的妙用</h2>
+
+<p><strong>!!</strong> 表示上一条命令。常用场景：</p>
+
+<pre><code class="language-bash"># 忘了加sudo
+$ apt update
+E: Could not open lock file...
+
+# 不用重新敲，直接
+$ sudo !!
+sudo apt update
+</code></pre>
+
+<p><strong>!$</strong> 表示上一条命令的最后一个参数：</p>
+
+<pre><code class="language-bash">$ mkdir -p /very/long/path/to/project
+
+$ cd !$
+cd /very/long/path/to/project
+</code></pre>
+
+<p>这两个技巧，让我少敲了很多重复的字符。</p>
+
+<h2>技巧三：Ctrl+A/E 快速跳转行首行尾</h2>
+
+<p>命令敲到一半发现开头写错了，怎么改？</p>
+
+<p>以前我的做法是按左箭头，一下一下往回跳。命令长了要按十几下。</p>
+
+<p>现在：</p>
+
+<ul>
+<li><strong>Ctrl+A</strong>：跳到行首</li>
+<li><strong>Ctrl+E</strong>：跳到行尾</li>
+</ul>
+
+<p>一行命令，瞬间跳到开头或结尾，不用一下一下按了。</p>
+
+<p><img src="/images/cli-efficiency-tips/ctrl-a-e.gif" alt="Ctrl+A/E演示"></p>
+
+<h2>技巧四：Ctrl+U/K 快速删除</h2>
+
+<p>命令敲错了想重来，以前一直按退格键。现在：</p>
+
+<ul>
+<li><strong>Ctrl+U</strong>：删除光标到行首的内容</li>
+<li><strong>Ctrl+K</strong>：删除光标到行尾的内容</li>
+</ul>
+
+<p>想清空整行，先跳到行首（Ctrl+A），再删除到行尾（Ctrl+K）。</p>
+
+<p>这三个快捷键（A/E/U/K）的组合，让我处理长命令时快了很多。</p>
+
+<h2>技巧五：Tab补全增强</h>
+
+<p>Tab补全大家都知道，但很多人不知道还可以增强。</p>
+
+<p>在.bashrc或.zshrc中加入：</p>
+
+<pre><code class="language-bash"># bash
+bind 'set show-all-if-ambiguous on'
+
+# zsh
+autoload -Uz compinit && compinit
+</code></pre>
+
+<p>这样按Tab会显示所有匹配项，而不是只补全第一个。</p>
+
+<p>更进阶的是zsh的自动补全插件，输入命令时实时提示可能的补全选项，不用等按Tab。很多人用Oh My Zsh就是为了这个。</p>
+
+<h2>技巧六：alias 把长命令变短</h>
+
+<p>有些命令天天敲，每次都一长串，烦不烦？</p>
+
+<p>我的做法是给常用命令设置别名：</p>
+
+<pre><code class="language-bash"># 常用alias
+alias ll='ls -lah'
+alias dc='docker-compose'
+alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+alias gst='git status'
+alias glog='git log --oneline --graph --decorate -n 20'
+</code></pre>
+
+<p>这些别名写在.bashrc或.zshrc里，每次打开终端自动加载。</p>
+
+<p>关键是：不要设置太多别名，只给真正常用的命令设置。设置太多反而记不住。</p>
+
+<p><img src="/images/cli-efficiency-tips/alias-example.png" alt="alias示例"></p>
+
+<h2>技巧七：命令组合的 ; && ||</h2>
+
+<p>以前我经常这样操作：</p>
+
+<pre><code class="language-bash">$ make build
+# 等待执行完成
+$ make test
+# 等待执行完成
+$ make deploy
+</code></pre>
+
+<p>现在一行搞定：</p>
+
+<pre><code class="language-bash">$ make build && make test && make deploy
+</code></pre>
+
+<p>三个连接符的区别：</p>
+
+<ul>
+<li><strong>;</strong>：顺序执行，不管前一条是否成功</li>
+<li><strong>&&</strong>：前一条成功才执行下一条</li>
+<li><strong>||</strong>：前一条失败才执行下一条</li>
+</ul>
+
+<p>常用场景：</p>
+
+<pre><code class="language-bash"># 构建成功才部署
+$ npm run build && npm run deploy
+
+# 构建失败就清理临时文件
+$ npm run build || rm -rf dist/
+</code></pre>
+
+<h2>补充：这些技巧的前提</h2>
+
+<p>以上技巧主要适用于Bash和Zsh。如果你用的是Fish或其他Shell，快捷键可能不同。</p>
+
+<p>我的建议：先熟练掌握一个Shell，把效率提升上来。换Shell的成本比学几个技巧大得多。</p>
+
+<h2>最后说一句</h2>
+
+<p>这7个技巧，每个单独看都很简单。但组合起来，每天能省下大量时间。</p>
+
+<p>更重要的是，这些技巧让你专注于想做的事，而不是被命令行本身分散注意力。</p>
+
+<p>如果你还没有用这些技巧，建议从Ctrl+R和Ctrl+A/E开始，这两个用得最多，效果也最明显。</p>
