@@ -1,0 +1,109 @@
+---
+permalink: /posts/tech-tips/cli/2026-05-07-cli-compound.html
+layout: post
+title: "命令行的复利：每天省10分钟，一年省多少"
+date: 2026-05-07
+category: tech-tips/cli
+tags: [效率, CLI, 命令行]
+---
+
+<p>同事看我用命令行，说"你好硬核"。</p>
+
+<p>我说："这不是硬核，是懒。"</p>
+
+<p>真正懒的人，会花时间学工具，然后用工具省更多时间。</p>
+
+<h2>一个例子</h2>
+
+<p>每周我要做这件事：从30个日志文件里，提取错误信息，按日期汇总到Excel。</p>
+
+<p><strong>以前的做法</strong>：</p>
+<ul>
+<li>打开文件管理器</li>
+<li>逐个打开日志文件</li>
+<li>Ctrl+F搜"ERROR"</li>
+<li>复制到Excel</li>
+<li>重复30次</li>
+</ul>
+
+<p>耗时：约40分钟</p>
+
+<p><strong>现在的做法</strong>：</p>
+
+<pre><code>grep -h "ERROR" *.log | awk '{print $1,$2,$5}' | sort | uniq -c > errors.txt
+</code></pre>
+
+<p>耗时：3秒</p>
+
+<p><img src="/images/cli-compound/example.png" alt="命令行效率对比" style="max-width: 100%;"></p>
+
+<h2>复利怎么算</h2>
+
+<p>假设每周省40分钟，一年52周，总共省<strong>34小时</strong>。</p>
+
+<p>学这些命令花了多久？</p>
+<ul>
+<li>grep基础：10分钟</li>
+<li>awk基础：30分钟</li>
+<li>管道组合：20分钟</li>
+</ul>
+
+<p>总计学习成本：1小时。ROI = 34倍。</p>
+
+<p>而且这只是一件事。如果你每天用命令行处理5件事，每件省10分钟——</p>
+
+<p>每天省50分钟 × 250工作日 = <strong>208小时/年</strong></p>
+
+<p>那是26个工作日。相当于<strong>多出一个月</strong>。</p>
+
+<h2>我常用的命令组合</h2>
+
+<p>几个高频场景：</p>
+
+<p><strong>批量重命名</strong></p>
+<pre><code># 所有jpg加前缀
+for f in *.jpg; do mv "$f" "vacation_$f"; done
+</code></pre>
+
+<p><strong>查找大文件</strong></p>
+<pre><code>find . -type f -size +100M -exec ls -lh {} \;
+</code></pre>
+
+<p><strong>统计代码行数</strong></p>
+<pre><code>find . -name "*.py" | xargs wc -l | sort -n
+</code></pre>
+
+<p><strong>批量压缩</strong></p>
+<pre><code>for dir in */; do tar -czf "${dir%/}.tar.gz" "$dir"; done
+</code></pre>
+
+<p><img src="/images/cli-compound/commands.png" alt="常用命令" style="max-width: 100%;"></p>
+
+<h2>为什么很多人不用</h2>
+
+<p>命令行有门槛：</p>
+
+<ul>
+<li><strong>学习曲线</strong>：第一次用要查文档，不如鼠标点两下快</li>
+<li><strong>记忆负担</strong>：命令记不住，每次都要搜</li>
+<li><strong>错误恐惧</strong>：怕输错命令删错文件</li>
+</ul>
+
+<p>但这些都是<strong>一次性成本</strong>。学一次，用一辈子。</p>
+
+<p>鼠标操作是<strong>线性成本</strong>——每次都要点，永远省不了时间。</p>
+
+<h2>怎么入门</h2>
+
+<p>我的建议：</p>
+
+<ol>
+<li><strong>从高频任务开始</strong>：每天都要做的事，优先学命令替代</li>
+<li><strong>边用边学</strong>：不要先背命令手册，遇到需求再查</li>
+<li><strong>建立cheatsheet</strong>：把常用命令记下来，忘了就翻</li>
+<li><strong>alias简化</strong>：长命令设别名，比如 <code>alias ll='ls -lh'</code></li>
+</ol>
+
+<h2>一句话</h2>
+
+<p>命令行的本质不是炫技，是<strong>把重复劳动自动化</strong>。你有什么高频操作想自动化的？评论区说说，我帮你写命令。</p>
