@@ -189,5 +189,24 @@
             <p>&copy; 2026 <a href="https://github.com/ohalo">halo</a>. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Navigation Active State -->
+    <script>
+    (function() {
+        var path = window.location.pathname;
+        var navLinks = document.querySelectorAll('nav ul li a');
+        navLinks.forEach(function(link) {
+            var href = link.getAttribute('href');
+            if (href === '/' && (path === '/' || path === '/index.html')) {
+                link.classList.add('active');
+            } else if (href !== '/' && href !== '/posts/archive/' && href !== '/about/' && path.startsWith(href)) {
+                link.classList.add('active');
+            } else if ((href === '/posts/archive/' && path === '/posts/archive/') || (href === '/about/' && path === '/about/')) {
+                link.classList.add('active');
+            }
+        });
+    })();
+    </script>
+
 </body>
 </html>
