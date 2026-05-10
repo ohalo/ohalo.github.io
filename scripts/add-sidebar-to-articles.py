@@ -1,35 +1,41 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>为什么微软Office有几个GB，而WPS只有1GB多？ - halo的技术博客</title>
-    <meta name="description" content="为什么微软Office有几个GB，而WPS只有1GB多？ - halo的技术博客">
-    
-    <link rel="stylesheet" type="text/css" href="/stylesheets/modern-theme.css" media="screen">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <script src="/javascripts/google-analytics.js"></script>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="为什么微软Office有几个GB，而WPS只有1GB多？ - halo的技术博客">
-    <meta property="og:description" content="为什么微软Office有几个GB，而WPS只有1GB多？ - halo的技术博客">
-    <meta property="og:image" content="https://blog.halo26812.eu.org/images/social-preview.jpg">
-    <meta property="og:url" content="https://blog.halo26812.eu.org/posts/tech-tips/software/2026-04-08-office-vs-wps.html">
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="为什么微软Office有几个GB，而WPS只有1GB多？ - halo的技术博客">
-    <meta property="twitter:description" content="为什么微软Office有几个GB，而WPS只有1GB多？ - halo的技术博客">
-    <meta property="twitter:image" content="https://blog.halo26812.eu.org/images/social-preview.jpg">
-    <style>
+#!/usr/bin/env python3
+"""
+Add sidebar to article pages.
+Sidebar includes: Author card, Table of Contents (auto-gen via JS), Related articles (auto-gen via JS)
+"""
+
+import os
+import re
+
+SIDEBAR_HTML = '''
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Author Card -->
+            <div class="sidebar-section author-card">
+                <img src="https://avatars.githubusercontent.com/u/2868547?v=4" alt="halo" class="author-avatar">
+                <h3 class="author-name">halo</h3>
+                <p class="author-bio">40岁创业者，探索AI时代的工作方式</p>
+                <div class="author-social">
+                    <a href="https://github.com/ohalo" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://www.zhihu.com/" target="_blank" title="知乎"><i class="fab fa-zhihu"></i></a>
+                </div>
+            </div>
+            
+            <!-- Table of Contents -->
+            <div class="sidebar-section toc-section">
+                <h3 class="sidebar-title"><i class="fas fa-list-ul"></i> 目录</h3>
+                <nav id="toc-nav" class="toc-nav"></nav>
+            </div>
+            
+            <!-- Related Articles -->
+            <div class="sidebar-section related-section">
+                <h3 class="sidebar-title"><i class="fas fa-bookmark"></i> 相关文章</h3>
+                <ul class="related-list" id="related-list"></ul>
+            </div>
+        </aside>
+'''
+
+SIDEBAR_STYLES = '''
 /* Sidebar Layout */
 .post-layout {
     display: flex;
@@ -236,139 +242,9 @@
         grid-template-columns: 1fr;
     }
 }
-</style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1><a href="/">halo的技术博客</a></h1>
-            <h2>AI工具 · 行业观察 · 技术实践</h2>
-            <nav>
-                <ul>
-                    <li><a href="/"><i class="fas fa-home"></i> 主页</a></li>
-                    <li><a href="/posts/ai-tools/"><i class="fas fa-robot"></i> AI工具</a></li>
-                    <li><a href="/posts/ai-observation/"><i class="fas fa-eye"></i> AI观察</a></li>
-                    <li><a href="/posts/hardware/"><i class="fas fa-microchip"></i> 硬件数码</a></li>
-                    <li><a href="/posts/career/"><i class="fas fa-briefcase"></i> 职业成长</a></li>
-                    <li><a href="/posts/investment/"><i class="fas fa-chart-line"></i> 投资理财</a></li>
-                    <li><a href="/posts/reading/"><i class="fas fa-book-open"></i> 阅读思考</a></li>
-                    <li><a href="/posts/tech-tips/"><i class="fas fa-wrench"></i> 效率技巧</a></li>
-                    <li><a href="/posts/life/"><i class="fas fa-heart"></i> 生活方式</a></li>
-                    <li><a href="/posts/archive/"><i class="fas fa-archive"></i> 归档</a></li><li><a href="/about/"><i class="fas fa-user"></i> 关于</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+'''
 
-    <main class="container">
-        <div class="post-layout"><article class="post">
-            <div class="breadcrumb"><a href="/">主页</a> &rsaquo; <a href="/posts/tech-tips/">效率技巧</a> &rsaquo; <a href="/posts/tech-tips/software/">软件推荐</a> &rsaquo; 为什么微软Office有几个GB，而WPS只有1GB多？</div>
-            <h1 class="post-title">为什么微软Office有几个GB，而WPS只有1GB多？</h1>
-            <div class="post-date"><i class="far fa-calendar"></i> 2026-04-08</div>
-            <div class="tags"><span class="tag">Office</span><span class="tag">WPS</span><span class="tag">办公软件</span><span class="tag">对比</span></div>
-            <div class="post-content">
-<p>说几个你可能不知道的细节。</p>
-
-<p>首先，Office真不是一开始就有几个GB的。2003版600多MB，2013版800多MB，装完也就2GB左右。现在几个GB是因为功能越来越多，组件越加越多。但WPS 2026个人版安装包273MB，装完也1GB多了，谁也不比谁省多少。</p>
-
-<h2>关键区别：组件数量</h2>
-
-<p>Office有一大堆东西，Word、Excel、PowerPoint、Outlook、FrontPage……光是能离线下工作的就有十几个。WPS个人版呢？文字、演示、表格，加一个PDF阅读器，四个。你说它体积小，其实是因为该有的功能压根没装进去。</p>
-
-<h2>WPS的"浏览器化"</h2>
-
-<p>WPS这两年越来越像浏览器了。大量功能得联网才能用，离线状态下增加的功能不超过20%。这就解释了为什么它体积不大但跑起来特别卡——它不是在本地干活，是在云端来回倒腾数据。</p>
-
-<h2>会员陷阱</h2>
-
-<p>至于会员这件事，确实坑。个人版不支持VBA，超级会员也不行，只有企业版才开放。我之前看有人投诉，开了超级会员发现不能用VBA，想退费死活不退，最后闹到315才行。你要说它免费吧，其实功能拆散了在各个会员包里藏着。</p>
-
-<h2>怎么选？</h2>
-
-<p>追求离线办公还是Office更靠谱；轻度办公用WPS也没问题，但别指望它能完全替代Office。</p>
-
-<hr>
-
-<p><em>本文来源：知乎问题回答整理</em></p>
-            </div>
-        
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <!-- Author Card -->
-            <div class="sidebar-section author-card">
-                <img src="https://avatars.githubusercontent.com/u/2868547?v=4" alt="halo" class="author-avatar">
-                <h3 class="author-name">halo</h3>
-                <p class="author-bio">40岁创业者，探索AI时代的工作方式</p>
-                <div class="author-social">
-                    <a href="https://github.com/ohalo" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="https://www.zhihu.com/" target="_blank" title="知乎"><i class="fab fa-zhihu"></i></a>
-                </div>
-            </div>
-            
-            <!-- Table of Contents -->
-            <div class="sidebar-section toc-section">
-                <h3 class="sidebar-title"><i class="fas fa-list-ul"></i> 目录</h3>
-                <nav id="toc-nav" class="toc-nav"></nav>
-            </div>
-            
-            <!-- Related Articles -->
-            <div class="sidebar-section related-section">
-                <h3 class="sidebar-title"><i class="fas fa-bookmark"></i> 相关文章</h3>
-                <ul class="related-list" id="related-list"></ul>
-            </div>
-        </aside>
-
-        </article>
-    </div>
-        
-        <div class="post-nav">
-                <a href="/posts/tech-tips/software/">&larr; 返回软件推荐</a>
-                <a href="/posts/tech-tips/">效率技巧 &rarr;</a>
-            </div>
-        <!-- Giscus Comments -->
-        <script src="https://giscus.app/client.js"
-                data-repo="ohalo/ohalo.github.io"
-                data-repo-id="R_kgDOOG0HsQ"
-                data-category="Comments"
-                data-category-id="DIC_kwDOOG0Hsc4Ckvhg"
-                data-mapping="pathname"
-                data-strict="0"
-                data-reactions-enabled="1"
-                data-emit-metadata="0"
-                data-input-position="top"
-                data-theme="preferred_color_scheme"
-                data-lang="zh-CN"
-                data-loading="lazy"
-                crossorigin="anonymous"
-                async>
-        </script>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 <a href="https://github.com/ohalo">halo</a>. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Navigation Active State -->
-    <script>
-    (function() {
-        var path = window.location.pathname;
-        var navLinks = document.querySelectorAll('nav ul li a');
-        navLinks.forEach(function(link) {
-            var href = link.getAttribute('href');
-            if (href === '/' && (path === '/' || path === '/index.html')) {
-                link.classList.add('active');
-            } else if (href !== '/' && href !== '/posts/archive/' && href !== '/about/' && path.startsWith(href)) {
-                link.classList.add('active');
-            } else if ((href === '/posts/archive/' && path === '/posts/archive/') || (href === '/about/' && path === '/about/')) {
-                link.classList.add('active');
-            }
-        });
-    })();
-    </script>
-
-<script>
+SIDEBAR_JS = '''
 /* Sidebar: Table of Contents & Related Articles */
 (function() {
     function initSidebar() {
@@ -515,6 +391,78 @@
         initSidebar();
     }
 })();
-</script>
-</body>
-</html>
+'''
+
+def add_sidebar_to_article(html_content):
+    """Add sidebar to an article page."""
+    # Check if it's an article page (has .post-content)
+    if 'class="post-content"' not in html_content and 'class=\'post-content\'' not in html_content:
+        return html_content, False
+    
+    # Check if sidebar already exists
+    if 'class="sidebar"' in html_content:
+        return html_content, False
+    
+    # Add sidebar styles before </head>
+    if '</head>' in html_content:
+        html_content = html_content.replace('</head>', '<style>' + SIDEBAR_STYLES + '</style>\n</head>')
+    
+    # Wrap article content in post-layout div
+    # Find the article element and wrap it
+    if '<article class="post">' in html_content:
+        # Replace <article class="post"> with <div class="post-layout"><article class="post">
+        html_content = html_content.replace('<article class="post">', '<div class="post-layout"><article class="post">')
+        # Add sidebar and close div before </article> closing
+        # Find the </article> tag and add sidebar before it
+        html_content = html_content.replace('</article>', SIDEBAR_HTML + '\n        </article>\n    </div>')
+    elif "<article class='post'>" in html_content:
+        html_content = html_content.replace("<article class='post'>", "<article class='post'>")
+        html_content = html_content.replace('</article>', SIDEBAR_HTML + '\n        </article>\n    </div>')
+    
+    # Add sidebar JS before </body>
+    if '</body>' in html_content:
+        html_content = html_content.replace('</body>', '<script>' + SIDEBAR_JS + '</script>\n</body>')
+    
+    return html_content, True
+
+def process_file(filepath):
+    """Process a single HTML file."""
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    new_content, added = add_sidebar_to_article(content)
+    
+    if added:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        return True
+    return False
+
+def main():
+    base_dir = '/Users/halo/.qclaw/workspace/blog-repo'
+    
+    # Find all HTML files
+    html_files = []
+    for root, dirs, files in os.walk(base_dir):
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['scripts', 'images', 'stylesheets', 'javascripts', 'blog']]
+        for file in files:
+            if file.endswith('.html'):
+                html_files.append(os.path.join(root, file))
+    
+    print(f"Found {len(html_files)} HTML files")
+    
+    # Process all files
+    updated = 0
+    for filepath in html_files:
+        try:
+            if process_file(filepath):
+                rel_path = os.path.relpath(filepath, base_dir)
+                print(f"  Added sidebar: {rel_path}")
+                updated += 1
+        except Exception as e:
+            print(f"  Error processing {filepath}: {e}")
+    
+    print(f"\nDone! Updated {updated} files.")
+
+if __name__ == '__main__':
+    main()
