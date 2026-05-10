@@ -1,13 +1,43 @@
----
-permalink: /posts/hardware/nas/2026-04-08-nas-ebook-library.html
-layout: post
-title: "NAS电子书管理：Calibre-Web搭建个人数字图书馆"
-date: 2026-04-08
-category: hardware/nas
-category_name: "数码硬件/NAS存储"
-tags: [NAS, Calibre, 电子书, 数字图书馆, 阅读]
----
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NAS电子书管理：Calibre-Web搭建个人数字图书馆 - halo的技术博客</title>
+    <meta name="description" content="NAS电子书管理：Calibre-Web搭建个人数字图书馆 - halo的技术博客">
+    
+    <link rel="stylesheet" type="text/css" href="/stylesheets/modern-theme.css" media="screen">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <script src="/javascripts/google-analytics.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="/">halo的技术博客</a></h1>
+            <h2>AI工具 · 行业观察 · 技术实践</h2>
+            <nav>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> 主页</a></li>
+                    <li><a href="/posts/"><i class="fas fa-book"></i> 文章</a></li>
+                    <li><a href="/about/"><i class="fas fa-user"></i> 关于</a></li>
+                    <li><a href="https://github.com/ohalo" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <main class="container">
+        <article class="post">
+            <div class="breadcrumb"><a href="/">主页</a> &rsaquo; <a href="/posts/hardware/">数码硬件</a> &rsaquo; <a href="/posts/hardware/nas/">NAS存储</a> &rsaquo; NAS电子书管理：Calibre-Web搭建个人数字图书馆</div>
+            <h1 class="post-title">NAS电子书管理：Calibre-Web搭建个人数字图书馆</h1>
+            <div class="post-date"><i class="far fa-calendar"></i> 2026-04-08</div>
+            <div class="tags"><span class="tag">NAS</span><span class="tag">Calibre</span><span class="tag">电子书</span><span class="tag">数字图书馆</span><span class="tag">阅读</span></div>
+            <div class="post-content">
 <p>我的电子书架上有 3000 多本书，小说、技术书籍、有声书、漫画，什么都有。以前存在电脑里，每次找书都要靠记忆文件名；后来全搬到了 NAS 上，用 Calibre-Web 管理，体验完全不一样了。这篇文章说说我怎么搭的这套系统，以及踩过的坑。</p>
 
 <img src="https://blog.halo26812.eu.org/images/nas-ebook-library/books.jpg" alt="书架上的书籍" style="max-width:100%; border-radius:8px; margin: 20px 0;" />
@@ -140,3 +170,32 @@ services:
 <p>如果你藏书量超过 500 本，电脑里文件夹越整越乱，Calibre + Calibre-Web 是目前最优的解决方案。一次性搭好，之后就是往书库里扔书、自动整理、随时随地阅读。</p>
 
 <p>投入成本：一台能跑 Docker 的 NAS（2000 元左右）+ 一个晚上配置时间。长期收益：告别各平台分散的书库，拥有一个完全属于自己、没有任何广告的私人图书馆。</p>
+            </div>
+        </article>
+        
+        <!-- Giscus Comments -->
+        <script src="https://giscus.app/client.js"
+                data-repo="ohalo/ohalo.github.io"
+                data-repo-id="R_kgDOOG0HsQ"
+                data-category="Comments"
+                data-category-id="DIC_kwDOOG0Hsc4Ckvhg"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="top"
+                data-theme="preferred_color_scheme"
+                data-lang="zh-CN"
+                data-loading="lazy"
+                crossorigin="anonymous"
+                async>
+        </script>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 <a href="https://github.com/ohalo">halo</a>. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

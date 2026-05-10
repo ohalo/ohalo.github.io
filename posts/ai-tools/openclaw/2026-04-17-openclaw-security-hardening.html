@@ -1,13 +1,43 @@
----
-permalink: /posts/ai-tools/openclaw/2026-04-17-openclaw-security-hardening.html
-layout: post
-title: "OpenClaw 安全加固完全指南（2026）：防御 GhostClaw 与权限控制"
-date: 2026-04-17
-category: ai-tools/openclaw
-category_name: "AI工具/OpenClaw"
-tags: [数据安全]
----
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OpenClaw 安全加固完全指南（2026）：防御 GhostClaw 与权限控制 - halo的技术博客</title>
+    <meta name="description" content="OpenClaw 安全加固完全指南（2026）：防御 GhostClaw 与权限控制 - halo的技术博客">
+    
+    <link rel="stylesheet" type="text/css" href="/stylesheets/modern-theme.css" media="screen">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <script src="/javascripts/google-analytics.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="/">halo的技术博客</a></h1>
+            <h2>AI工具 · 行业观察 · 技术实践</h2>
+            <nav>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> 主页</a></li>
+                    <li><a href="/posts/"><i class="fas fa-book"></i> 文章</a></li>
+                    <li><a href="/about/"><i class="fas fa-user"></i> 关于</a></li>
+                    <li><a href="https://github.com/ohalo" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <main class="container">
+        <article class="post">
+            <div class="breadcrumb"><a href="/">主页</a> &rsaquo; <a href="/posts/ai-tools/">AI工具</a> &rsaquo; <a href="/posts/ai-tools/openclaw/">OpenClaw</a> &rsaquo; OpenClaw 安全加固完全指南（2026）：防御 GhostClaw 与权限控制</div>
+            <h1 class="post-title">OpenClaw 安全加固完全指南（2026）：防御 GhostClaw 与权限控制</h1>
+            <div class="post-date"><i class="far fa-calendar"></i> 2026-04-17</div>
+            <div class="tags"><span class="tag">数据安全</span></div>
+            <div class="post-content">
 <p>今年 3 月，<strong>GhostClaw</strong> 出现了——一个伪装成 OpenClaw 增强插件的恶意软件，通过 GitHub 传播，专门窃取开发者设备上的配置文件和密钥。</p>
             <p><img src="../../../images/openclaw-security-hardening/02-ghostclaw-attack-chain.png" alt="GhostClaw 攻击链分析" style="max-width:100%; border-radius:8px;"></p>
             <p>同月，CNCERT（中国国家计算机网络应急技术处理协调中心）联合中国网络空间安全协会发布了官方安全使用指南。再叠加上 OpenClaw 2026.3.x 版本开始引入零信任默认拒绝策略——这一切都在说同一件事：<strong>开源 AI 助手的安全性，不能靠"相信它不会出问题"来维持。</strong></p>
@@ -182,3 +212,32 @@ jq -r '.target' ~/.openclaw/security/audit/$(date +%Y-%m-%d).jsonl | \
             <blockquote>
                 <p>⚠️ 本文涉及的部分高级安全特性（沙箱隔离、数字签名）需要安装配套 Skill 实现，非 OpenClaw 内置功能。官方内置的安全能力以 2026.3.x 及以上版本的 release notes 为准。</p>
             </blockquote>
+            </div>
+        </article>
+        
+        <!-- Giscus Comments -->
+        <script src="https://giscus.app/client.js"
+                data-repo="ohalo/ohalo.github.io"
+                data-repo-id="R_kgDOOG0HsQ"
+                data-category="Comments"
+                data-category-id="DIC_kwDOOG0Hsc4Ckvhg"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="top"
+                data-theme="preferred_color_scheme"
+                data-lang="zh-CN"
+                data-loading="lazy"
+                crossorigin="anonymous"
+                async>
+        </script>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 <a href="https://github.com/ohalo">halo</a>. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
