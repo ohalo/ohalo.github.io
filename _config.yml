@@ -20,7 +20,6 @@ plugins:
   - jekyll-seo-tag
   - jekyll-feed
   - jemoji
-  - webrick
 
 # 分页
 paginate: 10
