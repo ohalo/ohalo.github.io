@@ -383,6 +383,24 @@
     }
 }
 </style>
+<style>
+/* Sidebar Tag Cloud */
+.tags-section .tag-cloud {
+    padding: 8px 0;
+}
+
+.tags-section .tag-cloud a {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+}
+
+.tags-section .tag-cloud .tag-size-3,
+.tags-section .tag-cloud .tag-size-4,
+.tags-section .tag-cloud .tag-size-5 {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+}
+</style>
 </head>
 <body>
     <header>
@@ -616,7 +634,14 @@
                 <h3 class="sidebar-title"><i class="fas fa-bookmark"></i> 相关文章</h3>
                 <ul class="related-list" id="related-list"></ul>
             </div>
-        </aside>
+        
+<!-- Category Tags -->
+<div class="sidebar-section tags-section">
+    <h3 class="sidebar-title"><i class="fas fa-tags"></i> 主题标签</h3>
+    <div class="tag-cloud" id="sidebarTagCloud"></div>
+</div>
+
+    </aside>
 
         </article>
     </div>
@@ -932,6 +957,48 @@
     
     window.addEventListener('scroll', highlightCurrentInFloating);
     highlightCurrentInFloating();
+})();
+</script>
+
+<script>
+// Category tag cloud data - auto-generated
+window.CATEGORY_TAGS = [{"name": ".", "count": 1, "url": "/./"}, {"name": "读书", "count": 1, "url": "/posts/reading/"}, {"name": "书评", "count": 4, "url": "/posts/reading/book-review/"}, {"name": "职业发展", "count": 8, "url": "/posts/career/"}, {"name": "硬件数码", "count": 5, "url": "/posts/hardware/"}, {"name": "NAS", "count": 41, "url": "/posts/hardware/nas/"}, {"name": "其他硬件", "count": 12, "url": "/posts/hardware/others/"}, {"name": "GPU对比", "count": 1, "url": "/posts/hardware/gpu-5070-9070-comparison/"}, {"name": "投资理财", "count": 1, "url": "/posts/investment/"}, {"name": "股票分析", "count": 2, "url": "/posts/investment/stock-analysis/"}, {"name": "独立开发飞轮", "count": 1, "url": "/posts/ai-observation/indie-app-flywheel/"}, {"name": "AI与职业", "count": 7, "url": "/posts/ai-observation/career/"}, {"name": "AI社会观察", "count": 12, "url": "/posts/ai-observation/society/"}, {"name": "AI行业观察", "count": 4, "url": "/posts/ai-observation/industry/"}, {"name": "技术技巧", "count": 4, "url": "/posts/tech-tips/"}, {"name": "安全技巧", "count": 1, "url": "/posts/tech-tips/security/"}, {"name": "软件使用", "count": 2, "url": "/posts/tech-tips/software/"}, {"name": "生活方式", "count": 5, "url": "/posts/life/"}, {"name": "AI工具", "count": 3, "url": "/posts/ai-tools/"}, {"name": "Claude Code", "count": 12, "url": "/posts/ai-tools/claude-code/"}, {"name": "OpenClaw", "count": 19, "url": "/posts/ai-tools/openclaw/"}, {"name": "AI技能训练", "count": 1, "url": "/posts/ai-tools/skill-training/"}, {"name": "AI工具其他", "count": 9, "url": "/posts/ai-tools/others/"}, {"name": "AI工作流", "count": 1, "url": "/posts/ai-tools/workflow/"}, {"name": "Spec Kit", "count": 1, "url": "/posts/ai-tools/spec-kit/"}, {"name": "HAFW", "count": 2, "url": "/posts/ai-tools/hafw/"}, {"name": "ai-tools / openspec", "count": 1, "url": "/posts/ai-tools/openspec/"}];
+</script>
+<script>
+/* Tag Cloud Sidebar Initialization */
+(function() {
+    var tags = window.CATEGORY_TAGS || [];
+    if (tags.length === 0) return;
+    
+    tags.sort(function(a, b) { return b.count - a.count; });
+    
+    var maxCount = tags[0] ? tags[0].count : 1;
+    var minCount = tags[tags.length - 1] ? tags[tags.length - 1].count : 1;
+    
+    function getTagSize(count) {
+        if (maxCount === minCount) return 3;
+        var ratio = (count - minCount) / (maxCount - minCount);
+        if (ratio < 0.25) return 1;
+        if (ratio < 0.5) return 2;
+        if (ratio < 0.75) return 3;
+        if (ratio < 0.9) return 4;
+        return 5;
+    }
+    
+    function renderCloud(containerId) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        
+        tags.forEach(function(tag) {
+            var a = document.createElement('a');
+            a.href = tag.url;
+            a.textContent = tag.name + ' (' + tag.count + ')';
+            a.className = 'tag-size-' + getTagSize(tag.count);
+            container.appendChild(a);
+        });
+    }
+    
+    renderCloud('sidebarTagCloud');
 })();
 </script>
 </body>
