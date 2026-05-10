@@ -912,7 +912,8 @@ answer = deepseek.generate(f"基于以下文档回答：{context}\n\n问题：{q
         }
     }
     
-    syncTocToFloating();
+    // Wait for sidebar to be ready (initSidebar runs on DOMContentLoaded)
+    setTimeout(syncTocToFloating, 300);
     
     // Toggle floating panel
     floatingBtn.addEventListener('click', function(e) {

@@ -902,7 +902,8 @@ finishing-a-development-branch（完成后给你选项：合并/PR/保留）
         }
     }
     
-    syncTocToFloating();
+    // Wait for sidebar to be ready (initSidebar runs on DOMContentLoaded)
+    setTimeout(syncTocToFloating, 300);
     
     // Toggle floating panel
     floatingBtn.addEventListener('click', function(e) {

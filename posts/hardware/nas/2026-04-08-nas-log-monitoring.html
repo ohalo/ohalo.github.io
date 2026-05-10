@@ -901,7 +901,8 @@ smartctl -t long /dev/sda   # 完整自检（可能需要数小时）
         }
     }
     
-    syncTocToFloating();
+    // Wait for sidebar to be ready (initSidebar runs on DOMContentLoaded)
+    setTimeout(syncTocToFloating, 300);
     
     // Toggle floating panel
     floatingBtn.addEventListener('click', function(e) {

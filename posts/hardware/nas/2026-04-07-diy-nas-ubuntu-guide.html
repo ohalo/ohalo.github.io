@@ -1031,7 +1031,8 @@ tailscale up --accept-routes=true --advertise-routes=192.168.28.0/24 --advertise
         }
     }
     
-    syncTocToFloating();
+    // Wait for sidebar to be ready (initSidebar runs on DOMContentLoaded)
+    setTimeout(syncTocToFloating, 300);
     
     // Toggle floating panel
     floatingBtn.addEventListener('click', function(e) {

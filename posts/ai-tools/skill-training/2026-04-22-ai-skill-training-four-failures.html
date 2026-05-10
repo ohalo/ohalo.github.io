@@ -933,7 +933,8 @@ HTML 报告禁止 base64 内嵌截图，统一改成本地路径引用
         }
     }
     
-    syncTocToFloating();
+    // Wait for sidebar to be ready (initSidebar runs on DOMContentLoaded)
+    setTimeout(syncTocToFloating, 300);
     
     // Toggle floating panel
     floatingBtn.addEventListener('click', function(e) {

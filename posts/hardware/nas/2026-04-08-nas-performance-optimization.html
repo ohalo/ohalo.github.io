@@ -835,7 +835,8 @@ dd if=/volume1/testfile of=/dev/null bs=1M iflag=direct</code></pre>
         }
     }
     
-    syncTocToFloating();
+    // Wait for sidebar to be ready (initSidebar runs on DOMContentLoaded)
+    setTimeout(syncTocToFloating, 300);
     
     // Toggle floating panel
     floatingBtn.addEventListener('click', function(e) {

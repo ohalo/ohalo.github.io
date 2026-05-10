@@ -899,7 +899,8 @@ CES 2026 大会上有个报道（TweakTown 采访各大 PC 从业者），说的
         }
     }
     
-    syncTocToFloating();
+    // Wait for sidebar to be ready (initSidebar runs on DOMContentLoaded)
+    setTimeout(syncTocToFloating, 300);
     
     // Toggle floating panel
     floatingBtn.addEventListener('click', function(e) {
