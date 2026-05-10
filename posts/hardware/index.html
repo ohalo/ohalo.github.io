@@ -29,7 +29,80 @@
     <meta property="twitter:title" content="硬件数码 - halo的技术博客">
     <meta property="twitter:description" content="硬件数码 - halo的技术博客">
     <meta property="twitter:image" content="https://blog.halo26812.eu.org/images/social-preview.jpg">
-    </head>
+    <style>
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 48px 0 32px 0;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pagination-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.pagination-btn i {
+    font-size: 0.8rem;
+}
+
+.pagination-info {
+    margin-left: 16px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.post-list.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+    }
+    
+    .pagination-info {
+        width: 100%;
+        text-align: center;
+        margin: 12px 0 0 0;
+    }
+}
+</style>
+</head>
 <body>
     <header>
         <div class="container">
@@ -62,6 +135,19 @@
                 <li><a href="2026-04-11-memory-price-when-will-end.html">本轮内存涨价什么时候到头？</a> <span class="date">2026-04-11</span></li>
                 <li><a href="2026-04-11-rtx-ai-gpu-comparison.html">RTX 3060 到 RTX 8000 Ada，AI 推理到底差多少？</a> <span class="date">2026-04-11</span></li>
             </ul>
+
+<!-- Pagination -->
+<div class="pagination" id="pagination">
+    <button class="pagination-btn" id="prevBtn" disabled>
+        <i class="fas fa-chevron-left"></i> 上一页
+    </button>
+    <div id="pageNumbers"></div>
+    <button class="pagination-btn" id="nextBtn">
+        下一页 <i class="fas fa-chevron-right"></i>
+    </button>
+    <span class="pagination-info" id="paginationInfo"></span>
+</div>
+
             <h3><i class="fas fa-folder"></i> GPU 5070 vs 9070 对比</h3>
             <ul class="post-list">
                 <li><a href="gpu-5070-9070-comparison/2026-04-22-gpu-5070-9070-comparison.html">三张显卡怎么选？我看完10个回答，结论有点反直觉</a> <span class="date">2026-04-22</span></li>
@@ -152,5 +238,166 @@
     })();
     </script>
 
+<script>
+/* Category Page Pagination */
+(function() {
+    var ARTICLES_PER_PAGE = 15;
+    
+    var postList = document.querySelector('.post-list');
+    var pagination = document.getElementById('pagination');
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var pageNumbers = document.getElementById('pageNumbers');
+    var paginationInfo = document.getElementById('paginationInfo');
+    
+    if (!postList || !pagination) return;
+    
+    var articles = postList.querySelectorAll('li');
+    var totalArticles = articles.length;
+    
+    // Only paginate if more than ARTICLES_PER_PAGE articles
+    if (totalArticles <= ARTICLES_PER_PAGE) return;
+    
+    var totalPages = Math.ceil(totalArticles / ARTICLES_PER_PAGE);
+    
+    // Get current page from URL hash or default to 1
+    var currentPage = 1;
+    var hash = window.location.hash;
+    if (hash && hash.indexOf('page-') === 1) {
+        var page = parseInt(hash.replace('#page-', ''));
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+        }
+    }
+    
+    function showPage(page) {
+        currentPage = page;
+        
+        // Update URL hash
+        if (page === 1) {
+            history.replaceState(null, '', window.location.pathname);
+        } else {
+            history.replaceState(null, '', '#page-' + page);
+        }
+        
+        // Show/hide articles
+        var start = (page - 1) * ARTICLES_PER_PAGE;
+        var end = start + ARTICLES_PER_PAGE;
+        
+        articles.forEach(function(article, index) {
+            if (index >= start && index < end) {
+                article.style.display = '';
+            } else {
+                article.style.display = 'none';
+            }
+        });
+        
+        // Update pagination buttons
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        
+        // Update page numbers
+        updatePageNumbers();
+        
+        // Update info text
+        paginationInfo.textContent = '第 ' + currentPage + ' / ' + totalPages + ' 页，共 ' + totalArticles + ' 篇文章';
+        
+        // Scroll to top of post list
+        var listTop = postList.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: listTop, behavior: 'smooth' });
+    }
+    
+    function updatePageNumbers() {
+        pageNumbers.innerHTML = '';
+        
+        var maxVisible = 5;
+        var startPage, endPage;
+        
+        if (totalPages <= maxVisible) {
+            startPage = 1;
+            endPage = totalPages;
+        } else {
+            if (currentPage <= 3) {
+                startPage = 1;
+                endPage = maxVisible;
+            } else if (currentPage >= totalPages - 2) {
+                startPage = totalPages - maxVisible + 1;
+                endPage = totalPages;
+            } else {
+                startPage = currentPage - 2;
+                endPage = currentPage + 2;
+            }
+        }
+        
+        // Add first page + ellipsis if needed
+        if (startPage > 1) {
+            var firstBtn = document.createElement('button');
+            firstBtn.className = 'pagination-btn';
+            firstBtn.textContent = '1';
+            firstBtn.onclick = function() { showPage(1); };
+            pageNumbers.appendChild(firstBtn);
+            
+            if (startPage > 2) {
+                var ellipsis = document.createElement('span');
+                ellipsis.style.padding = '0 8px';
+                ellipsis.textContent = '...';
+                pageNumbers.appendChild(ellipsis);
+            }
+        }
+        
+        // Add page buttons
+        for (var i = startPage; i <= endPage; i++) {
+            var btn = document.createElement('button');
+            btn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+            btn.textContent = i;
+            btn.onclick = (function(page) {
+                return function() { showPage(page); };
+            })(i);
+            pageNumbers.appendChild(btn);
+        }
+        
+        // Add last page + ellipsis if needed
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                var ellipsis = document.createElement('span');
+                ellipsis.style.padding = '0 8px';
+                ellipsis.textContent = '...';
+                pageNumbers.appendChild(ellipsis);
+            }
+            
+            var lastBtn = document.createElement('button');
+            lastBtn.className = 'pagination-btn';
+            lastBtn.textContent = totalPages;
+            lastBtn.onclick = function() { showPage(totalPages); };
+            pageNumbers.appendChild(lastBtn);
+        }
+    }
+    
+    // Event listeners
+    prevBtn.onclick = function() {
+        if (currentPage > 1) showPage(currentPage - 1);
+    };
+    
+    nextBtn.onclick = function() {
+        if (currentPage < totalPages) showPage(currentPage + 1);
+    };
+    
+    // Handle browser back/forward
+    window.addEventListener('hashchange', function() {
+        var hash = window.location.hash;
+        if (hash && hash.indexOf('page-') === 1) {
+            var page = parseInt(hash.replace('#page-', ''));
+            if (page >= 1 && page <= totalPages) {
+                showPage(page);
+            }
+        } else {
+            showPage(1);
+        }
+    });
+    
+    // Initialize
+    showPage(currentPage);
+})();
+</script>
 </body>
 </html>

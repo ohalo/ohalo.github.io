@@ -1,35 +1,13 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="阅读思考 - halo的技术博客">
-    
-    <link rel="stylesheet" type="text/css" href="/stylesheets/modern-theme.css" media="screen">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <script src="/javascripts/google-analytics.js"></script>
-    <title>阅读思考 - halo的技术博客</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="阅读思考 - halo的技术博客">
-    <meta property="og:description" content="阅读思考 - halo的技术博客">
-    <meta property="og:image" content="https://blog.halo26812.eu.org/images/social-preview.jpg">
-    <meta property="og:url" content="https://blog.halo26812.eu.org/posts/reading/">
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="阅读思考 - halo的技术博客">
-    <meta property="twitter:description" content="阅读思考 - halo的技术博客">
-    <meta property="twitter:image" content="https://blog.halo26812.eu.org/images/social-preview.jpg">
-    <style>
+#!/usr/bin/env python3
+"""
+Add pagination to category pages with many articles.
+Uses client-side JavaScript for simple page navigation.
+"""
+
+import os
+import re
+
+PAGINATION_STYLES = '''
 /* Pagination */
 .pagination {
     display: flex;
@@ -101,37 +79,9 @@
         margin: 12px 0 0 0;
     }
 }
-</style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1><a href="/">halo的技术博客</a></h1>
-            <h2>AI工具 · 行业观察 · 技术实践</h2>
-            <nav>
-                <ul>
-                    <li><a href="/"><i class="fas fa-home"></i> 主页</a></li>
-                    <li><a href="/posts/ai-tools/"><i class="fas fa-robot"></i> AI工具</a></li>
-                    <li><a href="/posts/ai-observation/"><i class="fas fa-eye"></i> AI观察</a></li>
-                    <li><a href="/posts/hardware/"><i class="fas fa-microchip"></i> 硬件数码</a></li>
-                    <li><a href="/posts/career/"><i class="fas fa-briefcase"></i> 职业成长</a></li>
-                    <li><a href="/posts/investment/"><i class="fas fa-chart-line"></i> 投资理财</a></li>
-                    <li><a href="/posts/reading/"><i class="fas fa-book-open"></i> 阅读思考</a></li>
-                    <li><a href="/posts/tech-tips/"><i class="fas fa-wrench"></i> 效率技巧</a></li>
-                    <li><a href="/posts/life/"><i class="fas fa-heart"></i> 生活方式</a></li>
-                    <li><a href="/posts/archive/"><i class="fas fa-archive"></i> 归档</a></li><li><a href="/about/"><i class="fas fa-user"></i> 关于</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+'''
 
-    <main class="container">
-        <section id="main_content">
-            <h2><i class="fas fa-folder-open"></i> 阅读思考 (5篇)</h2>
-            <ul class="post-list">
-                <li><a href="reading-fast-deep.html">读书快，不是本事；记住，才是</a> <span class="date">2026-05-10</span></li>
-            </ul>
-
+PAGINATION_HTML = '''
 <!-- Pagination -->
 <div class="pagination" id="pagination">
     <button class="pagination-btn" id="prevBtn" disabled>
@@ -143,36 +93,9 @@
     </button>
     <span class="pagination-info" id="paginationInfo"></span>
 </div>
+'''
 
-            <h3><i class="fas fa-folder"></i> 书评</h3>
-            <ul class="post-list">
-                <li><a href="book-review/thematic-reading-classics.html">经典读不下去？试试这个被严重低估的阅读方法</a> <span class="date">2026-05-10</span></li>
-                <li><a href="book-review/2026-05-06-tech-book-reading-anxiety.html">技术书越读越焦虑？我曾经的书架比我的人格还励志</a> <span class="date">2026-05-06</span></li>
-                <li><a href="book-review/2026-04-28-naval-almanac-reread.html">重读《纳瓦尔宝典》：第一次看觉得是鸡汤，第二次才品出味道</a> <span class="date">2026-04-28</span></li>
-                <li><a href="book-review/2026-04-22-courage-to-be-disliked.html">读《被讨厌的勇气》的真实感受：有用，但别当真理</a> <span class="date">2026-04-22</span></li>
-            </ul>
-        </div>
-    </footer>
-
-    <!-- Navigation Active State -->
-    <script>
-    (function() {
-        var path = window.location.pathname;
-        var navLinks = document.querySelectorAll('nav ul li a');
-        navLinks.forEach(function(link) {
-            var href = link.getAttribute('href');
-            if (href === '/' && (path === '/' || path === '/index.html')) {
-                link.classList.add('active');
-            } else if (href !== '/' && href !== '/posts/archive/' && href !== '/about/' && path.startsWith(href)) {
-                link.classList.add('active');
-            } else if ((href === '/posts/archive/' && path === '/posts/archive/') || (href === '/about/' && path === '/about/')) {
-                link.classList.add('active');
-            }
-        });
-    })();
-    </script>
-
-<script>
+PAGINATION_JS = '''
 /* Category Page Pagination */
 (function() {
     var ARTICLES_PER_PAGE = 15;
@@ -332,6 +255,79 @@
     // Initialize
     showPage(currentPage);
 })();
-</script>
-</body>
-</html>
+'''
+
+def add_pagination(html_content):
+    """Add pagination to a category page."""
+    # Check if it's a category page (has .post-list)
+    if 'class="post-list"' not in html_content:
+        return html_content, False
+    
+    # Check if pagination already exists
+    if 'class="pagination"' in html_content:
+        return html_content, False
+    
+    # Count articles
+    article_count = html_content.count('<li><a href=')
+    if article_count <= 15:
+        return html_content, False
+    
+    # Add pagination styles before </head>
+    if '</head>' in html_content:
+        html_content = html_content.replace('</head>', '<style>' + PAGINATION_STYLES + '</style>\n</head>')
+    
+    # Add pagination HTML after </ul> (closing the post-list)
+    # Find the closing </ul> of post-list and insert pagination after it
+    post_list_match = re.search(r'(<ul class="post-list">.*?</ul>)', html_content, re.DOTALL)
+    if post_list_match:
+        original_ul = post_list_match.group(1)
+        modified_ul = original_ul + '\n' + PAGINATION_HTML
+        html_content = html_content.replace(original_ul, modified_ul)
+    
+    # Add pagination JS before </body>
+    if '</body>' in html_content:
+        html_content = html_content.replace('</body>', '<script>' + PAGINATION_JS + '</script>\n</body>')
+    
+    return html_content, True
+
+def process_file(filepath):
+    """Process a single HTML file."""
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    new_content, added = add_pagination(content)
+    
+    if added:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        return True
+    return False
+
+def main():
+    base_dir = '/Users/halo/.qclaw/workspace/blog-repo'
+    
+    # Find all category index files (index.html in subdirectories)
+    html_files = []
+    for root, dirs, files in os.walk(base_dir):
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['scripts', 'images', 'stylesheets', 'javascripts', 'blog']]
+        for file in files:
+            if file == 'index.html':
+                html_files.append(os.path.join(root, file))
+    
+    print(f"Found {len(html_files)} category/index files")
+    
+    # Process all files
+    updated = 0
+    for filepath in html_files:
+        try:
+            if process_file(filepath):
+                rel_path = os.path.relpath(filepath, base_dir)
+                print(f"  Added pagination: {rel_path}")
+                updated += 1
+        except Exception as e:
+            print(f"  Error processing {filepath}: {e}")
+    
+    print(f"\nDone! Updated {updated} files.")
+
+if __name__ == '__main__':
+    main()
