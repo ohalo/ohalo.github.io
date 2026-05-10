@@ -464,3 +464,22 @@ section {
   font-size: 0.85rem;
   white-space: nowrap;
 }
+/* Post navigation (back to category) */
+.post-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2em 0;
+    padding: 1em 0;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.95em;
+}
+.post-nav a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.post-nav a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
