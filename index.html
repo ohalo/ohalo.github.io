@@ -1,127 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>halo的技术博客</title>
-  <script src="/javascripts/google-analytics.js"></script>
+    <meta name="description" content="AI工具 · 创业思考 · 技术实践">
+    
+    <!-- Modern Theme CSS -->
+    <link rel="stylesheet" type="text/css" href="stylesheets/modern-theme.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <script src="/javascripts/google-analytics.js"></script>
 </head>
 <body>
-<header>
-    <div class="container">
-        <h1>halo的技术博客</h1>
-        <h2>AI工具 · 行业观察 · 技术实践</h2>
-        <section id="downloads">
-            <a href="https://github.com/ohalo" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+    <header>
+        <div class="container">
+            <h1><a href="/">halo的技术博客</a></h1>
+            <h2>AI工具 · 行业观察 · 技术实践</h2>
+            <nav>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> 主页</a></li>
+                    <li><a href="/posts/"><i class="fas fa-book"></i> 文章</a></li>
+                    <li><a href="/about/"><i class="fas fa-user"></i> 关于</a></li>
+                    <li><a href="https://github.com/ohalo" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="main_content">
+            <h3>👋 欢迎来到我的技术博客</h3>
+            <p>这里记录了我在 AI 工具、行业观察、技术实践中的经验与感悟。</p>
+
+            <h3>📂 文章分类</h3>
+            <ul>
+                <li><a href="posts/ai-tools/"><strong>AI工具</strong></a>（38篇）
+                    <ul>
+                        <li><a href="posts/ai-tools/openclaw/">OpenClaw</a> - 配置与实战指南（19篇）</li>
+                        <li><a href="posts/ai-tools/claude-code/">Claude Code</a> - 使用技巧与深度解析（13篇）</li>
+                        <li><a href="posts/ai-tools/hafw/">HAFW</a> - AI开发框架与全链路工作流（2篇）</li>
+                        <li><a href="posts/ai-tools/openspec/">OpenSpec</a> - AI原生规范驱动开发框架（1篇）</li>
+                        <li><a href="posts/ai-tools/spec-kit/">Spec-Kit</a> - GitHub官方SDD框架（1篇）</li>
+                        <li><a href="posts/ai-tools/workflow/">AI工作流</a> - Agent-First工作流实战（1篇）</li>
+                        <li><a href="posts/ai-tools/skill-training/">Skill训练</a> - Skills设计、训练与迭代方法（1篇）</li>
+                        <li><a href="posts/ai-tools/others/">其他工具</a> - Mem0、私有AI部署等（7篇）</li>
+                    </ul>
+                </li>
+                <li><a href="posts/ai-observation/"><strong>AI观察</strong></a>（22篇）
+                    <ul>
+                        <li><a href="posts/ai-observation/industry/">行业动态</a> - 开源模型、行业趋势（3篇）</li>
+                        <li><a href="posts/ai-observation/career/">职业影响</a> - AI对程序员的影响（7篇）</li>
+                        <li><a href="posts/ai-observation/society/">社会现象</a> - 伦理思考与社会讨论（12篇）</li>
+                    </ul>
+                </li>
+                <li><a href="posts/hardware/"><strong>数码硬件</strong></a>（54篇）
+                    <ul>
+                        <li><a href="posts/hardware/nas/">NAS存储</a> - 选购、搭建与应用（41篇)</li>
+                        <li><a href="posts/hardware/others/">其他硬件</a> - iOS、内存条等（13篇）</li>
+                    </ul>
+                </li>
+                <li><a href="posts/investment/"><strong>投资理财</strong></a>（2篇）
+                    <ul>
+                        <li><a href="posts/investment/stock-analysis/">股票分析</a> - A股热门股票深度分析（2篇）</li>
+                    </ul>
+                </li>
+                <li><a href="posts/reading/"><strong>阅读</strong></a>（2篇）
+                    <ul>
+                        <li><a href="posts/reading/book-review/">书评</a> - 读书笔记与思考（2篇）</li>
+                    </ul>
+                </li>
+                <li><a href="posts/career/"><strong>职业成长</strong></a>（5篇）
+                    <ul>
+                        <li>职场思考与个人成长</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>🔥 最新文章</h3>
+            <ul class="post-list">
+                <li><a href="posts/career/2026-05-10-high-performer-dilemma.html">当好人做太多，反而被团队孤立——高绩效者的困局</a> <span class="date">2026-05-10</span></li>
+                <li><a href="posts/career/2026-05-10-tech-career-at-30-three-paths.html">技术人30岁后的三条路：走技术、走管理、走自由职业</a> <span class="date">2026-05-10</span></li>
+                <li><a href="posts/career/2026-05-06-remote-work-5-regrets.html">远程工作三年，我后悔的5件事（但我绝不回办公室）</a> <span class="date">2026-05-06</span></li>
+                <li><a href="posts/career/2026-05-06-engineer-tech-debt.html">越忙越没时间学新技术，越不学越忙：工程师技术债的残酷真相</a> <span class="date">2026-05-06</span></li>
+                <li><a href="posts/ai-observation/2026-05-10-ai-coding-tools-anxiety.html">AI编程工具泛滥这一年：效率提升了，但焦虑也翻倍了</a> <span class="date">2026-05-10</span></li>
+            </ul>
         </section>
-    </div>
-</header>
-<nav>
-    <ul>
-        <li><a href="https://blog.halo26812.eu.org/">主页</a></li>
-        <li><a href="https://blog.halo26812.eu.org/posts/">文章</a></li>
-        <li><a href="https://blog.halo26812.eu.org/about/">关于</a></li>
-    </ul>
-</nav>
-<div class="container">
-    <section id="main_content">
-        <h3>👋 欢迎来到我的技术博客</h3>
-        <p>这里记录了我在 AI 工具、行业观察、技术实践中的经验与感悟。</p>
+    </main>
 
-        <h3>📂 文章分类</h3>
-        <ul>
-            <li><a href="posts/ai-tools/"><strong>AI工具</strong></a>（38篇）
-                <ul>
-                    <li><a href="posts/ai-tools/openclaw/"><strong>OpenClaw</strong></a> - 配置与实战指南（19篇）</li>
-                    <li><a href="posts/ai-tools/claude-code/"><strong>Claude Code</strong></a> - 使用技巧与深度解析（13篇）</li>
-                    <li><a href="posts/ai-tools/hafw/"><strong>HAFW</strong></a> - AI开发框架与全链路工作流（2篇）</li>
-                    <li><a href="posts/ai-tools/openspec/"><strong>OpenSpec</strong></a> - AI原生规范驱动开发框架（1篇）</li>
-                    <li><a href="posts/ai-tools/spec-kit/"><strong>Spec-Kit</strong></a> - GitHub官方SDD框架（1篇）</li>
-                    <li><a href="posts/ai-tools/workflow/"><strong>AI工作流</strong></a> - Agent-First工作流实战（1篇）</li>
-                    <li><a href="posts/ai-tools/skill-training/"><strong>Skill训练</strong></a> - Skills设计、训练与迭代方法（1篇）</li>
-                    <li><a href="posts/ai-tools/others/"><strong>其他工具</strong></a> - Mem0、私有AI部署等（7篇）</li>
-                </ul>
-            </li>
-            <li><a href="posts/ai-observation/"><strong>AI观察</strong></a>（22篇）
-                <ul>
-                    <li><a href="posts/ai-observation/industry/">行业动态</a> - 开源模型、行业趋势（3篇）</li>
-                    <li><a href="posts/ai-observation/career/"><strong>职业影响</strong></a> - AI对程序员的影响（7篇）</li>
-                    <li><a href="posts/ai-observation/society/">社会现象</a> - 伦理思考与社会讨论（12篇）</li>
-                </ul>
-            </li>
-            <li><a href="posts/hardware/"><strong>数码硬件</strong></a>（54篇）
-                <ul>
-                    <li><a href="posts/hardware/nas/">NAS存储</a> - 选购、搭建与应用（41篇)</li>
-                    <li><a href="posts/hardware/others/">其他硬件</a> - iOS、内存条等（13篇）</li>
-                </ul>
-            </li>
-            <li><a href="posts/investment/"><strong>投资理财</strong></a>（2篇）
-                <ul>
-                    <li><a href="posts/investment/stock-analysis/">股票分析</a> - A股热门股票深度分析（2篇）</li>
-                </ul>
-            </li>
-            <li><a href="posts/reading/"><strong>阅读</strong></a>（2篇）
-                <ul>
-                    <li><a href="posts/reading/book-review/">书评</a> - 读书笔记与思考（2篇）</li>
-                </ul>
-            </li>
-            <li><a href="posts/career/"><strong>职业成长</strong></a> - 职场思考与个人成长（5篇）</li>
-        </ul>
-
-        <h3>🔥 最新文章</h3>
-        <ul>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <li><a href="posts/hardware/nas/2026-04-08-nas-log-monitoring.html">NAS日志监控与告警：半夜硬盘快满了你都不知道？</a></li>
-            <li><a href="posts/hardware/nas/2026-04-08-nas-ebook-library.html">NAS电子书管理：Calibre-Web搭建个人数字图书馆</a></li>
-            <li><a href="posts/hardware/nas/2026-04-08-nas-phone-photo-backup.html">NAS手机相册备份指南：终于不用每月给iCloud交钱了</a></li>
-            <li><a href="posts/hardware/nas/2026-04-08-nas-git-server.html">用NAS搭建私有Git服务器：Gitea/群晖Git Server对比</a></li>
-            <li><a href="posts/hardware/nas/2026-04-08-nas-storage-expansion.html">NAS扩容指南：加硬盘、换大硬盘、扩展柜怎么选？</a></li>
-            <li><a href="posts/hardware/nas/2026-04-08-nas-os-comparison.html">飞牛OS vs 群晖/威联通对比：国产NAS系统值得用吗？</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-nas-hard-drive-health-check.html">NAS硬盘健康检测指南：SMART参数详解，如何判断硬盘寿命？</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-nas-ups-guide.html">NAS必须配UPS吗？断电保护指南，铅酸vs锂电池怎么选？</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-nas-network-guide.html">NAS网络配置指南：2.5G、万兆怎么选？网线、交换机、路由器推荐</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-nas-bitmagnet-dht-crawler.html">给NAS装了个私有磁力搜索引擎，1500万种子随时搜</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-nas-money-saving-tips.html">用飞牛OS组了个NAS，哪些钱不能省，哪些时间必须花？</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-nas-buying-guide-2026.html">2026年NAS选购完全指南：绿联、群晖、极空间、威联通一网打尽</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-diy-nas-ubuntu-guide.html">从零开始自建NAS教程：Ubuntu系统改造实战指南</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-nas-dh4300-plus-review.html">绿联DH4300 Plus评测：从存储焦虑到数据自由，小白也能玩转的NAS</a></li>
-            <li><a href="posts/hardware/nas/2026-04-07-nas-guide-fnvs-ugreen.html">NAS选购指南：飞牛NAS vs 绿联DX4600 真实体验对比</a></li>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-        </ul>
-
-        <h3>🔗 链接</h3>
-        <ul>
-            <li><a href="https://github.com/ohalo">GitHub</a></li>
-        </ul>
-    </section>
-</div>
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 <a href="https://github.com/ohalo">halo</a>. All rights reserved. | Powered by <a href="https://jekyllrb.com/">Jekyll</a></p>
+        </div>
+    </footer>
 </body>
 </html>

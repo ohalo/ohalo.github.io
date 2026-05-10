@@ -1,44 +1,74 @@
-# Jekyll 配置
-title: halo的技术博客
-description: AI工具 · 创业思考 · 技术实践
-url: https://blog.halo26812.eu.org
-author: halo
+# GitHub Pages 配置
+title: "halo的技术博客"
+description: "AI工具 · 创业思考 · 技术实践"
+url: "https://blog.halo26812.eu.org"
+author: "halo"
+email: ""
+github_username: "ohalo"
+github_repo: "ohalo.github.io"
 
-# 使用 GitHub Pages 兼容的主题
-theme: null
+# 使用 Minimal Mistakes 主题 (GitHub Pages remote_theme)
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
+
+# 主题配置 - 自动深色/浅色模式
+minimal_mistakes_skin: "auto"
 
 # 插件
 plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-feed
+  - jemoji
+  - webrick
 
-# 默认值
+# 分页
+paginate: 10
+paginate_path: "/page/:num/"
+
+# 时区
+timezone: Asia/Shanghai
+future: true
+
+# 默认 frontmatter
 defaults:
   - scope:
       path: ""
-      type: "posts"
+      type: posts
     values:
-      layout: "post"
+      layout: single
+      read_time: true
+      comments: true
+      share: true
+      author_profile: true
+      show_date: true
   - scope:
       path: ""
+      type: pages
     values:
-      layout: "default"
+      layout: single
+      author_profile: false
 
-# 排除文件
-exclude:
-  - README.md
-  - CNAME
-  - params.json
-  - giscus.json
-
-# 文章永久链接
-permalink: /posts/:categories/:title.html
-
-# Markdown 配置 - 允许 HTML 渲染
+# Markdown
 markdown: kramdown
 kramdown:
   parse_block_html: true
   parse_span_html: true
+  syntax_highlighter: rouge
 
-# 时区设置
-timezone: Asia/Shanghai
-future: true
+# 排除文件
+exclude:
+  - "README.md"
+  - "CNAME"
+  - "params.json"
+  - "giscus.json"
+  - "backup-*.tar.gz"
+  - "fix-jekyll-templates.py"
+  - "draft-plan.md"
+  - "PUBLISH_GUIDE.md"
+  - "Gemfile"
+  - "Gemfile.lock"
+
+# SEO
+google_analytics:
+comments: true
