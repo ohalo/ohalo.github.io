@@ -7,16 +7,12 @@
     <title>halo的技术博客</title>
     <meta name="description" content="AI工具 · 创业思考 · 技术实践">
     
-    <!-- Modern Theme CSS -->
-    <link rel="stylesheet" type="text/css" href="stylesheets/modern-theme.css" media="screen">
-    <!-- Font Awesome -->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/modern-theme.css" media="screen">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Blog updated: 2026-05-17 -->
     <script src="/javascripts/google-analytics.js"></script>
 </head>
 <body>
@@ -26,84 +22,42 @@
             <h2>AI工具 · 行业观察 · 技术实践</h2>
             <nav>
                 <ul>
-                    <li><a href="/"><i class="fas fa-home"></i> 主页</a></li>
-                    <li><a href="/posts/"><i class="fas fa-book"></i> 文章</a></li>
+                    <li><a href="/"><i class="fas fa-home"></i> 首页</a></li>
+                    <li><a href="/posts/"><i class="fas fa-th-list"></i> 全部分类</a></li>
                     <li><a href="/about/"><i class="fas fa-user"></i> 关于</a></li>
-                    <li><a href="https://github.com/ohalo" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-        <main class="container">
+    <main class="container">
         <section id="main_content">
-            <h3>👋 欢迎来到我的技术博客</h3>
-            <p>这里记录了我在 AI 工具、行业观察、技术实践中的经验与感悟。共 158 篇文章。</p>
-
-            <h3>📂 文章分类</h3>
-            <ul>
-                <li><a href="posts/ai-tools/"><strong>AI工具</strong></a>(50篇)
-                    <ul>
-                        <li><a href="posts/ai-tools/claude-code/">Claude Code</a> - 使用技巧与深度解析(13篇)</li>
-                        <li><a href="posts/ai-tools/openclaw/">OpenClaw</a> - 配置与实战指南(19篇)</li>
-                        <li><a href="posts/ai-tools/hafw/">HAFW</a> - AI开发框架与全链路工作流(2篇)</li>
-                        <li><a href="posts/ai-tools/openspec/">OpenSpec</a> - AI原生规范驱动开发框架(1篇)</li>
-                        <li><a href="posts/ai-tools/spec-kit/">Spec-Kit</a> - GitHub官方SDD框架(1篇)</li>
-                        <li><a href="posts/ai-tools/workflow/">AI工作流</a> - Agent-First工作流实战(1篇)</li>
-                        <li><a href="posts/ai-tools/skill-training/">Skill训练</a> - Skills设计、训练与迭代方法(1篇)</li>
-                        <li><a href="posts/ai-tools/others/">其他工具</a> - Mem0、私有AI部署等(9篇)</li>
-                    </ul>
-                </li>
-                <li><a href="posts/ai-observation/"><strong>AI观察</strong></a>(23篇)
-                    <ul>
-                        <li><a href="posts/ai-observation/industry/">行业动态</a> - 开源模型、行业趋势(4篇)</li>
-                        <li><a href="posts/ai-observation/career/">职业影响</a> - AI对程序员的影响(7篇)</li>
-                        <li><a href="posts/ai-observation/society/">社会现象</a> - 伦理思考与社会讨论(12篇)</li>
-                    </ul>
-                </li>
-                <li><a href="posts/hardware/"><strong>数码硬件</strong></a>(60篇)
-                    <ul>
-                        <li><a href="posts/hardware/nas/">NAS存储</a> - 选购、搭建与应用(41篇)</li>
-                        <li><a href="posts/hardware/gpu-5070-9070-comparison/">GPU对比</a> - 5070/9070选购(1篇)</li>
-                        <li><a href="posts/hardware/others/">其他硬件</a> - iOS、内存条等(13篇)</li>
-                    </ul>
-                </li>
-                <li><a href="posts/investment/"><strong>投资理财</strong></a>(2篇)
-                    <ul>
-                        <li><a href="posts/investment/stock-analysis/">股票分析</a> - A股热门股票深度分析(2篇)</li>
-                    </ul>
-                </li>
-                <li><a href="posts/career/"><strong>职业成长</strong></a>(8篇)
-                </li>
-                <li><a href="posts/life/"><strong>生活方式</strong></a>(4篇)
-                </li>
-                <li><a href="posts/reading/"><strong>阅读</strong></a>(5篇)
-                    <ul>
-                        <li><a href="posts/reading/book-review/">书评</a> - 读书笔记与思考(4篇)</li>
-                    </ul>
-                </li>
-                <li><a href="posts/tech-tips/"><strong>效率技巧</strong></a>(6篇)
-                    <ul>
-                        <li><a href="posts/tech-tips/software/">软件推荐</a> - 效率工具与使用技巧(2篇)</li>
-                        <li><a href="posts/tech-tips/security/">安全隐私</a> - 网络安全与隐私保护(1篇)</li>
-                    </ul>
-                </li>
+            <h2><i class="fas fa-folder-open"></i> 文章分类</h2>
+            <ul class="post-list">
+                <li><a href="/posts/ai-tools/"><i class="fas fa-robot"></i> AI工具</a> <span class="date">50篇</span></li>
+                <li><a href="/posts/ai-observation/"><i class="fas fa-eye"></i> AI观察</a> <span class="date">23篇</span></li>
+                <li><a href="/posts/hardware/"><i class="fas fa-microchip"></i> 数码硬件</a> <span class="date">60篇</span></li>
+                <li><a href="/posts/career/"><i class="fas fa-briefcase"></i> 职业成长</a> <span class="date">8篇</span></li>
+                <li><a href="/posts/life/"><i class="fas fa-heart"></i> 生活方式</a> <span class="date">4篇</span></li>
+                <li><a href="/posts/investment/"><i class="fas fa-chart-line"></i> 投资理财</a> <span class="date">2篇</span></li>
+                <li><a href="/posts/reading/"><i class="fas fa-book-open"></i> 阅读</a> <span class="date">5篇</span></li>
+                <li><a href="/posts/tech-tips/"><i class="fas fa-wrench"></i> 技术技巧</a> <span class="date">6篇</span></li>
             </ul>
 
-            <h3>🔥 最新文章</h3>
+            <h2><i class="fas fa-fire"></i> 最新文章</h2>
             <ul class="post-list">
-                <li><a href="posts/ai-observation/society/ai-art-human-aesthetic.html">AI画出来的画确实好看，但好看就够了？</a> <span class="date">2026-05-10</span></li>
-                <li><a href="posts/ai-tools/mcp-ai-tool-connector.html">MCP是什么？AI工具正在学会"长出手</a> <span class="date">2026-05-10</span></li>
-                <li><a href="posts/ai-tools/claude-code-vs-cursor.html">Claude Code vs Cursor：三个月后的真实感受</a> <span class="date">2026-05-10</span></li>
-                <li><a href="posts/ai-tools/claude-code/prompt-engineering-coding.html">让AI帮你写代码，这5个prompt技巧比背100个快捷键有用</a> <span class="date">2026-05-10</span></li>
-                <li><a href="posts/career/interview-beyond-coding.html">面试官不说但会暗中加分的3个能力</a> <span class="date">2026-05-10</span></li>
+                <li><a href="/posts/ai-observation/society/ai-art-human-aesthetic.html">AI画出来的画确实好看，但好看就够了？</a> <span class="date">2026-05-10</span></li>
+                <li><a href="/posts/ai-tools/mcp-ai-tool-connector.html">MCP是什么？AI工具正在学会"长出手"</a> <span class="date">2026-05-10</span></li>
+                <li><a href="/posts/ai-tools/claude-code-vs-cursor.html">Claude Code vs Cursor：三个月后的真实感受</a> <span class="date">2026-05-10</span></li>
+                <li><a href="/posts/ai-tools/claude-code/prompt-engineering-coding.html">让AI帮你写代码，这5个prompt技巧比背100个快捷键有用</a> <span class="date">2026-05-10</span></li>
+                <li><a href="/posts/career/interview-beyond-coding.html">面试官不说但会暗中加分的3个能力</a> <span class="date">2026-05-10</span></li>
             </ul>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 <a href="https://github.com/ohalo">halo</a>. All rights reserved. | Powered by <a href="https://jekyllrb.com/">Jekyll</a></p>
+            <p>&copy; 2026 <a href="https://github.com/ohalo">halo</a>. All rights reserved.</p>
         </div>
     </footer>
 </body>
