@@ -1,96 +1,55 @@
-// Sidebar Component Generator
-// Replaces static sidebar with floating TOC button + panel
+// TOC Component Generator
+// Generates Affix sticky TOC panel on the right side of article
 
 (function() {
     'use strict';
 
     // Generate TOC from article headings
-    function generateTocFromHeadings() {
+    function generateToc() {
         var article = document.querySelector('article');
         if (!article) return '';
-        
-        var headings = article.querySelectorAll('h2, h3');
+
+        var headings = article.querySelectorAll('h2, h3, h4');
         if (headings.length === 0) return '';
-        
+
         var tocHtml = '';
         headings.forEach(function(heading, index) {
-            // Create anchor if not exists
+            // Create anchor ID if not exists
             if (!heading.id) {
                 heading.id = 'section-' + index;
             }
-            var level = heading.tagName === 'H2' ? '' : ' class="toc-h3"';
-            tocHtml += '<li' + level + '><a href="#' + heading.id + '">' + heading.textContent + '</a></li>';
+
+            var level = parseInt(heading.tagName.substring(1));
+            var levelClass = 'toc-h' + level;
+
+            tocHtml += '<li class="' + levelClass + '"><a href="#' + heading.id + '">' + heading.textContent + '</a></li>';
         });
-        return tocHtml;
-    }
 
-    // Generate the full floating TOC HTML
-    function generateFloatingToc() {
-        var tocContent = generateTocFromHeadings();
-        if (!tocContent) return ''; // Don't show if no headings
-
-        return '<div id="floating-toc-btn" class="floating-toc-btn" title="文章目录">\n' +
-               '    <i class="fas fa-list-ul"></i>\n' +
-               '</div>\n' +
-               '\n' +
-               '<div id="floating-toc-panel" class="floating-toc-panel">\n' +
-               '    <div class="floating-toc-header">\n' +
-               '        <h4>文章目录</h4>\n' +
-               '        <button id="floating-toc-close" class="floating-toc-close" title="关闭">\n' +
-               '            <i class="fas fa-times"></i>\n' +
-               '        </button>\n' +
-               '    </div>\n' +
-               '    <div class="floating-toc-content">\n' +
-               '        <ul class="toc-list">' + tocContent + '</ul>\n' +
-               '    </div>\n' +
+        return '<div class="toc-sticky-wrapper">' +
+               '<div class="toc-panel">' +
+               '<h4 class="toc-title">文章目录</h4>' +
+               '<ul class="toc-list">' + tocHtml + '</ul>' +
+               '</div>' +
                '</div>';
     }
 
-    // Toggle floating TOC panel
-    function setupFloatingToc() {
-        var btn = document.getElementById('floating-toc-btn');
-        var panel = document.getElementById('floating-toc-panel');
-        var closeBtn = document.getElementById('floating-toc-close');
+    // Setup scroll spy for active link highlighting
+    function setupScrollSpy() {
+        var tocLinks = document.querySelectorAll('.toc-list a');
+        var headings = document.querySelectorAll('article h2, article h3, article h4');
 
-        if (!btn || !panel) return;
+        if (tocLinks.length === 0 || headings.length === 0) return;
 
-        // Click button to toggle
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            panel.classList.toggle('open');
-            btn.classList.toggle('active');
-        });
-
-        // Click close button
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-                panel.classList.remove('open');
-                btn.classList.remove('active');
-            });
-        }
-
-        // Click outside to close
-        document.addEventListener('click', function(e) {
-            if (!panel.contains(e.target) && !btn.contains(e.target)) {
-                panel.classList.remove('open');
-                btn.classList.remove('active');
-            }
-        });
-
-        // Active link highlighting on scroll
-        var tocLinks = panel.querySelectorAll('a');
-        var headings = document.querySelectorAll('article h2, article h3');
-        
         function updateActiveLink() {
             var scrollY = window.scrollY;
             var current = '';
-            
+
             headings.forEach(function(heading) {
-                if (heading.offsetTop - 100 <= scrollY) {
+                if (heading.offsetTop - 120 <= scrollY) {
                     current = heading.id;
                 }
             });
-            
+
             tocLinks.forEach(function(link) {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === '#' + current) {
@@ -103,20 +62,16 @@
         updateActiveLink();
     }
 
-    // Inject floating TOC when DOM is ready
+    // Inject TOC into article page
     function init() {
-        var floatingToc = generateFloatingToc();
-        if (!floatingToc) return; // No TOC to show
+        var tocHtml = generateToc();
+        if (!tocHtml) return;
 
-        var placeholder = document.getElementById('sidebar-placeholder');
-        if (placeholder) {
-            placeholder.innerHTML = floatingToc;
-        } else {
-            // Fallback: append to body
-            document.body.insertAdjacentHTML('beforeend', floatingToc);
+        var article = document.querySelector('article');
+        if (article) {
+            article.insertAdjacentHTML('afterend', tocHtml);
+            setupScrollSpy();
         }
-
-        setupFloatingToc();
     }
 
     // Run on DOM ready
