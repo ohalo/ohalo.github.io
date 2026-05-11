@@ -1,21 +1,16 @@
 
-/* Sidebar Layout */
+/* Sidebar Layout - Single column, sidebar below article */
 .post-layout {
-    display: flex;
-    gap: 48px;
-    align-items: flex-start;
+    display: block;
 }
 
 .post-layout .post-content-wrapper {
-    flex: 1;
-    min-width: 0;
+    width: 100%;
 }
 
 .post-layout .sidebar {
-    position: sticky;
-    top: 32px;
-    max-height: calc(100vh - 64px);
-    overflow-y: auto;
+    width: 100%;
+    margin-top: 48px;
 }
 
 /* Sidebar Sections */
@@ -178,24 +173,15 @@
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-    .post-layout {
-        flex-direction: column;
-        gap: 32px;
-    }
-    
-    .post-layout .sidebar {
-        width: 100%;
-        position: static;
-        max-height: none;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 20px;
-    }
-    
-    .sidebar-section {
-        margin-bottom: 0;
-    }
+/* Sidebar below article - single column layout */
+.post-layout .sidebar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.sidebar-section {
+    margin-bottom: 0;
 }
 
 @media (max-width: 768px) {
