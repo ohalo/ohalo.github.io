@@ -87,8 +87,7 @@
 }
 
 .toc-nav {
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: none;
 }
 
 .toc-nav ul,
@@ -191,12 +190,24 @@
 /* Sidebar below article - single column layout */
 .post-layout .sidebar {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+}
+
+/* Tags section takes full width */
+.post-layout .sidebar .tags-section {
+    grid-column: 1 / -1;
 }
 
 .sidebar-section {
     margin-bottom: 0;
+}
+
+/* Responsive: single column on mobile */
+@media (max-width: 768px) {
+    .post-layout .sidebar {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
@@ -356,17 +367,33 @@
 
 /* Sidebar Tag Cloud */
 .tags-section .tag-cloud {
-    padding: 8px 0;
+    padding: 12px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .tags-section .tag-cloud a {
     font-size: 0.8rem;
-    padding: 4px 10px;
+    padding: 6px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.tags-section .tag-cloud a:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
 }
 
 .tags-section .tag-cloud .tag-size-3,
 .tags-section .tag-cloud .tag-size-4,
 .tags-section .tag-cloud .tag-size-5 {
-    font-size: 0.85rem;
-    padding: 6px 12px;
+    font-size: 0.9rem;
+    padding: 8px 14px;
 }
