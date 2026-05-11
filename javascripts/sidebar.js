@@ -1,5 +1,6 @@
 // TOC Component Generator
 // Generates sticky TOC panel on the right side of article
+// Supports both .post-content-wrapper and .post-content structures
 
 (function() {
     'use strict';
@@ -62,15 +63,43 @@
         updateActiveLink();
     }
 
-    // Inject TOC into article page - after post-content-wrapper (sibling)
+    // Inject TOC into article page
+    // TOC must be a sibling of the article content, not inside it,
+    // so that flex layout works correctly
     function init() {
         var tocHtml = generateToc();
         if (!tocHtml) return;
 
+        var inserted = false;
+
+        // Strategy 1: Insert after .post-content-wrapper (newer structure)
+        // Structure: <div class="post-layout"><div class="post-content-wrapper">...</div><!--TOC--></div>
         var postContentWrapper = document.querySelector('.post-content-wrapper');
         if (postContentWrapper) {
-            // Insert TOC after post-content-wrapper (as sibling, inside post-layout)
             postContentWrapper.insertAdjacentHTML('afterend', tocHtml);
+            inserted = true;
+        }
+
+        // Strategy 2: Insert after <article> (older structure with .post-content)
+        // Structure: <div class="post-layout"><article>...</article><!--TOC--></div>
+        if (!inserted) {
+            var article = document.querySelector('article.post');
+            if (article) {
+                article.insertAdjacentHTML('afterend', tocHtml);
+                inserted = true;
+            }
+        }
+
+        // Strategy 3: Fallback - insert at end of .post-layout
+        if (!inserted) {
+            var postLayout = document.querySelector('.post-layout');
+            if (postLayout) {
+                postLayout.insertAdjacentHTML('beforeend', tocHtml);
+                inserted = true;
+            }
+        }
+
+        if (inserted) {
             setupScrollSpy();
         }
     }
