@@ -1,0 +1,9 @@
+{
+    "description": "手动 curated 的精品文章列表。编辑此文件来增删精品文章，URL 必须与文章实际路径一致（包含.html后缀）。注意：文章文件名需要有日期前缀(如2026-05-10-)才能被脚本识别。",
+    "featured_urls": [
+        "/posts/ai-tools/claude-code/2026-04-07-claude-code-memory.html",
+        "/posts/career/2026-05-10-tech-career-at-30-three-paths.html",
+        "/posts/life/2026-05-10-why-i-stop-upgrading-phone.html",
+        "/posts/investment/2026-05-10-stock-valuation-pitfalls.html"
+    ]
+}
