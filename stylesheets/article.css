@@ -1,38 +1,58 @@
 /* ============================================
    Article Page Layout
-   Single column with TOC below article
+   Article on left, Sticky TOC on right
    ============================================ */
 
-/* Post Layout - Single column (TOC flows after article) */
 .post-layout {
-    display: block;
+    display: flex;
+    align-items: flex-start;
+    gap: 48px;
 }
 
-.post-layout .post-content-wrapper {
-    width: 100%;
+.post-content-wrapper {
+    flex: 1;
+    min-width: 0;
 }
 
-/* TOC Panel - Below article, full width */
+/* ============================================
+   Sticky TOC - Fixed on right side
+   ============================================ */
+
 .toc-sticky-wrapper {
-    margin-top: 48px;
-    margin-bottom: 32px;
-    width: 100%;
+    position: sticky;
+    top: 80px;
+    width: 240px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
 }
 
 .toc-panel {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 20px;
 }
 
+.toc-panel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.toc-panel::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+}
+
 .toc-title {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-muted);
     margin: 0 0 16px 0;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .toc-list {
@@ -48,13 +68,14 @@
 
 .toc-list a {
     display: block;
-    padding: 8px 12px;
-    font-size: 0.9rem;
+    padding: 8px 10px;
+    font-size: 0.85rem;
     color: var(--text-secondary);
     text-decoration: none;
     border-radius: 6px;
     transition: background 0.2s, color 0.2s;
     border: none;
+    line-height: 1.4;
 }
 
 .toc-list a:hover {
@@ -68,17 +89,13 @@
     font-weight: 500;
 }
 
-/* TOC hierarchy indentation */
-.toc-list .toc-h2 a {
-    font-weight: 500;
-}
-
+/* TOC hierarchy - indentation for h3/h4 */
 .toc-list .toc-h3 {
     padding-left: 16px;
 }
 
 .toc-list .toc-h3 a {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
 .toc-list .toc-h4 {
@@ -86,5 +103,24 @@
 }
 
 .toc-list .toc-h4 a {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Mobile - hide TOC */
+@media (max-width: 1100px) {
+    .toc-sticky-wrapper {
+        display: none;
+    }
+}
+
+/* Tablet - reduce gap */
+@media (max-width: 1300px) {
+    .post-layout {
+        gap: 32px;
+    }
+    
+    .toc-sticky-wrapper {
+        width: 200px;
+    }
 }

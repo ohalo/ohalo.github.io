@@ -1,5 +1,5 @@
 // TOC Component Generator
-// Generates Affix sticky TOC panel on the right side of article
+// Generates sticky TOC panel on the right side of article
 
 (function() {
     'use strict';
@@ -62,14 +62,15 @@
         updateActiveLink();
     }
 
-    // Inject TOC into article page
+    // Inject TOC into article page - after post-content-wrapper (sibling)
     function init() {
         var tocHtml = generateToc();
         if (!tocHtml) return;
 
-        var article = document.querySelector('article');
-        if (article) {
-            article.insertAdjacentHTML('afterend', tocHtml);
+        var postContentWrapper = document.querySelector('.post-content-wrapper');
+        if (postContentWrapper) {
+            // Insert TOC after post-content-wrapper (as sibling, inside post-layout)
+            postContentWrapper.insertAdjacentHTML('afterend', tocHtml);
             setupScrollSpy();
         }
     }
