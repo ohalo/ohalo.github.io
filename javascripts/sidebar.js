@@ -56,19 +56,120 @@
                '</div>';
     }
 
+    // Generate TOC from article headings
+    function generateTocFromHeadings() {
+        var article = document.querySelector('article');
+        if (!article) return '';
+        
+        var headings = article.querySelectorAll('h2, h3');
+        if (headings.length === 0) return '';
+        
+        var tocHtml = '<ul class="toc-list">';
+        headings.forEach(function(heading, index) {
+            // Create anchor if not exists
+            if (!heading.id) {
+                heading.id = 'section-' + index;
+            }
+            var level = heading.tagName === 'H2' ? 'toc-h2' : 'toc-h3';
+            tocHtml += '<li class="' + level + '"><a href="#' + heading.id + '">' + heading.textContent + '</a></li>';
+        });
+        tocHtml += '</ul>';
+        return tocHtml;
+    }
+
     // Generate TOC section HTML
     function generateTocSection() {
+        var tocContent = generateTocFromHeadings();
+        if (!tocContent) {
+            return ''; // Don't show TOC if no headings
+        }
         return '<div class="sidebar-section toc-section">\n' +
                '    <h3 class="sidebar-title"><i class="fas fa-list-ul"></i> 目录</h3>\n' +
-               '    <nav id="toc-nav" class="toc-nav"></nav>\n' +
+               '    <nav id="toc-nav" class="toc-nav">' + tocContent + '</nav>\n' +
                '</div>';
+    }
+
+    // Get current page category from URL
+    function getCurrentCategory() {
+        var path = window.location.pathname;
+        // Extract category from /posts/category/subcategory/article.html
+        var match = path.match(/\/posts\/([^\/]+)(?:\/([^\/]+))?\//);
+        if (match) {
+            return {
+                main: match[1],
+                sub: match[2] || null
+            };
+        }
+        return null;
+    }
+
+    // Find related articles from ALL_ARTICLES if available
+    function findRelatedArticles() {
+        if (typeof ALL_ARTICLES === 'undefined' || !Array.isArray(ALL_ARTICLES)) {
+            return [];
+        }
+        
+        var currentPath = window.location.pathname;
+        var category = getCurrentCategory();
+        if (!category) return [];
+        
+        // Filter articles in same category, exclude current
+        var related = ALL_ARTICLES.filter(function(article) {
+            if (article.url === currentPath) return false;
+            
+            // Check if same category
+            var articleMatch = article.url.match(/\/posts\/([^\/]+)(?:\/([^\/]+))?\//);
+            if (!articleMatch) return false;
+            
+            var articleMain = articleMatch[1];
+            var articleSub = articleMatch[2] || null;
+            
+            // Match main category, prefer subcategory match
+            if (articleMain === category.main) {
+                if (category.sub && articleSub) {
+                    return articleSub === category.sub;
+                }
+                return true;
+            }
+            return false;
+        });
+        
+        // Sort by date (newest first) and take top 5
+        return related.sort(function(a, b) {
+            return (b.date || '').localeCompare(a.date || '');
+        }).slice(0, 5);
+    }
+
+    // Generate related articles HTML
+    function generateRelatedArticlesHtml() {
+        var related = findRelatedArticles();
+        if (related.length === 0) {
+            // Fallback: show random articles from ALL_ARTICLES
+            if (typeof ALL_ARTICLES !== 'undefined' && ALL_ARTICLES.length > 0) {
+                var currentPath = window.location.pathname;
+                var others = ALL_ARTICLES.filter(function(a) { return a.url !== currentPath; });
+                related = others.sort(function() { return 0.5 - Math.random(); }).slice(0, 5);
+            }
+        }
+        
+        if (related.length === 0) return '';
+        
+        var html = '';
+        related.forEach(function(article) {
+            html += '<li><a href="' + article.url + '">' + (article.title || '相关文章') + '</a></li>';
+        });
+        return html;
     }
 
     // Generate related articles section HTML
     function generateRelatedSection() {
+        var relatedHtml = generateRelatedArticlesHtml();
+        if (!relatedHtml) {
+            return ''; // Don't show section if no related articles
+        }
         return '<div class="sidebar-section related-section">\n' +
                '    <h3 class="sidebar-title"><i class="fas fa-bookmark"></i> 相关文章</h3>\n' +
-               '    <ul class="related-list" id="related-list"></ul>\n' +
+               '    <ul class="related-list">' + relatedHtml + '</ul>\n' +
                '</div>';
     }
 
