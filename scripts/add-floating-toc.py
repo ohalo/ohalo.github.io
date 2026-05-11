@@ -156,10 +156,7 @@ FLOATING_TOC_STYLES = '''
 '''
 
 FLOATING_TOC_HTML = '''
-<!-- Floating TOC Button -->
-<button class="floating-toc-btn" id="floatingTocBtn" title="目录导航">
-    <i class="fas fa-list-ul"></i>
-</button>
+
 
 '''
 
