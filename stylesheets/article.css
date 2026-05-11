@@ -1,20 +1,3 @@
-/* Kept for compatibility */
-
-    
-
-.pagination-info {
-    margin-left: 16px;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
-.post-list.hidden {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    
-
 
 /* Sidebar Layout */
 .post-layout {
@@ -200,8 +183,8 @@
         flex-direction: column;
         gap: 32px;
     }
-
-.post-layout .sidebar {
+    
+    .post-layout .sidebar {
         width: 100%;
         position: static;
         max-height: none;
@@ -209,17 +192,19 @@
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 20px;
     }
-
-.sidebar-section {
+    
+    .sidebar-section {
         margin-bottom: 0;
     }
-
 }
 
 @media (max-width: 768px) {
     .post-layout .sidebar {
         grid-template-columns: 1fr;
     }
+}
+
+
 
 /* Floating TOC */
 .floating-toc-btn {
@@ -357,13 +342,16 @@
         width: 44px;
         height: 44px;
     }
-
-.floating-toc-panel {
+    
+    .floating-toc-panel {
         bottom: 76px;
         right: 12px;
         left: 12px;
         width: auto;
     }
+}
+
+
 
 /* Sidebar Tag Cloud */
 .tags-section .tag-cloud {
@@ -381,14 +369,3 @@
     font-size: 0.85rem;
     padding: 6px 12px;
 }
-
-/* Sidebar Layout */
-.post-layout {
-    display: flex;
-    gap: 48px;
-    align-items: flex-start;
-}
-
-.archive-year { color: var(--accent); margin-top: 40px; font-size: 1.6em; }
-
-.archive-month { color: var(--text); margin-top: 24px; font-size: 1.2em; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
