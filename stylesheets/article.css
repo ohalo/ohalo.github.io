@@ -16,7 +16,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .sidebar-section:last-child {
@@ -185,32 +185,13 @@
 
 /* Responsive */
 /* Sidebar below article - single column layout */
-.post-layout .sidebar {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
 /* Tags section takes full width */
 .post-layout .sidebar .tags-section {
     grid-column: 1 / -1;
 }
 
 .sidebar-section {
-    margin-bottom: 0;
-}
-
-/* Responsive: single column on mobile */
-@media (max-width: 768px) {
-    .post-layout .sidebar {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .post-layout .sidebar {
-        grid-template-columns: 1fr;
-    }
+    margin-bottom: 10px;
 }
 
 
