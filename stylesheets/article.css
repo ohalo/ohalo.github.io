@@ -4,6 +4,12 @@
     display: block;
 }
 
+.post-layout .sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
 .post-layout .post-content-wrapper {
     width: 100%;
 }
