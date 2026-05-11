@@ -643,20 +643,12 @@
             </ul>
 
 <!-- Pagination -->
-<div class="pagination" id="pagination">
-    <button class="pagination-btn" id="prevBtn" disabled>
-        <i class="fas fa-chevron-left"></i> 上一页
-    </button>
-    <div id="pageNumbers"></div>
-    <button class="pagination-btn" id="nextBtn">
-        下一页 <i class="fas fa-chevron-right"></i>
-    </button>
-    <span class="pagination-info" id="paginationInfo"></span>
-</div>
+
+            
 
 
             <h2><i class="fas fa-fire"></i> 最新文章</h2>
-            <ul class="post-list">
+            <ul class="post-list" id="homeArticleList">
                 <li><a href="/posts/ai-observation/society/ai-art-human-aesthetic.html">AI画出来的画确实好看，但好看就够了？</a> <span class="date">2026-05-10</span> <span class="reading-time">📖 5分钟</span></li>
                 <li><a href="/posts/ai-tools/mcp-ai-tool-connector.html">MCP是什么？AI工具正在学会"长出手脚"</a> <span class="date">2026-05-10</span> <span class="reading-time">📖 6分钟</span></li>
                 <li><a href="/posts/ai-tools/claude-code-vs-cursor.html">Claude Code vs Cursor：三个月后的真实感受</a> <span class="date">2026-05-10</span> <span class="reading-time">📖 8分钟</span></li>
@@ -712,170 +704,12 @@
     })();
     </script>
 <script>
-/* Category Page Pagination */
-(function() {
-    var ARTICLES_PER_PAGE = 15;
-    
-    var postList = document.querySelector('.post-list');
-    var pagination = document.getElementById('pagination');
-    var prevBtn = document.getElementById('prevBtn');
-    var nextBtn = document.getElementById('nextBtn');
-    var pageNumbers = document.getElementById('pageNumbers');
-    var paginationInfo = document.getElementById('paginationInfo');
-    
-    if (!postList || !pagination) return;
-    
-    var articles = postList.querySelectorAll('li');
-    var totalArticles = articles.length;
-    
-    // Only paginate if more than ARTICLES_PER_PAGE articles
-    if (totalArticles <= ARTICLES_PER_PAGE) return;
-    
-    var totalPages = Math.ceil(totalArticles / ARTICLES_PER_PAGE);
-    
-    // Get current page from URL hash or default to 1
-    var currentPage = 1;
-    var hash = window.location.hash;
-    if (hash && hash.indexOf('page-') === 1) {
-        var page = parseInt(hash.replace('#page-', ''));
-        if (page >= 1 && page <= totalPages) {
-            currentPage = page;
-        }
-    }
-    
-    function showPage(page) {
-        currentPage = page;
-        
-        // Update URL hash
-        if (page === 1) {
-            history.replaceState(null, '', window.location.pathname);
-        } else {
-            history.replaceState(null, '', '#page-' + page);
-        }
-        
-        // Show/hide articles
-        var start = (page - 1) * ARTICLES_PER_PAGE;
-        var end = start + ARTICLES_PER_PAGE;
-        
-        articles.forEach(function(article, index) {
-            if (index >= start && index < end) {
-                article.style.display = '';
-            } else {
-                article.style.display = 'none';
-            }
-        });
-        
-        // Update pagination buttons
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === totalPages;
-        
-        // Update page numbers
-        updatePageNumbers();
-        
-        // Update info text
-        paginationInfo.textContent = '第 ' + currentPage + ' / ' + totalPages + ' 页，共 ' + totalArticles + ' 篇文章';
-        
-        // Scroll to top of post list
-        var listTop = postList.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top: listTop, behavior: 'smooth' });
-    }
-    
-    function updatePageNumbers() {
-        pageNumbers.innerHTML = '';
-        
-        var maxVisible = 5;
-        var startPage, endPage;
-        
-        if (totalPages <= maxVisible) {
-            startPage = 1;
-            endPage = totalPages;
-        } else {
-            if (currentPage <= 3) {
-                startPage = 1;
-                endPage = maxVisible;
-            } else if (currentPage >= totalPages - 2) {
-                startPage = totalPages - maxVisible + 1;
-                endPage = totalPages;
-            } else {
-                startPage = currentPage - 2;
-                endPage = currentPage + 2;
-            }
-        }
-        
-        // Add first page + ellipsis if needed
-        if (startPage > 1) {
-            var firstBtn = document.createElement('button');
-            firstBtn.className = 'pagination-btn';
-            firstBtn.textContent = '1';
-            firstBtn.onclick = function() { showPage(1); };
-            pageNumbers.appendChild(firstBtn);
-            
-            if (startPage > 2) {
-                var ellipsis = document.createElement('span');
-                ellipsis.style.padding = '0 8px';
-                ellipsis.textContent = '...';
-                pageNumbers.appendChild(ellipsis);
-            }
-        }
-        
-        // Add page buttons
-        for (var i = startPage; i <= endPage; i++) {
-            var btn = document.createElement('button');
-            btn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
-            btn.textContent = i;
-            btn.onclick = (function(page) {
-                return function() { showPage(page); };
-            })(i);
-            pageNumbers.appendChild(btn);
-        }
-        
-        // Add last page + ellipsis if needed
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                var ellipsis = document.createElement('span');
-                ellipsis.style.padding = '0 8px';
-                ellipsis.textContent = '...';
-                pageNumbers.appendChild(ellipsis);
-            }
-            
-            var lastBtn = document.createElement('button');
-            lastBtn.className = 'pagination-btn';
-            lastBtn.textContent = totalPages;
-            lastBtn.onclick = function() { showPage(totalPages); };
-            pageNumbers.appendChild(lastBtn);
-        }
-    }
-    
-    // Event listeners
-    prevBtn.onclick = function() {
-        if (currentPage > 1) showPage(currentPage - 1);
-    };
-    
-    nextBtn.onclick = function() {
-        if (currentPage < totalPages) showPage(currentPage + 1);
-    };
-    
-    // Handle browser back/forward
-    window.addEventListener('hashchange', function() {
-        var hash = window.location.hash;
-        if (hash && hash.indexOf('page-') === 1) {
-            var page = parseInt(hash.replace('#page-', ''));
-            if (page >= 1 && page <= totalPages) {
-                showPage(page);
-            }
-        } else {
-            showPage(1);
-        }
-    });
-    
-    // Initialize
-    showPage(currentPage);
-})();
+/* Pagination removed for homepage */
 </script>
 
 <script>
 // Category tag cloud data - auto-generated
-window.CATEGORY_TAGS = [{"name": ".", "count": 1, "url": "/./"}, {"name": "读书", "count": 1, "url": "/posts/reading/"}, {"name": "书评", "count": 4, "url": "/posts/reading/book-review/"}, {"name": "职业发展", "count": 8, "url": "/posts/career/"}, {"name": "硬件数码", "count": 5, "url": "/posts/hardware/"}, {"name": "NAS", "count": 41, "url": "/posts/hardware/nas/"}, {"name": "其他硬件", "count": 12, "url": "/posts/hardware/others/"}, {"name": "GPU对比", "count": 1, "url": "/posts/hardware/gpu-5070-9070-comparison/"}, {"name": "投资理财", "count": 1, "url": "/posts/investment/"}, {"name": "股票分析", "count": 2, "url": "/posts/investment/stock-analysis/"}, {"name": "独立开发飞轮", "count": 1, "url": "/posts/ai-observation/indie-app-flywheel/"}, {"name": "AI与职业", "count": 7, "url": "/posts/ai-observation/career/"}, {"name": "AI社会观察", "count": 12, "url": "/posts/ai-observation/society/"}, {"name": "AI行业观察", "count": 4, "url": "/posts/ai-observation/industry/"}, {"name": "技术技巧", "count": 4, "url": "/posts/tech-tips/"}, {"name": "安全技巧", "count": 1, "url": "/posts/tech-tips/security/"}, {"name": "软件使用", "count": 2, "url": "/posts/tech-tips/software/"}, {"name": "生活方式", "count": 5, "url": "/posts/life/"}, {"name": "AI工具", "count": 3, "url": "/posts/ai-tools/"}, {"name": "Claude Code", "count": 12, "url": "/posts/ai-tools/claude-code/"}, {"name": "OpenClaw", "count": 19, "url": "/posts/ai-tools/openclaw/"}, {"name": "AI技能训练", "count": 1, "url": "/posts/ai-tools/skill-training/"}, {"name": "AI工具其他", "count": 9, "url": "/posts/ai-tools/others/"}, {"name": "AI工作流", "count": 1, "url": "/posts/ai-tools/workflow/"}, {"name": "Spec Kit", "count": 1, "url": "/posts/ai-tools/spec-kit/"}, {"name": "HAFW", "count": 2, "url": "/posts/ai-tools/hafw/"}, {"name": "ai-tools / openspec", "count": 1, "url": "/posts/ai-tools/openspec/"}];
+window.CATEGORY_TAGS = [{"name": "读书", "count": 1, "url": "/posts/reading/"}, {"name": "书评", "count": 4, "url": "/posts/reading/book-review/"}, {"name": "职业发展", "count": 8, "url": "/posts/career/"}, {"name": "硬件数码", "count": 5, "url": "/posts/hardware/"}, {"name": "NAS", "count": 41, "url": "/posts/hardware/nas/"}, {"name": "其他硬件", "count": 12, "url": "/posts/hardware/others/"}, {"name": "GPU对比", "count": 1, "url": "/posts/hardware/gpu-5070-9070-comparison/"}, {"name": "投资理财", "count": 1, "url": "/posts/investment/"}, {"name": "股票分析", "count": 2, "url": "/posts/investment/stock-analysis/"}, {"name": "独立开发飞轮", "count": 1, "url": "/posts/ai-observation/indie-app-flywheel/"}, {"name": "AI与职业", "count": 7, "url": "/posts/ai-observation/career/"}, {"name": "AI社会观察", "count": 12, "url": "/posts/ai-observation/society/"}, {"name": "AI行业观察", "count": 4, "url": "/posts/ai-observation/industry/"}, {"name": "技术技巧", "count": 4, "url": "/posts/tech-tips/"}, {"name": "安全技巧", "count": 1, "url": "/posts/tech-tips/security/"}, {"name": "软件使用", "count": 2, "url": "/posts/tech-tips/software/"}, {"name": "生活方式", "count": 5, "url": "/posts/life/"}, {"name": "AI工具", "count": 3, "url": "/posts/ai-tools/"}, {"name": "Claude Code", "count": 12, "url": "/posts/ai-tools/claude-code/"}, {"name": "OpenClaw", "count": 19, "url": "/posts/ai-tools/openclaw/"}, {"name": "AI技能训练", "count": 1, "url": "/posts/ai-tools/skill-training/"}, {"name": "AI工具其他", "count": 9, "url": "/posts/ai-tools/others/"}, {"name": "AI工作流", "count": 1, "url": "/posts/ai-tools/workflow/"}, {"name": "Spec Kit", "count": 1, "url": "/posts/ai-tools/spec-kit/"}, {"name": "HAFW", "count": 2, "url": "/posts/ai-tools/hafw/"}, {"name": "ai-tools / openspec", "count": 1, "url": "/posts/ai-tools/openspec/"}];
 </script>
 
 <script>
