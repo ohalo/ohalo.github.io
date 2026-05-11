@@ -1,56 +1,38 @@
 /* ============================================
    Article Page Layout
-   Single column with sticky TOC on the right
+   Single column with TOC below article
    ============================================ */
 
-.article-page {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 32px 24px;
+/* Post Layout - Single column (TOC flows after article) */
+.post-layout {
+    display: block;
 }
 
-/* ============================================
-   Sticky Table of Contents (Affix style)
-   Fixed on the right side of article
-   ============================================ */
+.post-layout .post-content-wrapper {
+    width: 100%;
+}
 
+/* TOC Panel - Below article, full width */
 .toc-sticky-wrapper {
-    position: sticky;
-    top: 80px;
-    float: right;
-    width: 220px;
-    max-height: calc(100vh - 120px);
-    margin-left: 32px;
-    flex-shrink: 0;
+    margin-top: 48px;
+    margin-bottom: 32px;
+    width: 100%;
 }
 
 .toc-panel {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 16px;
-    max-height: calc(100vh - 140px);
-    overflow-y: auto;
-}
-
-.toc-panel::-webkit-scrollbar {
-    width: 4px;
-}
-
-.toc-panel::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 2px;
+    padding: 20px;
 }
 
 .toc-title {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-muted);
-    margin: 0 0 12px 0;
-    padding-bottom: 8px;
+    margin: 0 0 16px 0;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .toc-list {
@@ -60,69 +42,49 @@
 }
 
 .toc-list li {
-    line-height: 1.5;
+    padding: 0;
+    margin: 0;
 }
 
 .toc-list a {
     display: block;
+    padding: 8px 12px;
+    font-size: 0.9rem;
     color: var(--text-secondary);
-    font-size: 0.82rem;
     text-decoration: none;
-    padding: 5px 8px;
     border-radius: 6px;
-    border-left: 2px solid transparent;
-    transition: color 0.15s, background 0.15s, border-color 0.15s, padding-left 0.15s;
-    line-height: 1.4;
+    transition: background 0.2s, color 0.2s;
+    border: none;
 }
 
 .toc-list a:hover {
-    color: var(--accent);
     background: var(--bg-hover);
-    padding-left: 10px;
-}
-
-.toc-list a.active {
-    color: var(--accent);
-    background: rgba(74, 144, 226, 0.08);
-    border-left-color: var(--accent);
-    font-weight: 500;
-}
-
-/* Heading levels - h2 is top level */
-.toc-h2 a {
-    font-weight: 500;
     color: var(--text-primary);
 }
 
-/* h3 is nested under h2 */
-.toc-h3 {
+.toc-list a.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 500;
+}
+
+/* TOC hierarchy indentation */
+.toc-list .toc-h2 a {
+    font-weight: 500;
+}
+
+.toc-list .toc-h3 {
     padding-left: 16px;
 }
 
-.toc-h3 a {
-    font-size: 0.78rem;
-    color: var(--text-secondary);
+.toc-list .toc-h3 a {
+    font-size: 0.85rem;
 }
 
-/* h4 is nested deeper */
-.toc-h4 {
+.toc-list .toc-h4 {
     padding-left: 32px;
 }
 
-.toc-h4 a {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-/* Mobile responsive - hide TOC on small screens */
-@media (max-width: 1100px) {
-    .toc-sticky-wrapper {
-        display: none;
-    }
-}
-
-@media (max-width: 768px) {
-    .article-page {
-        padding: 20px 16px;
-    }
+.toc-list .toc-h4 a {
+    font-size: 0.8rem;
 }
