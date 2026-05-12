@@ -178,34 +178,34 @@ SEARCH_JS = '''
     var articles = window.ALL_ARTICLES || [];
     var searchInput = document.getElementById('searchInput');
     var searchResults = document.getElementById('searchResults');
-    
+
     if (!searchInput || !searchResults || articles.length === 0) return;
-    
+
     function highlight(text, query) {
         if (!query) return text;
         var regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + ')', 'gi');
         return text.replace(regex, '<span class="search-highlight">$1</span>');
     }
-    
+
     function search(query) {
         query = query.trim().toLowerCase();
-        
+
         if (!query) {
             searchResults.innerHTML = '';
             return;
         }
-        
+
         var results = articles.filter(function(article) {
             return article.title.toLowerCase().indexOf(query) !== -1 ||
                    article.desc.toLowerCase().indexOf(query) !== -1 ||
                    article.category.toLowerCase().indexOf(query) !== -1;
         });
-        
+
         if (results.length === 0) {
             searchResults.innerHTML = '<div class="search-no-results"><i class="far fa-sad-tear"></i>没有找到匹配的文章</div>';
             return;
         }
-        
+
         var html = '';
         results.slice(0, 10).forEach(function(article) {
             html += '<div class="search-result-item">';
@@ -222,13 +222,13 @@ SEARCH_JS = '''
             }
             html += '</div>';
         });
-        
-        var countText = results.length > 10 ? '显示前10条，共 ' + results.length + ' 条' : '共 ' + results.length + ' 条';
+
+        var countText = results.length > 10 ? '显示前10条,共 ' + results.length + ' 条' : '共 ' + results.length + ' 条';
         html += '<div class="search-count">' + countText + '</div>';
-        
+
         searchResults.innerHTML = html;
     }
-    
+
     // Debounce
     var debounceTimer;
     searchInput.addEventListener('input', function() {
@@ -243,7 +243,7 @@ SEARCH_JS = '''
 def scan_articles(base_dir):
     """Scan all articles to build search index."""
     articles = []
-    
+
     # Category name mapping
     category_names = {
         'posts/ai-tools': 'AI工具',
@@ -274,51 +274,51 @@ def scan_articles(base_dir):
         'posts/life': '生活方式',
         'posts/archive': '归档',
     }
-    
+
     for root, dirs, files in os.walk(base_dir):
         dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['scripts', 'images', 'stylesheets', 'javascripts', 'blog']]
-        
+
         for file in files:
             if file.endswith('.html') and file != 'index.html':
                 filepath = os.path.join(root, file)
                 rel_path = os.path.relpath(filepath, base_dir)
-                
+
                 try:
                     with open(filepath, 'r', encoding='utf-8') as f:
                         content = f.read()
-                    
+
                     # Extract title
-                    title_match = re.search(r'<h1[^>]*>(.*?)</h1>', content, re.DOTALL)
+                    title_match = re.search(r'<h1[^>]*class="post-title"[^>]*>(.*?)</h1>', content, re.DOTALL)
                     title = title_match.group(1).strip() if title_match else ''
                     
                     # Clean title - remove any HTML tags
                     title = re.sub(r'<[^>]+>', '', title).strip()
                     
                     # Extract date
-                    date_match = re.search(r'<span[^>]*class="date"[^>]*>([\d-]+)</span>', content)
+                    date_match = re.search(r'<div[^>]*class="post-date"[^>]*>.*?([\d-]{10}).*?</div>', content, re.DOTALL)
                     date = date_match.group(1) if date_match else ''
-                    
+
                     # Extract category from breadcrumb or path
                     category = category_names.get(os.path.dirname(rel_path), os.path.dirname(rel_path))
-                    
-                    # Extract description from meta or first paragraph
+
+                    # Extract description from meta
                     desc_match = re.search(r'<meta[^>]*name="description"[^>]*content="([^"]+)"', content)
-                    if not desc_match:
-                        desc_match = re.search(r'<p[^>]*class="post-meta"[^>]*>(.*?)</p>', content, re.DOTALL)
                     desc = desc_match.group(1).strip() if desc_match else ''
+                    # Remove trailing blog name from description
+                    desc = re.sub(r'\s*[-–—]\s*halo的技术博客\s*$', '', desc).strip()
                     desc = re.sub(r'<[^>]+>', '', desc).strip()
                     if len(desc) > 100:
                         desc = desc[:100] + '...'
-                    
+
                     # Extract read time
                     read_time = ''
                     time_match = re.search(r'(\d+)\s*分钟', content)
                     if time_match:
                         read_time = time_match.group(1) + '分钟'
-                    
+
                     # Build URL
                     url = '/' + rel_path.replace('.html', '')
-                    
+
                     articles.append({
                         'title': title,
                         'url': url,
@@ -329,18 +329,18 @@ def scan_articles(base_dir):
                     })
                 except Exception as e:
                     pass
-    
+
     return articles
 
 def add_search_to_homepage(html_content, articles_json):
     """Add search functionality to homepage."""
     if 'id="searchInput"' in html_content:
         return html_content, False
-    
+
     # Add styles before </head>
     if '</head>' in html_content:
         html_content = html_content.replace('</head>', '<style>' + SEARCH_STYLES + '</style>\n</head>')
-    
+
     # Add search HTML - insert after hero section
     hero_end = html_content.find('</section>')
     if hero_end != -1:
@@ -350,36 +350,42 @@ def add_search_to_homepage(html_content, articles_json):
             # Insert search after first section
             search_section = SEARCH_HTML
             html_content = html_content[:first_section_end + 11] + search_section + html_content[first_section_end + 11:]
-    
+
     # Add articles data before </body>
     if '</body>' in html_content:
         data_script = SEARCH_DATA.replace('%ARTICLES_JSON%', articles_json)
         html_content = html_content.replace('</body>', data_script + '\n</body>')
-    
+
     # Add search JS before </body>
     if '</body>' in html_content:
         html_content = html_content.replace('</body>', '<script>' + SEARCH_JS + '</script>\n</body>')
-    
+
     return html_content, True
 
 def main():
-    base_dir = '/Users/halo/.qclaw/workspace/blog-repo'
-    
+    import sys
+    # Use script's directory as base, go up one level to repo root
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.dirname(script_dir)  # scripts/ -> repo root
+    base_dir = repo_root
+
+    print(f"Scanning articles in: {base_dir}")
+
     # Scan articles
     print("Scanning articles for search index...")
     articles = scan_articles(base_dir)
     print(f"Found {len(articles)} articles")
-    
+
     articles_json = json.dumps(articles, ensure_ascii=False)
-    
+
     # Update homepage
     print("\nUpdating homepage with search...")
     homepage_path = os.path.join(base_dir, 'index.html')
     with open(homepage_path, 'r', encoding='utf-8') as f:
         content = f.read()
-    
+
     new_content, added = add_search_to_homepage(content, articles_json)
-    
+
     if added:
         with open(homepage_path, 'w', encoding='utf-8') as f:
             f.write(new_content)

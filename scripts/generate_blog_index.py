@@ -75,7 +75,28 @@ def extract_title_from_html(html_content):
         title = match.group(1)
         # Remove site name suffix like " - halo的技术博客"
         title = re.sub(r'\s*-\s*[^_]*的技术博客\s*$', '', title)
+        # Fix malformed titles with literal \" (backslash + quote) by replacing with proper escaped quote
+        # This handles cases where HTML was written with unescaped quotes in <title>
+        title = title.replace('\\"', '\\\\"')  # \" -> \\"
         return title.strip()
+    return ""
+
+
+def extract_description_from_html(html_content):
+    """Extract meta description"""
+    # Try og:description first
+    match = re.search(r'<meta property="og:description" content="([^"]+)"', html_content)
+    if match:
+        desc = match.group(1)
+        # Fix malformed descriptions with literal \" (backslash + quote)
+        desc = desc.replace('\\"', '\\\\"')  # \" -> \\"
+        return desc
+    # Try generic description
+    match = re.search(r'<meta name="description" content="([^"]+)"', html_content)
+    if match:
+        desc = match.group(1)
+        desc = desc.replace('\\"', '\\\\"')
+        return desc
     return ""
 
 
@@ -170,10 +191,25 @@ def load_featured_articles():
 
 
 def generate_all_articles_js(articles):
-    """Generate ALL_ARTICLES JavaScript array"""
+    """Generate ALL_ARTICLES JavaScript array.
+    
+    json.dumps with ensure_ascii=False handles:
+    - Chinese characters: preserved as-is (valid in UTF-8 JS)
+    - Chinese quotes " ": preserved as-is (U+201C/U+201D, NOT string delimiters)
+    - ASCII backslash-n \\: becomes \\n (escape sequence)
+    - ASCII quotes \": already escaped by json.dumps
+    
+    Result is a valid JS string literal with proper escaping.
+    """
     js_lines = ["window.ALL_ARTICLES = ["]
     for article in articles:
-        js_lines.append(f'    {json.dumps(article, ensure_ascii=False)},')
+        # json.dumps already produces valid JS: "content with proper escapes"
+        # For ASCII " inside content, json.dumps escapes as \"
+        # For Chinese " or " (U+201C/U+201D), they remain as-is (valid in JS)
+        row = {k: article.get(k, "") for k in ['title', 'url', 'date', 'category', 'desc', 'readTime']}
+        js_lines.append(f'    {json.dumps(row, ensure_ascii=False)},')
+    js_lines.append("];")
+    return "\n".join(js_lines)
     js_lines.append("];")
     return "\n".join(js_lines)
 
