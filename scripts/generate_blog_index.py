@@ -310,7 +310,7 @@ def update_homepage(articles, all_articles_js, latest_html, featured_html):
         
         # Find and replace latest articles section
         # We need to find the section between <h2><i class="fas fa-clock"></i> and the next <h2> or </section>
-        pattern_latest = r'(<h2><i class="fas fa-clock"></i>\s*最新文章</h2>[\s\S]*?</div>\s*)'
+        pattern_latest = r'(<h2><i class="fas fa-fire"></i>\s*最新文章</h2>[\s\S]*?</div>\s*)'
         if re.search(pattern_latest, content):
             content = re.sub(pattern_latest, latest_html + '\n', content)
         
