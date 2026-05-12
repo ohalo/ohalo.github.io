@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>好代码的标准不是技术，是可读性</title>
+    <meta name="description" content="好代码不是用了多少高级特性，而是未来读这段代码的人能否快速理解。">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/modern-theme.css" media="screen">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="/javascripts/google-analytics.js"></script>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="好代码的标准不是技术，是可读性">
+    <meta property="og:description" content="好代码不是用了多少高级特性，而是未来读这段代码的人能否快速理解。">
+    <meta property="og:image" content="https://blog.halo26812.eu.org/images/social-preview.jpg">
+    <meta property="og:url" content="https://blog.halo26812.eu.org/posts/career/2026-05-12-code-quality-readability.html">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="好代码的标准不是技术，是可读性">
+    <meta property="twitter:description" content="好代码不是用了多少高级特性，而是未来读这段代码的人能否快速理解。">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="/">halo的技术博客</a></h1>
+            <h2>AI工具 · 行业观察 · 技术实践</h2>
+            <nav>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> 主页</a></li>
+                    <li><a href="/posts/ai-tools/"><i class="fas fa-robot"></i> AI工具</a></li>
+                    <li><a href="/posts/ai-observation/"><i class="fas fa-eye"></i> AI观察</a></li>
+                    <li><a href="/posts/hardware/"><i class="fas fa-microchip"></i> 硬件数码</a></li>
+                    <li><a href="/posts/career/"><i class="fas fa-briefcase"></i> 职业成长</a></li>
+                    <li><a href="/posts/investment/"><i class="fas fa-chart-line"></i> 投资理财</a></li>
+                    <li><a href="/posts/reading/"><i class="fas fa-book-open"></i> 阅读思考</a></li>
+                    <li><a href="/posts/tech-tips/"><i class="fas fa-wrench"></i> 效率技巧</a></li>
+                    <li><a href="/posts/life/"><i class="fas fa-heart"></i> 生活方式</a></li>
+                    <li><a href="/posts/archive/"><i class="fas fa-archive"></i> 归档</a></li>
+                    <li><a href="/about/"><i class="fas fa-user"></i> 关于</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <section id="main_content">
+            <div class="breadcrumb"><a href="/">主页</a> &rsaquo; <a href="/posts/career/">职业成长</a> &rsaquo; 好代码的标准</div>
+            <article>
+                <h1 class="post-title">好代码的标准不是技术，是可读性</h1>
+                <div class="post-date"><i class="far fa-calendar"></i> 2026-05-12</div>
+                
+                <p>前两天重构一段祖传代码，我花了整整三个小时才理解原作者的意图。那一刻我突然意识到一个问题：我们写了那么多"优雅"的代码，究竟是写给机器看的，还是写给人看的？</p>
+
+                <p>我见过太多这样的场景：面试时候选人炫耀自己用了多少高级特性，代码评审时有人因为用了最新的语法糖而沾沾自喜。但当我问他们"这段代码三个月后你还能看懂吗"，大多数人都沉默了。</p>
+
+                <p>好代码的标准，从来不是技术栈有多新，而是——未来读这段代码的人，能否在最短时间内理解它的意图。</p>
+
+                <h2>聪明但难以维护的代码</h2>
+                
+                <p>我曾经维护过一段"神级"业务代码，那是前同事的巅峰之作。用一句话概括就是：能用一行代码解决的事，绝不写两行。</p>
+
+                <p>具体表现是什么样子呢？</p>
+
+                <p>变量名是单个字母，a、b、c、x、y、z不够用了就用aa、ab。函数名？没有函数名，直接一行流把所有逻辑串在一起。注释？不存在的，代码即文档。异常处理？catch住就吞掉，连日志都不打。业务逻辑？嵌套七八层回调，每层都有不同的状态判断。</p>
+
+                <p>你问我怎么读懂？我只能 debugger 一步步跟踪，看到数据怎么流转，在某个节点突然发现"哦，原来这里是算折扣的"。但下次遇到类似需求，我还得再 debug 一遍。</p>
+
+                <p>这种代码的"聪明"之处在于，它展示了对语言特性的熟练掌握。但代价是，任何人，包括三个月后的自己，都需要花大量时间才能理解。维护成本极高，修改风险极大。</p>
+
+                <figure>
+                    <img src="/images/code-quality-readability/01.jpg" alt="聪明但难懂的代码" style="max-width:100%; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <figcaption style="text-align:center;color:#666;font-size:14px;margin-top:8px;">聪明但难懂的代码 - 当时看懂，过后迷茫</figcaption>
+                </figure>
+
+                <h2>简单但清晰的代码</h2>
+
+                <p>与之形成鲜明对比的，是我见过的一些"笨拙"但清晰的代码。</p>
+
+                <p>什么样的？</p>
+
+                <p>变量名是完整的英文单词，calculateDiscount、userOrderList、paymentStatus，看名字就知道这是什么。函数名清晰表达意图，validateInput、processUserRegistration、sendNotificationNotification，一个函数只做一件事。关键逻辑有注释，但不是那种"注释一下这行在干什么"的废话注释，而是"为什么要这样做"的业务意图说明。异常处理会记录日志，会区分不同类型的错误并给出有意义的错误信息。</p>
+
+                <p>这样的代码，初看时可能觉得"怎么写这么多行"——因为它把每个步骤都拆开了。但当你需要修改时，你会发现极其顺畅：改价格就去价格相关的函数，找用户逻辑就去用户模块，一切都有迹可循。</p>
+
+                <p>我接手过一个项目，代码量比之前的"神级"代码多了一倍，但维护难度降低了十倍。新人入职两周就能上手改需求，而之前那个项目，三个月能独立改需求就已经是高手了。</p>
+
+                <figure>
+                    <img src="/images/code-quality-readability/02.jpg" alt="简单但清晰的代码" style="max-width:100%; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <figcaption style="text-align:center;color:#666;font-size:14px;margin-top:8px;">简单但清晰的代码 - 一目了然，经久耐用</figcaption>
+                </figure>
+
+                <h2>可读性才是真正的技术</h2>
+
+                <p>有人会说：可读性谁不知道？问题是业务紧急，哪有时间写那么"优雅"？</p>
+
+                <p>这其实是个误解。真正影响开发效率的，不是写代码的时间，而是读代码和改代码的时间。一段写得很"聪明"的代码，可能十分钟就写完了，但后续维护可能花上几十个小时。而一段"笨拙"但清晰的代码，当时可能多花了五分钟，但后续每次维护都能节省时间。</p>
+
+                <p>长期来看，可读性才是真正的效率。</p>
+
+                <p>而且，你会发现一个有趣的现象：真正的大牛，写出来的代码往往都很"简单"。不是因为他们不会用高级特性，而是他们知道——代码是给人看的，不是给机器看的。机器只关心能不能跑，人关心的是能不能维护。</p>
+
+                <p>Kent Beck 说过一句话我很认同："任何人都能写出机器能看懂的代码，但只有优秀的程序员才能写出人能看懂的代码。"</p>
+
+                <h2>怎么在日常工作中提高代码可读性？</h2>
+
+                <p>说了一堆道理，给一个实用的建议吧：下次当你写完一段代码，问自己一个问题——"如果三个月后的我完全忘记了这段代码，看完需要多久才能理解？"</p>
+
+                <p>如果答案是"需要很久"，那就花五分钟做个优化：</p>
+                
+                <ul>
+                    <li><strong>变量名要自解释</strong>：不要用 result、temp、data，用 meaningfulName</li>
+                    <li><strong>函数名要表达意图</strong>：不是 doProcess，而是 validateAndSaveUserOrder</li>
+                    <li><strong>长函数要拆分</strong>：超过 30 行就可以考虑拆了</li>
+                    <li><strong>加有意义的注释</strong>：解释为什么，而不是解释是什么</li>
+                    <li><strong>复杂逻辑要分层</strong>：把"怎么做"和"做什么"分开</li>
+                </ul>
+
+                <p>代码是写一次，读一百次的。让自己成为一个"让未来的自己感激的人"，这才是真正的高级。</p>
+
+                <hr>
+                
+                <p>最后送大家一句话共勉：最好的代码，是让团队里最菜的同事都能看懂的代码。那才是真正的高手境界。</p>
+
+            </article>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 halo. Powered by GitHub Pages.</p>
+        </div>
+    </footer>
+</body>
+</html>
