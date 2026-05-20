@@ -300,6 +300,20 @@ def update_homepage(articles, all_articles_js, latest_html, featured_html):
     try:
         content = INDEX_HTML.read_text(encoding='utf-8')
         
+        # Update category counts
+        category_counts = {}
+        for article in articles:
+            cat = article.get('category', '')
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+        
+        # Update category count in HTML
+        # Pattern: <li><a href="/posts/CATEGORY/">...</a> <span class="date">NUM篇</span></li>
+        for cat_name, count in category_counts.items():
+            # Find the category link and update the count
+            pattern_cat = rf'(<li><a href="/posts/[^"]+/"><i class="fas [^"]+"></i> {re.escape(cat_name)}</a>\s*<span class="date">)\d+篇(</span></li>)'
+            replacement = f'\g<1>{count}篇\g<2>'
+            content = re.sub(pattern_cat, replacement, content)
+        
         # Find and replace ALL_ARTICLES
         # Pattern: window.ALL_ARTICLES = [...];
         pattern_all = r'window\.ALL_ARTICLES\s*=\s*\[[\s\S]*?\];'
