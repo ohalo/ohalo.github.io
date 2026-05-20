@@ -306,7 +306,15 @@ def update_homepage(articles, all_articles_js, latest_html, featured_html):
         if re.search(pattern_all, content):
             content = re.sub(pattern_all, all_articles_js, content)
         else:
-            print("Warning: ALL_ARTICLES not found in homepage", file=sys.stderr)
+            print("Warning: ALL_ARTICLES not found in homepage, inserting before </script>", file=sys.stderr)
+            # Try to insert before closing </script> tag or </body>
+            if '</script>' in content:
+                # Find the last </script> tag and insert before it
+                last_script_end = content.rfind('</script>')
+                if last_script_end > 0:
+                    content = content[:last_script_end] + '\n' + all_articles_js + '\n' + content[last_script_end:]
+            elif '</body>' in content:
+                content = content.replace('</body>', '<script>\n' + all_articles_js + '\n</script>\n</body>')
         
         # Find and replace latest articles section
         # We need to find the section between <h2><i class="fas fa-clock"></i> and the next <h2> or </section>
